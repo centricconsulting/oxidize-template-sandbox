@@ -1,5 +1,0 @@
-[ENTITY]
-Product
-[ATTRIBUTES]
-Product Code,
-Product Name,

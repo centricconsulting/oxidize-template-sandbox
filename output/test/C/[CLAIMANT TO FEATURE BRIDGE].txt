@@ -1,6 +1,0 @@
-[ENTITY]
-Claimant to Feature Bridge
-[ATTRIBUTES]
-Claimant Type,
-Claimant,
-Claim Feature,

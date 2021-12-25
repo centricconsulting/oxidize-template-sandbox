@@ -64,7 +64,7 @@ const buildFilterPhrase = (filters) => {
   })
 
   if (phrases.length == 0) {
-    return null``
+    return null
   } else {
     return `[?(${phrases.join(' && ')})]`
   }

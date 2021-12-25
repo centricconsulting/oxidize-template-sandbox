@@ -1,5 +1,0 @@
-[ENTITY]
-Exposure Type
-[ATTRIBUTES]
-Exposure Code,
-Exposure Description,

@@ -1,7 +1,0 @@
-[ENTITY]
-Workers Compensation Risk
-[ATTRIBUTES]
-Risk,
-NCCI Classification,
-Annual Payroll,
-State Classification,

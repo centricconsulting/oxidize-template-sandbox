@@ -1,5 +1,0 @@
-[ENTITY]
-Applied  Category
-[ATTRIBUTES]
-Applied Category Code,
-Applied Category Description,

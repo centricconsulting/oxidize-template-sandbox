@@ -1,7 +1,0 @@
-[ENTITY]
-Claimant
-[ATTRIBUTES]
-Claimant Address,
-Claimant First Name,
-Claimant Mailing Address,
-Claimant Last Name,

@@ -1,5 +1,0 @@
-[ENTITY]
-Quote Status
-[ATTRIBUTES]
-Quote Status Description,
-Quote Status Code,

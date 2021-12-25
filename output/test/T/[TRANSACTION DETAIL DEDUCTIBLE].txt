@@ -1,6 +1,0 @@
-[ENTITY]
-Transaction Detail Deductible
-[ATTRIBUTES]
-Deductible Type,
-Transaction Detail,
-Deductible Amount,

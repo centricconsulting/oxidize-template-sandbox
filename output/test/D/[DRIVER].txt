@@ -1,8 +1,0 @@
-[ENTITY]
-Driver
-[ATTRIBUTES]
-First Name,
-Last Name,
-Middle Name,
-License State,
-License Identifier,

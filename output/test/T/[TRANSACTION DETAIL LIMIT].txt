@@ -1,6 +1,0 @@
-[ENTITY]
-Transaction Detail Limit
-[ATTRIBUTES]
-Transaction Detail,
-Limit Type,
-Limit Amount,

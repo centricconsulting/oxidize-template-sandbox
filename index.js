@@ -23,50 +23,49 @@ function main() {
   const payloadJson = JSON.parse(payload)
 
   // ######  execute code generation ######
-  // const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
-  // codeGenerator.generate()
+  const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
+  codeGenerator.generate()
 
   // ###### demonstrate JsonHelper ######
   // demoJsonHelper(payloadJson)
 
   // ###### demonstrate Codifier ######
-  demoCodifier(payloadJson)
+  // demoCodifier()
 }
 
 /**
  * Demonstrates the use of codify functions.
  * @param {*} json Json object used for the demo.
  */
-function demoCodifier(json) {
-  let codifyOptions, text
+function demoCodifier() {
+  let codifyOptions
   const sourceKey = 'name'
   const targetKey = '__code'
-  const originalText = 'Insurance**AnalyticsPlatform'
+  const json = {
+    name: 'Insurance analytics# platform',
+  }
 
-  // console.log('\ncodifier - DEMO #1')
-  // codifyOptions = codifier.DatabaseOptions('lower')
-  // codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
-  // console.log(
-  //   'codify - PRE-BUILT DATABASE OPTIONS ...first item\n',
-  //   `name: ${json.metadata.project.name}\n`,
-  //   `__code: ${json.metadata.project?.__code}\n`
-  // )
+  console.log('\ncodifier - DEMO #1')
+  codifyOptions = codifier.DatabaseOptions
+  codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
+  console.log('DatabaseOptions - PRE-BUILT DATABASE OPTIONS\n', `name: ${json.name}\n`, `__code: ${json.__code}\n`)
 
-  // console.log('\ncodifier - DEMO #2')
-  // codifyOptions = codifier.JavascriptOptions
-  // codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
-  // console.log(
-  //   'codify - PRE-BUILT JAVASCRIPT OPTIONS ...first item\n',
-  //   `name: ${json.metadata.project.name}\n`,
-  //   `__code: ${json.metadata.project?.__code}\n`
-  // )
-
-  // console.log('\ncodifier - DEMO #3')
+  console.log('\ncodifier - DEMO #2')
   codifyOptions = codifier.JavascriptOptions
-  // codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
-  text = codifier.codifyText(originalText, codifyOptions)
-  // console.log('codify - CUSTOM OPTIONS ...first item\n', `originalText: ${originalText}\n`, `codifiedText: ${text}\n`)
-  console.log('result', `originalText: ${originalText}\n`, `codifiedText: ${text}\n`)
+  codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
+  console.log('JavascriptOptions - PRE-BUILT JAVASCRIPT OPTIONS\n', `name: ${json.name}\n`, `__code: ${json.__code}\n`)
+
+  console.log('\ncodifier - DEMO #3')
+  codifyOptions = {
+    case: codifier.CaseOptionEnum.Proper,
+    preserveCaps: true,
+    substitutions: [
+      {find: /\s+/gim, replace: '_'}, // remove all whitespace
+      {find: /\W+/gim, replace: '0'}, // replace non-words with hyphen
+    ],
+  }
+  codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
+  console.log('Custom - CUSTOM\n', `name: ${json.name}\n`, `__code: ${json.__code}\n`)
 }
 
 /**

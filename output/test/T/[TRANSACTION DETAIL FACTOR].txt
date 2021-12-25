@@ -1,7 +1,0 @@
-[ENTITY]
-Transaction Detail Factor
-[ATTRIBUTES]
-Factor,
-Premium,
- Mod,
-Factor Value,

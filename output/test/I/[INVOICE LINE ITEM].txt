@@ -1,8 +1,0 @@
-[ENTITY]
-Invoice Line Item
-[ATTRIBUTES]
-Invoice,
-Invoice Line Item Taxes Due,
-Invoice Line Item Amount Due,
-Invoice Line Item Description,
-Invoice Line Item Code,

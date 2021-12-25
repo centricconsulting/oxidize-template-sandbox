@@ -1,8 +1,0 @@
-[ENTITY]
-Auto Risk
-[ATTRIBUTES]
-Make,
-Model,
-Risk,
-Vehicle Classification,
-Year,

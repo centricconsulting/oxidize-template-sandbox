@@ -1,8 +1,0 @@
-[ENTITY]
-Adjuster
-[ATTRIBUTES]
-Adjuster Mailing Address,
-Adjuster Full Name,
-Adjuster Address,
-Adjuster First Name,
-Adjuster Last Name,

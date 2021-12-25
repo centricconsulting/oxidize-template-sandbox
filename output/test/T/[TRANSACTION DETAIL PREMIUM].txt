@@ -1,5 +1,0 @@
-[ENTITY]
-Transaction Detail Premium
-[ATTRIBUTES]
-Premium,
-Transaction Detail,

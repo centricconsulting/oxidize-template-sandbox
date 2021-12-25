@@ -1,6 +1,0 @@
-[ENTITY]
-Sub Coverage
-[ATTRIBUTES]
-Coverage,
-Sub Coverage Description,
-Sub Coverage Code,

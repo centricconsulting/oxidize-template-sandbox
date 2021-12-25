@@ -1,7 +1,0 @@
-[ENTITY]
-Submission
-[ATTRIBUTES]
-Submission Date,
-Response Due Date,
-Effective Date,
-Submission Desc,

@@ -1,5 +1,0 @@
-[ENTITY]
-Vehicle Classification
-[ATTRIBUTES]
-Vehicle Classification Description,
-Vehicle Classification Code,

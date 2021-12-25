@@ -1,6 +1,0 @@
-[ENTITY]
-State Classification
-[ATTRIBUTES]
-State Classification Description,
-State Classification Category,
-State Classification Code,

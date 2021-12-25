@@ -1,7 +1,0 @@
-[ENTITY]
-Claim Expense
-[ATTRIBUTES]
-Expense,
-Claim,
-Expense Date,
-Vendor,

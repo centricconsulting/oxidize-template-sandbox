@@ -1,6 +1,0 @@
-[ENTITY]
-Coverage
-[ATTRIBUTES]
-Coverage Code,
-LOB,
-Coverage Name,

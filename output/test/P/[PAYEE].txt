@@ -1,9 +1,0 @@
-[ENTITY]
-Payee
-[ATTRIBUTES]
-Payee Type,
-Payee Address,
-Payee Mailing Address,
-Payee First Name,
-Payee Full Name,
-Payee Last Name,

@@ -1,5 +1,0 @@
-[ENTITY]
-Limit Type
-[ATTRIBUTES]
-Limit Type Description,
-Limit Type Code,

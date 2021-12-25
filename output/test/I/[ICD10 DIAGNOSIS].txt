@@ -1,5 +1,0 @@
-[ENTITY]
-ICD10 Diagnosis
-[ATTRIBUTES]
-ICD10 Diagnosis Code,
-ICD10 Diagnosis Description,

@@ -1,5 +1,0 @@
-[ENTITY]
-Risk Type
-[ATTRIBUTES]
-Risk Type Code,
-Risk Type Desc,

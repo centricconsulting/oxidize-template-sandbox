@@ -18,7 +18,7 @@ const JavascriptOptions = {
   preserveCaps: true,
   substitutions: [
     {find: /\s+/gim, replace: ''}, // remove all whitespace
-    {find: /([^\W^\S])+/gim, replace: '-'}, // replace non-words with hyphen
+    {find: /\W+/gim, replace: '-'}, // replace non-words with hyphen
   ],
 }
 

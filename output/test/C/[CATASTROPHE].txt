@@ -1,5 +1,0 @@
-[ENTITY]
-Catastrophe
-[ATTRIBUTES]
-Legacy Catastrophe Code,
-Catastrophe Description,

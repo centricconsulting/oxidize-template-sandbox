@@ -1,6 +1,0 @@
-[ENTITY]
-NCCI Classification
-[ATTRIBUTES]
-NCCI Classification Description,
-NCCI Classification Code,
-NCCI Classification Category,

@@ -1,5 +1,0 @@
-[ENTITY]
-Product to LOB Bridge
-[ATTRIBUTES]
-Product,
-LOB,

@@ -1,5 +1,0 @@
-[ENTITY]
-Claim Reserve Type
-[ATTRIBUTES]
-Claim Reserve Description,
-Claim Reserve Code,

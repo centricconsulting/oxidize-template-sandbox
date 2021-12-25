@@ -1,5 +1,0 @@
-[ENTITY]
-Current Transaction
-[ATTRIBUTES]
-Policy Transaction,
-Policy Term,

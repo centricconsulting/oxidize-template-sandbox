@@ -1,6 +1,0 @@
-[ENTITY]
-Jurisdiction
-[ATTRIBUTES]
-Jurisdiction State,
-Jurisdiction Country,
-Regulatory Agency Name,

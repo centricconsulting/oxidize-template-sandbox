@@ -1,5 +1,0 @@
-[ENTITY]
-Quote Channel
-[ATTRIBUTES]
-Quote Channel Desc,
-Quote Channel Code,

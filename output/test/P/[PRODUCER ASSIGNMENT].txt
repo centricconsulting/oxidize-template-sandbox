@@ -1,5 +1,0 @@
-[ENTITY]
-Producer Assignment
-[ATTRIBUTES]
-Producer,
-Agency,

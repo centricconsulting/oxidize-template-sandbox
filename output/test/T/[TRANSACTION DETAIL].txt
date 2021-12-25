@@ -1,9 +1,0 @@
-[ENTITY]
-Transaction Detail
-[ATTRIBUTES]
-Sub Coverage,
-Location,
-Coverage,
-Risk,
-Transaction,
-Transaction Detail Level,

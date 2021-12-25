@@ -1,6 +1,0 @@
-[ENTITY]
-Claim Incident
-[ATTRIBUTES]
-Cause of Loss,
-Claim Incident Status,
-Claim Incident Description,

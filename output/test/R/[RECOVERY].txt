@@ -1,6 +1,0 @@
-[ENTITY]
-Recovery
-[ATTRIBUTES]
-Financial Date,
-Claim Feature,
-Recovery Amount,

@@ -1,8 +1,0 @@
-[ENTITY]
-Risk
-[ATTRIBUTES]
-Location,
-Exposure,
-Exposure Type,
-Driver,
-Risk Type,

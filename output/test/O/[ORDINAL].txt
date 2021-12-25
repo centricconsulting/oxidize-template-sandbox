@@ -1,3 +1,0 @@
-[ENTITY]
-Ordinal
-[ATTRIBUTES]

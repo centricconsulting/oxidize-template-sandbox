@@ -1,5 +1,0 @@
-[ENTITY]
-Deductible Type
-[ATTRIBUTES]
-Deductible Type Code,
-Deductible Type Description,

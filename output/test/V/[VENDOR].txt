@@ -1,6 +1,0 @@
-[ENTITY]
-Vendor
-[ATTRIBUTES]
-Vendor Type,
-Vendor Identifier,
-Vendor Name,
