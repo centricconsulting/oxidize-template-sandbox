@@ -40,13 +40,13 @@ This repository is a sandbox for developing EJS templates that will be used in t
 
 ### **EJS Template**
 
-The EJS template [sample](input/template.ejs) uses template tags to move between Javascript and rendered text. The following code objects are accessible for use by Javascript in the template:
+The EJS template (sample: [`template.js`](input/template.ejs)) uses template tags to move between Javascript and rendered text. The following code objects are accessible for use by Javascript in the template:
 
 - `jsonHelper` Provides JSONPath query functionality. [`json.helper.js`](src/core/json.helper.js)
 - `codifier` Transforms text so that it can be used in code. [`codifier.js`](src/core/codifier.js)
 - `project` Top level of the metadata object. [`metadata.json`](input/metadata.json)
 
-This project will also look for a special file-break tag that will be detected and used to split files. The `<path>` is relative to the specified target directory and may include nested directories.
+This project will also look for a special file-break tag that will be detected and used to split files. The `<path>` is relative to the specified target directory and may include nested directories. The file-break tag must rendered on its own line.
 ```
 @@@FILE:[<path>]@@@
 ```
