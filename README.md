@@ -46,10 +46,12 @@ The EJS template (sample: [`template.js`](input/template.ejs)) uses template tag
 - `codifier` Transforms text so that it can be used in code. [`codifier.js`](src/core/codifier.js)
 - `project` Top level of the metadata object. [`metadata.json`](input/metadata.json)
 
-This project will also look for a special file-break tag that will be detected and used to split files. The `<path>` is relative to the specified target directory and may include nested directories. The file-break tag must rendered on its own line.
+This project will also look for a special **file-break tag** that will be detected and used to split files:
 ```
 @@@FILE:[<path>]@@@
 ```
+The `<path>` is relative to the specified target directory and may include nested directories. The file-break tag must rendered on its own line.  
+  
 Examples:
 ```
 @@@FILE:[test/<%- entity.name.substring(0,1) %>/<%- entity.__code %>.txt]@@@
