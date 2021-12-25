@@ -2,7 +2,7 @@
 
 This repository is a sandbox for developing EJS templates that will be used in the Oxidize application.
 
-# Concepts You Should Master
+# Valuable Concepts to Learn
 
 - Oxidize Metadata Json Structure. [Metadata Documentation](metadata.md)
 - Embedded Javascript Templating. [EJS](https://ejs.co/)
