@@ -1,22 +1,23 @@
 # Oxidize Code Generation
 
-This project is a working example of how we take Oxidize Project metadata and use it to generate code. Oxidize uses EJS (https://ejs.co/) as the template engine.
+This project is a working example of how we take Oxidize Project metadata and use it to generate code. Oxidize uses EJS as the template engine.
 
 # Key Concepts to Master
 
-- JSONPath Query [https://goessner.net/articles/JsonPath/](URL 'Goessner')
-- Regex - [https://regex101.com/](URL 'Regex 101')
+- Embedded Javascript Templating [EJS](https://ejs.co/)
+- JSONPath Query [Goessner](https://goessner.net/articles/JsonPath/) and [JSONPath Plus](https://github.com/s3u/JSONPath)
+- Regex - [Regex 101](https://regex101.com/)
 - Javascript
-  -- Json ("object") and Arrays [https://www.json.org/json-en.html](URL 'json.org')
-  -- Array Functions: map, filter, find, sort, indexOf, concat, etc. [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array](URL 'Mozilla')
-  -- Destructuring [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment](URL 'Mozilla')
+  -- Json ("object") and Arrays [json.org](https://www.json.org/json-en.html)
+  -- Array Functions: map, filter, find, sort, indexOf, concat, etc. [Mozilla - Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+  -- Destructuring [Mozilla - Destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
 
 # Steps to Install
 
 ## Prepare Environment
 
-1. Install Visual Studio Code [https://code.visualstudio.com/download](URL 'VS Code Download')
-2. Install Node [https://nodejs.org/en/download/](URL 'Node Download')
+1. Install Visual Studio Code [VS Code Download](https://code.visualstudio.com/download)
+2. Install Node [Node Download](https://nodejs.org/en/download/)
 3. Open Visual Studio Code
 4. Install Yarn - Open terminal window and type `npm install yarn`
 
@@ -33,5 +34,3 @@ This project is a working example of how we take Oxidize Project metadata and us
 - Use Codifier (included in project)
 
 # Other Links
-
-https://www.npmjs.com/package/jsonpath-plus
