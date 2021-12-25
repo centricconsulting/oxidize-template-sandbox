@@ -1,8 +1,8 @@
-# Oxidize Code Generation
+# Oxidize Template Sandbox
 
 This repository is a sandbox for developing EJS templates that will be used in the Oxidize application.
 
-# Concepts to Master
+# Concepts For You To Master
 
 - Oxidize Metadata Json Structure (see below)
 - Embedded Javascript Templating [EJS](https://ejs.co/)
