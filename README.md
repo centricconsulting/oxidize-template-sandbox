@@ -2,9 +2,9 @@
 
 This repository is a sandbox for developing EJS templates that will be used in the Oxidize application.
 
-# Concepts For You To Master
+# Concepts You Should Master
 
-- Oxidize Metadata Json Structure (see below)
+- Oxidize Metadata Json Structure ([see below](https://github.com/centricconsulting/oxidize-template-sandbox#oxidize-metadata-json-structure))
 - Embedded Javascript Templating [EJS](https://ejs.co/)
 - JSONPath Query [Goessner](https://goessner.net/articles/JsonPath/) and [JSONPath Plus](https://github.com/s3u/JSONPath)
 - Regex - [Regex 101](https://regex101.com/)
@@ -14,7 +14,7 @@ This repository is a sandbox for developing EJS templates that will be used in t
   - Destructuring [Mozilla - Destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
 - console.log [Mozilla - Console](https://developer.mozilla.org/en-US/docs/Web/API/Console/log)
 
-# Steps to Install
+# Installation Steps
 
 ### **Prepare Environment**
 
