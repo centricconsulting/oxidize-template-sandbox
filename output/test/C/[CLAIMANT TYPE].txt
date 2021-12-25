@@ -1,0 +1,5 @@
+[ENTITY]
+Claimant Type
+[ATTRIBUTES]
+Claimant Type Desc,
+Claimant Type Code,

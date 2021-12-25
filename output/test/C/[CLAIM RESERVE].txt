@@ -1,0 +1,8 @@
+[ENTITY]
+Claim Reserve
+[ATTRIBUTES]
+Claim Reserve Type,
+Claim,
+Claim Feature,
+Reserve Date,
+Reserve Amount,

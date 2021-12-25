@@ -1,0 +1,8 @@
+[ENTITY]
+Claim Payment
+[ATTRIBUTES]
+Claim Feature,
+Payment Amount,
+Payee,
+Payment Unique Identifier,
+Payment Type,

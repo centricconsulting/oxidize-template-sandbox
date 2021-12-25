@@ -1,0 +1,11 @@
+[ENTITY]
+Bills Generated
+[ATTRIBUTES]
+Amount Due,
+Bill Description,
+Bill Due Date,
+Bill Generation Date,
+Billing Policy,
+Invoice Line Item,
+Tax Amount,
+Scheduled Invoice Date,

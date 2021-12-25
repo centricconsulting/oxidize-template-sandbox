@@ -1,0 +1,5 @@
+[ENTITY]
+Payee Type
+[ATTRIBUTES]
+Payee Type Code,
+Payee Type Description,

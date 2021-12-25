@@ -1,0 +1,5 @@
+[ENTITY]
+Accounts Payable
+[ATTRIBUTES]
+Paid Amount,
+Invoice,

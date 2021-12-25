@@ -1,0 +1,7 @@
+[ENTITY]
+Commissions Owed
+[ATTRIBUTES]
+Invoice Line Item,
+Commission Plan,
+Billing Policy,
+Commission Amount,

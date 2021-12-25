@@ -1,0 +1,5 @@
+[ENTITY]
+LOB Type
+[ATTRIBUTES]
+LOB Type Name,
+LOB Type Code,

@@ -1,0 +1,8 @@
+[ENTITY]
+Subrogation
+[ATTRIBUTES]
+Subrogated Party Desc,
+Financial Date,
+Award Date,
+Subrogation Amount,
+Claim,

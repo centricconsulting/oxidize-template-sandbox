@@ -1,0 +1,5 @@
+[ENTITY]
+Transaction Status
+[ATTRIBUTES]
+Transaction Status Code,
+Transaction Status Description,

@@ -1,0 +1,10 @@
+[ENTITY]
+Salvage
+[ATTRIBUTES]
+Claim,
+Award Date,
+Salvage Date,
+Salvage Amount,
+Financial Date,
+Vendor,
+Property Description,

@@ -1,0 +1,7 @@
+[ENTITY]
+Company
+[ATTRIBUTES]
+Company Code,
+Legal Entity Name,
+Company Description,
+Company Country,

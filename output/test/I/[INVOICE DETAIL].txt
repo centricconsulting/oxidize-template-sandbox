@@ -1,0 +1,6 @@
+[ENTITY]
+Invoice Detail
+[ATTRIBUTES]
+Line Item Description,
+Line Item Amount,
+ICD10 Diagnosis,

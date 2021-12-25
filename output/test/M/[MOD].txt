@@ -1,0 +1,5 @@
+[ENTITY]
+Mod
+[ATTRIBUTES]
+Mode Code,
+Mode Desc,

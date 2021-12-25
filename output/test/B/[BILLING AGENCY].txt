@@ -1,0 +1,8 @@
+[ENTITY]
+Billing Agency
+[ATTRIBUTES]
+Agency Code,
+Agency Name,
+Billing Account,
+Producer Assignment,
+Mailing Address,

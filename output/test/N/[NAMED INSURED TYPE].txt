@@ -1,0 +1,5 @@
+[ENTITY]
+Named Insured Type
+[ATTRIBUTES]
+Named Insured Code,
+Named Insured Description,

@@ -1,0 +1,5 @@
+[ENTITY]
+Marketing Channel
+[ATTRIBUTES]
+Marketing Channel Code,
+Marketing Channel Desc,

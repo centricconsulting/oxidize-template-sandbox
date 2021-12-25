@@ -1,0 +1,5 @@
+[ENTITY]
+Claim Status
+[ATTRIBUTES]
+Claim Status Code,
+Claim Status Description,

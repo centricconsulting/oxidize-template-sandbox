@@ -1,0 +1,5 @@
+[ENTITY]
+Policy
+[ATTRIBUTES]
+Products,
+Policy Number,

@@ -1,0 +1,5 @@
+[ENTITY]
+Payment Type
+[ATTRIBUTES]
+Payment Type Description,
+Payment Type Code,

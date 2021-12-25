@@ -1,0 +1,24 @@
+<% 
+const codifyOptions = codifier.DatabaseOptions('upper')  
+const codedProject = codifier.codifyJson(metadata, codifyOptions, "name", "__code")
+const entities = jsonHelper.getObjectsByFilter(codedProject, {type: "entity"})
+
+metadata.project.entities.forEach(entity => {
+
+
+
+%>
+@@@FILE:[test/<%- entity.name.substring(0,1) %>/<%- entity.__code %>.txt]@@@
+[ENTITY]
+<%- entity.name %>
+
+[ATTRIBUTES]
+<%
+
+  entity.attributes.forEach(attribute => {
+%><%- attribute.name %>,
+<%
+
+  })
+});
+%>

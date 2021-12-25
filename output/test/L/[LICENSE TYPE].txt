@@ -1,0 +1,5 @@
+[ENTITY]
+License Type
+[ATTRIBUTES]
+License Type Code,
+License Type Description,

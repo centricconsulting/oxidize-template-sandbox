@@ -1,0 +1,6 @@
+[ENTITY]
+Location
+[ATTRIBUTES]
+Location Address,
+Location Identifier,
+Policy Transaction,

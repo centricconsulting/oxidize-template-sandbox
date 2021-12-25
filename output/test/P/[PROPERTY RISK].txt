@@ -1,0 +1,12 @@
+[ENTITY]
+Property Risk
+[ATTRIBUTES]
+Risk,
+Construction Type,
+Roof Type,
+Building Identifier,
+Replacement Cost,
+Square Footage,
+Number of Stories,
+Actual Value,
+Year of Construction,

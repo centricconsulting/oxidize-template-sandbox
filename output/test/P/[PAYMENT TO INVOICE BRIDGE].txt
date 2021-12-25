@@ -1,0 +1,5 @@
+[ENTITY]
+Payment to Invoice Bridge
+[ATTRIBUTES]
+Invoice,
+Claim Payment,

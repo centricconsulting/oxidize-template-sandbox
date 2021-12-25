@@ -1,0 +1,5 @@
+[ENTITY]
+Transaction Type
+[ATTRIBUTES]
+Transaction Type Code,
+Transaction Type Desc,

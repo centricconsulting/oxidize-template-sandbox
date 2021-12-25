@@ -1,0 +1,6 @@
+[ENTITY]
+State
+[ATTRIBUTES]
+State Description,
+State Code,
+NCCI State Code,

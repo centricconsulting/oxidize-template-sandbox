@@ -1,0 +1,7 @@
+[ENTITY]
+Claim Feature Status History
+[ATTRIBUTES]
+Claim Feature Status,
+Status Date,
+Claim Feature,
+Adjuster,

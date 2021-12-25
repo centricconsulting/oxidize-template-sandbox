@@ -1,0 +1,5 @@
+[ENTITY]
+Commission Type
+[ATTRIBUTES]
+Commission Type Description,
+Commission Type Code,

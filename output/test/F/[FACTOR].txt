@@ -1,0 +1,6 @@
+[ENTITY]
+Factor
+[ATTRIBUTES]
+Factor Code,
+Factor Desc,
+Mod,

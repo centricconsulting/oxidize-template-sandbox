@@ -1,0 +1,7 @@
+[ENTITY]
+Claims Payments
+[ATTRIBUTES]
+Claim Amount,
+Claim Number,
+Claimant,
+Invoice Line Item,

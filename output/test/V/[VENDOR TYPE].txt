@@ -1,0 +1,5 @@
+[ENTITY]
+Vendor Type
+[ATTRIBUTES]
+Vendor Type Description,
+Vendor Type Code,

@@ -1,0 +1,7 @@
+[ENTITY]
+Marketing Campaign
+[ATTRIBUTES]
+End Campaign Date,
+Marketing Campaign Desc,
+Begin Campaign Date,
+Market Desc,

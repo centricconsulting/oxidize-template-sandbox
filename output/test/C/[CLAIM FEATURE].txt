@@ -1,0 +1,9 @@
+[ENTITY]
+Claim Feature
+[ATTRIBUTES]
+Claim Feature Description,
+Claim Incident,
+Coverage,
+Deductible Amount,
+Limit Amount,
+Sub Coverage,

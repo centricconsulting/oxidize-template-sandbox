@@ -1,0 +1,6 @@
+[ENTITY]
+Invoices
+[ATTRIBUTES]
+Provider Account Number,
+Payee,
+Invoice Number,

@@ -1,0 +1,6 @@
+[ENTITY]
+Applied  Type
+[ATTRIBUTES]
+Applied Type Code,
+Applied Category,
+Applied Type Description,

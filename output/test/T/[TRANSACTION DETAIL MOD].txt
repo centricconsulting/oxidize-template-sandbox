@@ -1,0 +1,7 @@
+[ENTITY]
+Transaction Detail Mod
+[ATTRIBUTES]
+Transaction Detail Premium,
+Mod,
+Mod Value,
+Premium,

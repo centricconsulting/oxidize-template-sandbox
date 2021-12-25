@@ -1,0 +1,7 @@
+[ENTITY]
+Producer
+[ATTRIBUTES]
+Producer Last Name,
+Producer Description,
+Producer Code,
+Producer First Name,

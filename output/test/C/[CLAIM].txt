@@ -1,0 +1,14 @@
+[ENTITY]
+Claim
+[ATTRIBUTES]
+Claim Number,
+Catastrophe,
+Jurisdiction,
+Claim Status,
+Loss Desc,
+Policy Deductible Amount,
+Policy Limit Amount,
+Loss Date,
+Policy Number,
+Policy Term,
+Report Date,

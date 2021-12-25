@@ -1,0 +1,5 @@
+[ENTITY]
+Claim Summary
+[ATTRIBUTES]
+Claim Summary Date,
+Claim,

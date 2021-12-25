@@ -1,0 +1,12 @@
+[ENTITY]
+Quote
+[ATTRIBUTES]
+Quote Date,
+Submission,
+Promotion,
+Quote Premium,
+Marketing Channel,
+Quote Status,
+Quote Channel,
+Marketing Campaign,
+Policy Transaction,

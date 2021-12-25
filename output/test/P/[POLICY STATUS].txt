@@ -1,0 +1,7 @@
+[ENTITY]
+Policy Status
+[ATTRIBUTES]
+Begin In Force Flag,
+End In Force Flag,
+Policy Status Desc,
+Policy Status Code,

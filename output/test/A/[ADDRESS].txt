@@ -1,0 +1,9 @@
+[ENTITY]
+Address
+[ATTRIBUTES]
+Address Line 1,
+Postal Code,
+Address Line 3,
+City,
+Address Line 2,
+State,

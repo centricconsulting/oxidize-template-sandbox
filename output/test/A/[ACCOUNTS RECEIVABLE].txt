@@ -1,0 +1,6 @@
+[ENTITY]
+Accounts Receivable
+[ATTRIBUTES]
+Applied Amount,
+Applied Type,
+Invoice,

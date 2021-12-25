@@ -1,0 +1,5 @@
+[ENTITY]
+Invoice
+[ATTRIBUTES]
+Invoice Due Date,
+Billing Account,

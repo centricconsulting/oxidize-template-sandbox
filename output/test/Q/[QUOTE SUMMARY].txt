@@ -1,0 +1,5 @@
+[ENTITY]
+Quote Summary
+[ATTRIBUTES]
+Quote Summary Date,
+Policy Transaction,

@@ -1,0 +1,5 @@
+[ENTITY]
+Cause of Loss
+[ATTRIBUTES]
+Cause of Loss Code,
+Cause of Loss Description,

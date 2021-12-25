@@ -1,0 +1,13 @@
+[ENTITY]
+Transaction Coverage
+[ATTRIBUTES]
+End Exposure Date,
+Exposure,
+In Force Flag,
+Begin Exposure Date,
+Policy,
+Premium,
+Coverage,
+Coverage Limit,
+Product,
+Coverage Deductible,

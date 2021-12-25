@@ -1,0 +1,12 @@
+[ENTITY]
+Billing Policy
+[ATTRIBUTES]
+Billing Account,
+Billing Address,
+Full Name,
+Policy Effective Date,
+Policy Expiration Date,
+Policy Number,
+Policy Term Number,
+Producer Assignment,
+Term Premium,

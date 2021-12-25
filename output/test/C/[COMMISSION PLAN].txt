@@ -1,0 +1,7 @@
+[ENTITY]
+Commission Plan
+[ATTRIBUTES]
+Commission Type,
+Commission Plan Description,
+New Business Flag,
+Commission Plan Code,

@@ -1,0 +1,10 @@
+[ENTITY]
+Billing Account
+[ATTRIBUTES]
+Account Mailing Address,
+Account Billing Address,
+Billing Account Number,
+Billing Agency,
+Billing Account Description,
+Billing Account Type,
+Billing Policy,

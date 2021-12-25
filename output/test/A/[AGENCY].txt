@@ -1,0 +1,11 @@
+[ENTITY]
+Agency
+[ATTRIBUTES]
+Agency Address,
+Agency DBA Name,
+Agency Code,
+Agency Name,
+Mailing Address,
+Agency Group Name,
+MGA Flag,
+Parent Agency,
