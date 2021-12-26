@@ -5,8 +5,8 @@ Metadata is presented as a Json document.  At the top-level of metadata document
 
 ```javascript
 {
-  project: {...}
-  sources: [...]
+  project: {...},
+  sources: [...],
 }
 ```
 
@@ -19,21 +19,21 @@ All documents share a common set of properties, regardless of document type.
 
 ```javascript
 {
-  id: ...
+  id: ...,
   type: ...,
   name: ...,
   definition: ...,
-  projectId: ...
-  entityId: ...
+  projectId: ...,
+  entityId: ...,
   tags: [...],
-  config: { ... }
+  config: { ... },
   createTimestamp: ...,
   modify: {
     userId: ...,
     userName: ...,
-    timestamp: ...
+    timestamp: ...,
   },
-  active: ...
+  active: ...,
 
 }
 ```
@@ -104,15 +104,15 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 
 ```javascript
 {
-  type: "attribute"
+  type: "attribute",
   grain: ...,
   qualityRule: ...,
   multiplicityId: ...,
   derivation: ...,
   attributeClass: {
     id: ...,
-    entityId: ...
-    context: ...
+    entityId: ...,
+    context: ...,
   },
   entityId: ...,
   ...
@@ -134,11 +134,11 @@ Instantiation of an entity, providing a value for each scalar `Attribute` of the
 
 ```javascript
 {
-  type: "instance"
+  type: "instance",
   values: [
     {attributeId: ..., value: ...},
     {attributeId: ..., value: ...},
-    {attributeId: ..., value: ...}
+    {attributeId: ..., value: ...},
     ...
     entityId: ...,
   ],
@@ -164,11 +164,12 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
   methodology: ...,
   inputs: {
     metric: [...],
-    attribute: [...]
+    attribute: [...],
   },
   attributeClass: {
     id: ...,
-    entityId: ...
+    entityId: ...,
+    context: ...,
   },
   ...
 }
@@ -184,6 +185,7 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 - `attributeClass` **{JSON}** Container for `Attribute Class` information assigned to the `Metric`.
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Metric`.
 - `attributeClass.entityId` **{String}** *Only valid for `Attribute Class`es with scalar type of `Entity`.* Identifier of the `Entity` document referenced in the `Attribute Class`.
+- `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Attribute`.
 
 ----
 **`Terminology`:**  
@@ -251,7 +253,7 @@ Packaging of objects for deployment.
     entity: [...],
     attribute: [...],
     module: [...],
-  }
+  },
   projectId: ...,
   ...
 }
