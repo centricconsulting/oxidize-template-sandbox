@@ -3,7 +3,7 @@
 ## **Metadata Top-Level Structure**  
 Metadata is presented as a Json document.  At the top-level of metadata document are the following objects:
 
-```
+```javascript
 {
   project: {...}
   sources: [...]
@@ -17,7 +17,7 @@ Metadata is presented as a Json document.  At the top-level of metadata document
 ## **Common Document Properties**  
 All documents share a common set of properties, regardless of document type.
 
-```
+```javascript
 {
   id: ...
   type: ...,
@@ -60,7 +60,7 @@ Individual documents properties are specified below. The `type` common propertie
 **`Project`:**  
 Repesents a collection of documents describing an information space.
 
-```
+```javascript
 {
   type: "project",
   entities: [...],
@@ -84,7 +84,7 @@ Repesents a collection of documents describing an information space.
 **`Entity`:**  
 Business concept, document, transaction or other definable object.
 
-```
+```javascript
 {
   type: "entity",
   attributes: [...],
@@ -102,7 +102,7 @@ Business concept, document, transaction or other definable object.
 **`Attribute`** (child of Entity):  
 A value that describes the current state of an Entity. Through `Multiplicity` an `Attribute` may represent one-to-many scalar values or references to other `Entity` documents.
 
-```
+```javascript
 {
   type: "attribute"
   grain: ...,
@@ -132,7 +132,7 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 **`Instance`** (child of Entity):  
 Instantiation of an entity, providing a value for each scalar `Attribute` of the entity.
 
-```
+```javascript
 {
   type: "instance"
   values: [
@@ -155,7 +155,7 @@ Instantiation of an entity, providing a value for each scalar `Attribute` of the
 **`Metric`:**  
 Derivation that takes one-or-more inputs and produces a result or collection of results.
 
-```
+```javascript
 {
   type: "metric",
   qualityRule: ...,
@@ -189,7 +189,7 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 **`Terminology`:**  
 Terminology or vernacular used in the business, but not applicable as an `Entity`, `Metric` or `Attribute`.
 
-```
+```javascript
 {
   type: "terminology",
   ...
@@ -200,7 +200,7 @@ Terminology or vernacular used in the business, but not applicable as an `Entity
 **`Source`:**  
 Source sytem defined for an implementation.
 
-```
+```javascript
 {
   type: "source",
   platform: ...,
@@ -222,7 +222,7 @@ Source sytem defined for an implementation.
 **`Atrribute Class`:**  
 Semantic type that describes the function of an `Attribute` or `Metric`.
 
-```
+```javascript
 {
   type: "attributeClass",
   descriptor: ...,
@@ -243,7 +243,7 @@ Semantic type that describes the function of an `Attribute` or `Metric`.
 **`Module`:**  
 Packaging of objects for deployment.
 
-```
+```javascript
 {
   type: "module",
   includes: {

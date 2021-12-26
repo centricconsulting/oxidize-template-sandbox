@@ -47,13 +47,13 @@ The EJS template (sample: [`template.js`](input/template.ejs)) uses template tag
 - `project` Top level of the metadata object. [`metadata.json`](input/metadata.json)
 
 This project will also look for a special **file-break tag** that will be detected and used to split files:
-```
+```javascript
 @@@FILE:[<path>]@@@
 ```
 The `<path>` is relative to the specified target directory and may include nested directories. The file-break tag must rendered on its own line.  
   
 Examples:
-```
+```javascript
 @@@FILE:[test/<%- entity.name.substring(0,1) %>/<%- entity.__code %>.txt]@@@
 ```
 
