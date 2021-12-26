@@ -155,8 +155,8 @@ Instantiation of an `Entity`, providing a value for each scalar `Attribute` of t
 ```
 
 - `values` **{Array\<JSON\>}** List of `Attribute`s and corresponding values.
-- `values[].attributeId` **{String}** Identifier of the `Attribute` document for which a value is provided. This will be a scalar `Attribute` in the same `Entity` as the `Instance`.
-- `values[].value` **{String}** Value for the specified `Attribute`.
+- `values[x].attributeId` **{String}** Identifier of the `Attribute` document for which a value is provided. This will be a scalar `Attribute` in the same `Entity` as the `Instance`.
+- `values[x].value` **{String}** Value for the specified `Attribute`.
 - `entityId` **{String}** Identifier of the `Entity` document in which the `Instance` is contained.
 
 ----
@@ -172,9 +172,9 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
   multiplicityId: ...,
   formula: ...,
   methodology: ...,
-  inputs: {
-    metric: [...],
-    attribute: [...],
+  input: {
+    metrics: [...],
+    attributes: [...],
   },
   attributeClass: {
     id: ...,
@@ -188,9 +188,9 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 - `multiplicityId` **{String}** Identifier of the `Multiplicity`, specifying the number of values that may result from a `Metric` `formula` calculation.
 - `formula` **{String}** Specifies the mathematical derivation or shorthand for calculating the `Metric` result.
 - `methodology` **{String}** Describes the approach for calculation the `Metric` result under different scenarios, e.g., time range, special conditions.
-- `inputs` **{JSON}** Container for inputs to the calculation of the `Metric` `formula`.
-- `inputs.metric` **{Array\<String\>}** List of identifiers for `Metric` documents that are inputs to the `Metric` `formula`.
-- `inputs.attribute` **{Array\<String\>}** List of identifiers for `Attribute` documents that are inputs to the `Metric` `formula`.
+- `input` **{JSON}** Container for inputs to the calculation of the `Metric` `formula`.
+- `input.metrics` **{Array\<String\>}** List of identifiers for `Metric` documents that are inputs to the `Metric` `formula`.
+- `input.attributes` **{Array\<String\>}** List of identifiers for `Attribute` documents that are inputs to the `Metric` `formula`.
 - `attributeClass` **{JSON}** Container for `Attribute Class` information assigned to the `Metric`.
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Metric`.
 - `attributeClass.entityId` **{String}** *Only valid for `Attribute Class` references with scalar type of `Entity`.* Identifier of the `Entity` document referenced in the `Attribute Class`.
@@ -261,27 +261,27 @@ Packaging of objects for deployment.
 ```javascript
 {
   type: "module",
-  includes: {
-    metric: [...],
-    entity: [...],
-    attribute: [...],
-    module: [...],
+  include: {
+    metrics: [...],
+    entities: [...],
+    attributes: [...],
+    modules: [...],
   },
   projectId: ...,
 }
 ```
 
-- `includes` **{JSON}** Container for document specification for the `Module`.
-- `includes.metric` **{Array\<String\>}** List of identifiers for `Metric` documents that are included in the `Module`.
-- `includes.entity` **{Array\<String\>}** List of identifiers for `Entity` documents that are included in the `Module`.
-- `includes.attribute` **{Array\<String\>}** List of identifiers for `Attribute` documents that are included in the `Module`.
-- `includes.module` **{Array\<String\>}** List of identifiers for `Module` documents that are included in the `Module`.
+- `include` **{JSON}** Container for document specification for the `Module`.
+- `include.metrics` **{Array\<String\>}** List of identifiers for `Metric` documents that are included in the `Module`.
+- `include.entities` **{Array\<String\>}** List of identifiers for `Entity` documents that are included in the `Module`.
+- `include.attributes` **{Array\<String\>}** List of identifiers for `Attribute` documents that are included in the `Module`.
+- `include.modules` **{Array\<String\>}** List of identifiers for `Module` documents that are included in the `Module`.
 
 ### **Steps to Resolving `Module`-Included Documents**
 
-1. Accrue all documents directly or recursively referenced through `includes.module`.
-2. Accrue all `Metric` documents  directly or recursively referenced through `includes.metric`.
+1. Accrue all documents directly or recursively referenced through `include.modules`.
+2. Accrue all `Metric` documents  directly or recursively referenced through `includes.metrics`.
 3. Accrue all `Attribute` documents directly referenced in accrued `Metrics`.
-4. Accrue all `Attribute` documents directly referenced in `includes.attributes`.
+4. Accrue all `Attribute` documents directly referenced in `include.attributes`.
 5. Accrue all `Entity` documents directly referenced in accrued `Attributes`.
-6. Accrue all `Entity` documents directly referenced in `includes.entity`.
+6. Accrue all `Entity` documents directly referenced in `include.entities`.
