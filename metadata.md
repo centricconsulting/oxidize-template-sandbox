@@ -17,7 +17,7 @@ Metadata is presented as a Json document.  At the top-level of metadata document
 ## **Common Document Properties**  
 All documents share a common set of properties, regardless of document type.
 
-```json
+```javascript
 {
   id: ...
   type: ...,
