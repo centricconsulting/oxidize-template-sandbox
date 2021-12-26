@@ -56,7 +56,7 @@ All documents share a common set of properties, regardless of document type.
 ## **Document Specifications**
 Individual documents properties are specified below. The `type` common property is defined as a distinct **{String}** literal for each type of document. Other common properties (listed above) are not shown in the following specifications.
 
-**`Project`** Document  
+**`Project` Document**  
 Repesents a collection of documents describing an information space.
 
 ```javascript
@@ -79,7 +79,7 @@ Repesents a collection of documents describing an information space.
 - `projectId` **{String}** *`id` and `projectId` will be identical for `Project` documents .*
 
 ----
-**`Entity`** Document  
+**`Entity` Document**  
 Business document, transaction or other definable concept.
 
 ```javascript
@@ -96,7 +96,7 @@ Business document, transaction or other definable concept.
 - `entityId` **{String}** *`id` and `entityId` will be identical for `Entity` documents .* Identifier of the `Entity` document.
 
 ----
-**`Attribute`** Document (child of Entity):  
+**`Attribute` Document** (child of Entity):  
 A value that describes the current state of an Entity. Through `Multiplicity` an `Attribute` may represent one-to-many scalar values or references to other `Entity` documents.
 
 ```javascript
@@ -126,7 +126,7 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 - `entityId` **{String}** Identifier of the `Entity` document in which the `Attribute` is contained.
 
 ----
-**`Instance`** Document (child of Entity):  
+**`Instance` Document** (child of Entity):  
 Instantiation of an entity, providing a value for each scalar `Attribute` of the entity.
 
 ```javascript
@@ -147,7 +147,7 @@ Instantiation of an entity, providing a value for each scalar `Attribute` of the
 - `entityId` **{String}** Identifier of the `Entity` document in which the `Instance` is contained.
 
 ----
-**`Metric`** Document  
+**`Metric` Document**  
 Derivation that takes one-or-more inputs and produces a result or collection of results.
 
 ```javascript
@@ -182,7 +182,7 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 - `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Metric` result.
 
 ----
-**`Terminology`** Document  
+**`Terminology` Document**  
 Terminology or vernacular used in the business, but not applicable as an `Entity`, `Metric` or `Attribute`.
 
 ```javascript
@@ -192,7 +192,7 @@ Terminology or vernacular used in the business, but not applicable as an `Entity
 ```
 
 ----
-**`Source`** Document  
+**`Source` Document**  
 Source sytem defined for an implementation.
 
 ```javascript
@@ -213,7 +213,7 @@ Source sytem defined for an implementation.
 - `scope` **{String}** Describes the segmentations of data contained within the `Source`, e.g., years of history, subsets of business operations.
 
 ----
-**`Atrribute Class`** Document  
+**`Atrribute Class` Document**  
 Semantic type that describes the function of an `Attribute` or `Metric`.
 
 ```javascript
@@ -232,7 +232,7 @@ Semantic type that describes the function of an `Attribute` or `Metric`.
 - `reference` **{Boolean}** Indicates of the `Attribute Class` requires a reference to an `Entity`.
 
 ----
-**`Module`** Document  
+**`Module` Document**  
 Packaging of objects for deployment.
 
 ```javascript
