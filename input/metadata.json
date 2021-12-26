@@ -15946,7 +15946,6 @@
           "userName": "Bill Decker",
           "timestamp": "2020-03-15T17:25:48.312Z"
         },
-        "sources": ["7a4ff8db-924c-41e3-94b3-2ef9682b5018"],
         "includes": {
           "all": false,
           "metrics": [],
@@ -15980,7 +15979,6 @@
           "userName": "Rahul Bansal",
           "timestamp": "2021-07-09T23:10:09.301Z"
         },
-        "sources": ["208138d8-d1c2-419c-90ed-c690b99d5059"],
         "includes": {
           "all": false,
           "metrics": [],
@@ -16014,7 +16012,6 @@
           "userName": "Chris Levine",
           "timestamp": "2020-12-21T16:35:52.824Z"
         },
-        "sources": ["2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e"],
         "includes": {
           "all": false,
           "metrics": [],
@@ -16048,7 +16045,6 @@
           "userName": "Pranay Shyam",
           "timestamp": "2020-07-06T12:13:23.047Z"
         },
-        "sources": ["7a4ff8db-924c-41e3-94b3-2ef9682b5018"],
         "includes": {
           "all": false,
           "metrics": [],
@@ -16082,7 +16078,6 @@
           "userName": "Kris Moniz",
           "timestamp": "2021-09-13T17:58:51.554Z"
         },
-        "sources": ["93b82d1c-5294-4dff-8b57-c1d15363a410"],
         "includes": {
           "all": false,
           "metrics": [],
@@ -16116,7 +16111,6 @@
           "userName": "Colin McGee",
           "timestamp": "2020-07-26T00:37:31.926Z"
         },
-        "sources": ["2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e"],
         "includes": {
           "all": false,
           "metrics": [],
@@ -16132,137 +16126,15 @@
         }
       }
     ],
-    "sources": [
-      {
-        "id": "93b82d1c-5294-4dff-8b57-c1d15363a410",
-        "type": "source",
-        "name": "Dynamics CRM",
-        "definition": "Microsoft Dynamics CRM",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Customer Service",
-        "tranche": "Contains data since 2007 related to the financial services products.",
-        "platform": "Dynamics 365",
-        "vendor": "Microsoft",
-        "createTimestamp": "2020-09-29T23:42:31.132Z",
-        "modify": {
-          "userId": "rahul.bansal@centricconsulting.com",
-          "userName": "Rahul Bansal",
-          "timestamp": "2020-10-27T05:07:37.736Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
-        "config": {
-          "CONFIG_1": "value_1",
-          "CONFIG_2": "value_2"
-        }
-      },
-      {
-        "id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018",
-        "type": "source",
-        "name": "Data Warehouse",
-        "definition": "Data Warehouse",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Analytics",
-        "platform": "Azure",
-        "vendor": "Microsoft",
-        "createTimestamp": "2020-03-29T06:36:03.443Z",
-        "modify": {
-          "userId": "chris.levine@centricconsulting.com",
-          "userName": "Chris Levine",
-          "timestamp": "2020-04-12T00:48:43.056Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
-        "config": {
-          "CONFIG_1": "value_1",
-          "CONFIG_2": "value_2"
-        }
-      },
-      {
-        "id": "2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e",
-        "type": "source",
-        "name": "Oracle Finance",
-        "definition": "Oracle e-Business Suite for Finance",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Finance",
-        "platform": "Oracle EBS 12.1",
-        "vendor": "Oracle",
-        "createTimestamp": "2020-11-07T14:02:04.090Z",
-        "modify": {
-          "userId": "chris.levine@centricconsulting.com",
-          "userName": "Chris Levine",
-          "timestamp": "2020-11-20T22:08:57.591Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
-        "config": {
-          "CONFIG_1": "value_1",
-          "CONFIG_2": "value_2"
-        }
-      },
-      {
-        "id": "572d1227-560e-475c-97dc-83b116155bbb",
-        "type": "source",
-        "name": "Marketing CRM",
-        "definition": "Definition of Marketing CRM.",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Customer Service",
-        "platform": "Salesforce CRM",
-        "vendor": "Salesforce",
-        "createTimestamp": "2020-09-12T05:02:22.708Z",
-        "modify": {
-          "userId": "pranay.shyam@centricconsulting.com",
-          "userName": "Pranay Shyam",
-          "timestamp": "2020-10-11T21:46:06.320Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
-        "config": {
-          "CONFIG_1": "value_1",
-          "CONFIG_2": "value_2"
-        }
-      },
-      {
-        "id": "208138d8-d1c2-419c-90ed-c690b99d5059",
-        "type": "source",
-        "name": "Google Analytics",
-        "definition": "Marketing analytics platform.",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Marketing",
-        "platform": "Google Analytics",
-        "vendor": "Google",
-        "createTimestamp": "2020-10-03T18:31:15.017Z",
-        "modify": {
-          "userId": "monica.lopez@centricconsulting.com",
-          "userName": "Monica Lopez",
-          "timestamp": "2020-10-06T14:37:52.361Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
-        "config": {
-          "CONFIG_1": "value_1",
-          "CONFIG_2": "value_2"
-        }
-      }
-    ],
-    "attributeClasses": [
+      "attributeClasses": [
       {
         "id": "eef7a104-0fa9-4acc-ac49-44cdafeef676",
         "type": "attributeClass",
         "name": "Amount",
         "definition": "Definition of Amount",
-        "suffix": "Amount",
-        "literalType": "decimal",
+        "descriptor": "Amount",
+        "variations": ["Amt", "Num"],
+        "scalarType": "decimal",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-08-22T20:25:01.244Z",
@@ -16283,8 +16155,9 @@
         "type": "attributeClass",
         "name": "Code",
         "definition": "Definition of Code",
-        "suffix": "Code",
-        "literalType": "string",
+        "descriptor": "Code",
+        "variations": ["Cd"],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-07-08T11:14:22.287Z",
@@ -16305,8 +16178,9 @@
         "type": "attributeClass",
         "name": "Classification",
         "definition": "Definition of Classification",
-        "suffix": "Classification",
-        "literalType": "string",
+        "descriptor": "Class",
+        "variations": ["Cls", "Classification"],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-09-14T14:31:09.368Z",
@@ -16327,8 +16201,9 @@
         "type": "attributeClass",
         "name": "Date",
         "definition": "Definition of Date",
-        "suffix": "Date",
-        "literalType": "date",
+        "descriptor": "Date",
+        "variations": ["Dt"],
+        "scalarType": "date",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-08-26T22:35:10.483Z",
@@ -16349,8 +16224,9 @@
         "type": "attributeClass",
         "name": "Description",
         "definition": "Definition of Description",
-        "suffix": "Description",
-        "literalType": "string",
+        "descriptor": "Desc",
+        "variations": ["Description", "Dscr"],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-12-18T07:07:56.582Z",
@@ -16371,8 +16247,9 @@
         "type": "attributeClass",
         "name": "Currency",
         "definition": "Definition of Currency",
-        "suffix": "Currency",
-        "literalType": "decimal",
+        "descriptor": "Currency",
+        "variations": ["Curr", "Dollars", "Amount", "Amt"],
+        "scalarType": "decimal",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-02-28T04:47:51.006Z",
@@ -16393,8 +16270,9 @@
         "type": "attributeClass",
         "name": "Flag",
         "definition": "Definition of Flag",
-        "suffix": "Flag",
-        "literalType": "string",
+        "descriptor": "Flag",
+        "variations": [],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-08-08T16:35:53.070Z",
@@ -16415,8 +16293,9 @@
         "type": "attributeClass",
         "name": "Count",
         "definition": "Definition of Count",
-        "suffix": "Count",
-        "literalType": "integer",
+        "descriptor": "Count",
+        "variations": ["Ct"],
+        "scalarType": "integer",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-08-21T17:23:33.107Z",
@@ -16436,9 +16315,11 @@
         "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
         "type": "attributeClass",
         "name": "Entity",
-        "definition": "Definition of Entity",
-        "suffix": "Entity",
-        "literalType": "",
+        "definition": "Entity Reference",
+        "descriptor": null,
+        "variations": null,
+        "reference": true,
+        "scalarType": null,
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-02-22T13:30:29.874Z",
@@ -16459,8 +16340,9 @@
         "type": "attributeClass",
         "name": "Location",
         "definition": "Definition of Location",
-        "suffix": "Location",
-        "literalType": "array",
+        "descriptor": "Location",
+        "variations": [],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-09-14T08:54:21.719Z",
@@ -16481,8 +16363,9 @@
         "type": "attributeClass",
         "name": "Identifier",
         "definition": "Definition of Identifier",
-        "suffix": "Identifier",
-        "literalType": "string",
+        "descriptor": "Identifier",
+        "variations": ["Id", "Guid"],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-09-07T04:25:51.332Z",
@@ -16503,8 +16386,9 @@
         "type": "attributeClass",
         "name": "Postal Code",
         "definition": "Definition of Postal Code",
-        "suffix": "Postal Code",
-        "literalType": "string",
+        "descriptor": "Postal Code",
+        "variations": ["Zip", "Zip Code"],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-09-01T03:42:31.873Z",
@@ -16525,8 +16409,9 @@
         "type": "attributeClass",
         "name": "Rate",
         "definition": "Definition of Rate",
-        "suffix": "Rate",
-        "literalType": "decimal",
+        "descriptor": "Rate",
+        "variations": ["Percent", "Ratio"],
+        "scalarType": "decimal",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-01-12T12:47:39.170Z",
@@ -16547,8 +16432,9 @@
         "type": "attributeClass",
         "name": "Quantity",
         "definition": "Definition of Quantity",
-        "suffix": "Quantity",
-        "literalType": "decimal",
+        "descriptor": "Quantity",
+        "variations": ["Qty", "Num"],
+        "scalarType": "decimal",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-07-04T01:57:46.384Z",
@@ -16569,8 +16455,9 @@
         "type": "attributeClass",
         "name": "Name",
         "definition": "Definition of Name",
-        "suffix": "Name",
-        "literalType": "string",
+        "descriptor": "Name",
+        "variations": ["Nm", "Label"],
+        "scalarType": "string",
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-03-31T20:25:46.071Z",
@@ -16627,5 +16514,129 @@
         ]
       }
     ]
-  }
+  },
+  "sources": [
+    {
+      "id": "93b82d1c-5294-4dff-8b57-c1d15363a410",
+      "type": "source",
+      "name": "Dynamics CRM",
+      "definition": "Microsoft Dynamics CRM",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Customer Service",
+      "scope": "Contains data since 2007 related to the financial services products.",
+      "platform": "Dynamics 365",
+      "vendor": "Microsoft",
+      "createTimestamp": "2020-09-29T23:42:31.132Z",
+      "modify": {
+        "userId": "rahul.bansal@centricconsulting.com",
+        "userName": "Rahul Bansal",
+        "timestamp": "2020-10-27T05:07:37.736Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
+      "config": {
+        "CONFIG_1": "value_1",
+        "CONFIG_2": "value_2"
+      }
+    },
+    {
+      "id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018",
+      "type": "source",
+      "name": "Data Warehouse",
+      "definition": "Data Warehouse",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Analytics",
+      "platform": "Azure",
+      "vendor": "Microsoft",
+      "createTimestamp": "2020-03-29T06:36:03.443Z",
+      "modify": {
+        "userId": "chris.levine@centricconsulting.com",
+        "userName": "Chris Levine",
+        "timestamp": "2020-04-12T00:48:43.056Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
+      "config": {
+        "CONFIG_1": "value_1",
+        "CONFIG_2": "value_2"
+      }
+    },
+    {
+      "id": "2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e",
+      "type": "source",
+      "name": "Oracle Finance",
+      "definition": "Oracle e-Business Suite for Finance",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Finance",
+      "platform": "Oracle EBS 12.1",
+      "vendor": "Oracle",
+      "createTimestamp": "2020-11-07T14:02:04.090Z",
+      "modify": {
+        "userId": "chris.levine@centricconsulting.com",
+        "userName": "Chris Levine",
+        "timestamp": "2020-11-20T22:08:57.591Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
+      "config": {
+        "CONFIG_1": "value_1",
+        "CONFIG_2": "value_2"
+      }
+    },
+    {
+      "id": "572d1227-560e-475c-97dc-83b116155bbb",
+      "type": "source",
+      "name": "Marketing CRM",
+      "definition": "Definition of Marketing CRM.",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Customer Service",
+      "platform": "Salesforce CRM",
+      "vendor": "Salesforce",
+      "createTimestamp": "2020-09-12T05:02:22.708Z",
+      "modify": {
+        "userId": "pranay.shyam@centricconsulting.com",
+        "userName": "Pranay Shyam",
+        "timestamp": "2020-10-11T21:46:06.320Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
+      "config": {
+        "CONFIG_1": "value_1",
+        "CONFIG_2": "value_2"
+      }
+    },
+    {
+      "id": "208138d8-d1c2-419c-90ed-c690b99d5059",
+      "type": "source",
+      "name": "Google Analytics",
+      "definition": "Marketing analytics platform.",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Marketing",
+      "platform": "Google Analytics",
+      "vendor": "Google",
+      "createTimestamp": "2020-10-03T18:31:15.017Z",
+      "modify": {
+        "userId": "monica.lopez@centricconsulting.com",
+        "userName": "Monica Lopez",
+        "timestamp": "2020-10-06T14:37:52.361Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": ["tag1:value1", "tag2:value2", "tag3", "tag4:[Some Value 4]"],
+      "config": {
+        "CONFIG_1": "value_1",
+        "CONFIG_2": "value_2"
+      }
+    }
+  ]
+
 }
