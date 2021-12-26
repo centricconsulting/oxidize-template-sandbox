@@ -247,9 +247,9 @@ Semantic type that describes the function of an `Attribute` or `Metric`.
 }
 ```
 
-- `descriptor` **{String}** Text that indicates the `Attribute Class` in the `name` property of an `Attribute` or Metric.
+- `descriptor` **{String}** Text that indicates the `Attribute Class` in the `name` property of an `Attribute` or `Metric`.
 - `variations` **{String}** List of text values that may be deemed equiavalent to the `descriptor` property.
-- `scalarType` **{String}** Simple data type inferred by the `Attribute Class`.  Values include \["string", "integer", "decimal", "date", "time", "timestamp" \].
+- `scalarType` **{String}** Simple data type inferred by the `Attribute Class`.  Values include \["string", "integer", "decimal", "date", "time", "timestamp", "boolean" \].
 - `reference` **{Boolean}** Indicates of the `Attribute Class` requires a reference to an `Entity`.
 
 ----
@@ -277,10 +277,10 @@ Packaging of objects for deployment.
 - `includes.attribute` **{Array\<String\>}** List of identifiers for `Attribute` documents that are included in the `Module`.
 - `includes.module` **{Array\<String\>}** List of identifiers for `Module` documents that are included in the `Module`.
 
-### **Steps to Resolving `Module` Included Documents**
+### **Steps to Resolving `Module`-Included Documents**
 
 1. Accrue all documents directly or recursively referenced through `includes.module`.
-2. Accure all `Metric` documents  directly or recursively referenced through `includes.metric`.
+2. Accrue all `Metric` documents  directly or recursively referenced through `includes.metric`.
 3. Accrue all `Attribute` documents directly referenced in accrued `Metrics`.
 4. Accrue all `Attribute` documents directly referenced in `includes.attributes`.
 5. Accrue all `Entity` documents directly referenced in accrued `Attributes`.
