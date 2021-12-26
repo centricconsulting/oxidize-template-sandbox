@@ -126,6 +126,7 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 - `attributeClass` **{JSON}** Container for `Attribute Class` information assigned to the `Attribute`.
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Attribute`.
 - `attributeClass.entityId` **{String}** *Only valid for `Attribute Class` references with scalar type of `Entity`.* Identifier of the `Entity` document referenced in the `Attribute Class`.
+- `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Attribute`.
 - `entityId` **{String}** Identifier of the `Entity` document in which the `Entity` document is contained.
 
 ----
@@ -139,9 +140,8 @@ Instantiation of an entity, providing a value for each scalar `Attribute` of the
     {attributeId: ..., value: ...},
     {attributeId: ..., value: ...},
     {attributeId: ..., value: ...},
-    ...
-    entityId: ...,
   ],
+  entityId: ...,
   ...
 }
 ```
@@ -184,8 +184,8 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 - `inputs.attribute` **{Array\<String\>}** List of identifiers for `Attribute` documents that are inputs to the `Metric` `formula`.
 - `attributeClass` **{JSON}** Container for `Attribute Class` information assigned to the `Metric`.
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Metric`.
-- `attributeClass.entityId` **{String}** *Only valid for `Attribute Class`es with scalar type of `Entity`.* Identifier of the `Entity` document referenced in the `Attribute Class`.
-- `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Attribute`.
+- `attributeClass.entityId` **{String}** *Only valid for `Attribute Class` references with scalar type of `Entity`.* Identifier of the `Entity` document referenced in the `Attribute Class`.
+- `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Metric` result.
 
 ----
 **`Terminology`:**  
@@ -231,7 +231,6 @@ Semantic type that describes the function of an `Attribute` or `Metric`.
   variations: [...],
   scalarType: ...,
   reference: ...,
-  
   ...
 }
 ```
@@ -265,7 +264,7 @@ Packaging of objects for deployment.
 - `includes.attribute` **{Array\<String\>}** List of identifiers for `Attribute` documents that are included in the `Module`.
 - `includes.module` **{Array\<String\>}** List of identifiers for `Module` documents that are included in the `Module`.
 
-### **Steps to Resolving Documents in `Module`s**
+### **Steps to Resolving `Module` Included Documents**
 
 1. Accrue all documents directly or recursively referenced through `includes.module`.
 2. Accure all `Metric` documents  directly or recursively referenced through `includes.metric`.
