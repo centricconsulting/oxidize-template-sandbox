@@ -34,7 +34,6 @@ All documents share a common set of properties, regardless of document type.
     timestamp: ...,
   },
   active: ...,
-
 }
 ```
 
@@ -55,7 +54,7 @@ All documents share a common set of properties, regardless of document type.
 ----
 
 ## **Document Specifications**
-Individual documents properties are specified below. The `type` common properties is defined as a distinct **{String}** literal for each tye of document. Other common properties (listed above) are not shown in these specifications.
+Individual documents properties are specified below. The `type` common properties is defined as a distinct **{String}** literal for each type of document. Other common properties (listed above) are not shown in these specifications.
 
 **`Project`:**  
 Repesents a collection of documents describing an information space.
@@ -69,7 +68,6 @@ Repesents a collection of documents describing an information space.
   attributeClasses: [...],
   modules: [...],
   projectId: ...,
-  ...
 }
 ```
 
@@ -77,7 +75,7 @@ Repesents a collection of documents describing an information space.
 - `metrics` **{Array\<String\>}** List of identifiers for `Metric` documents contained in the `Project`.
 - `terminologies` **{Array\<String\>}** List of identifiers for `Terminology` documents contained in the `Project`.
 - `attributeClasses` **{Array\<String\>}** List of identifiers for `Attribute Class` documents contained in the `Project`.
-- `modules` **{Array\<String\>}** List ofidentifiers for `Module` documents contained in the `Project`.
+- `modules` **{Array\<String\>}** List of identifiers for `Module` documents contained in the `Project`.
 - `projectId` **{String}** *`id` and `projectId` will be identical for `Project` documents .*
 
 ----
@@ -90,13 +88,12 @@ Business concept, document, transaction or other definable object.
   attributes: [...],
   instances: [...],
   entityId: ...,
-  ...
 }
 ```
 
 - `attributes` **{Array\<String\>}** List of identifiers for `Attribute` documents contained in the `Entity`.
 - `instances` **{Array\<String\>}** List of identifiers for `Instance` documents contained in the `Entit`y.
-- `entityId` **{String}** *`id` and `entityId` will be identical for `Entity` documents .* Identifier of the `Entity` document in which the `Entity` document is contained.
+- `entityId` **{String}** *`id` and `entityId` will be identical for `Entity` documents .* Identifier of the `Entity` document.
 
 ----
 **`Attribute`** (child of Entity):  
@@ -115,7 +112,6 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
     context: ...,
   },
   entityId: ...,
-  ...
 }
 ```
 
@@ -127,7 +123,7 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Attribute`.
 - `attributeClass.entityId` **{String}** *Only valid for `Attribute Class` references with scalar type of `Entity`.* Identifier of the `Entity` document referenced in the `Attribute Class`.
 - `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Attribute`.
-- `entityId` **{String}** Identifier of the `Entity` document in which the `Entity` document is contained.
+- `entityId` **{String}** Identifier of the `Entity` document in which the `Attribute` is contained.
 
 ----
 **`Instance`** (child of Entity):  
@@ -142,14 +138,13 @@ Instantiation of an entity, providing a value for each scalar `Attribute` of the
     {attributeId: ..., value: ...},
   ],
   entityId: ...,
-  ...
 }
 ```
 
 - `values` **{Array\<JSON\>}** List of `Attribute`s and corresponding values.
 - `values[].attributeId` **{String}** Identifier of the `Attribute` document for which a value is provided. This will be a scalar `Attribute` in the same `Entity` as the `Instance`.
 - `values[].value` **{String}** Value for the specified `Attribute`.
-- `entityId` **{String}** Identifier of the `Entity` document in which the `Instance` document is contained.
+- `entityId` **{String}** Identifier of the `Entity` document in which the `Instance` is contained.
 
 ----
 **`Metric`:**  
@@ -171,7 +166,6 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
     entityId: ...,
     context: ...,
   },
-  ...
 }
 ```
 
@@ -194,7 +188,6 @@ Terminology or vernacular used in the business, but not applicable as an `Entity
 ```javascript
 {
   type: "terminology",
-  ...
 }
 ```
 
@@ -210,7 +203,6 @@ Source sytem defined for an implementation.
   operational: ...,
   domain: ...,
   scope: ...,
-  ...
 }
 ```
 
@@ -231,7 +223,6 @@ Semantic type that describes the function of an `Attribute` or `Metric`.
   variations: [...],
   scalarType: ...,
   reference: ...,
-  ...
 }
 ```
 
@@ -254,7 +245,6 @@ Packaging of objects for deployment.
     module: [...],
   },
   projectId: ...,
-  ...
 }
 ```
 
@@ -268,7 +258,7 @@ Packaging of objects for deployment.
 
 1. Accrue all documents directly or recursively referenced through `includes.module`.
 2. Accure all `Metric` documents  directly or recursively referenced through `includes.metric`.
-3. Accrue all `Attribute` documents directly referenced in accrued Metrics.
+3. Accrue all `Attribute` documents directly referenced in accrued `Metrics`.
 4. Accrue all `Attribute` documents directly referenced in `includes.attributes`.
 5. Accrue all `Entity` documents directly referenced in accrued `Attributes`.
 6. Accrue all `Entity` documents directly referenced in `includes.entity`.
