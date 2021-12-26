@@ -282,7 +282,7 @@ Packaging of objects for deployment.
 ### **Steps to Resolving `Module`-Included Documents**
 
 1. Accrue all documents directly or recursively referenced through `include.modules`.
-2. Accrue all `Metric` documents  directly or recursively referenced through `includes.metrics`.
+2. Accrue all `Metric` documents  directly or recursively referenced through `include.metrics`.
 3. Accrue all `Attribute` documents directly referenced in accrued `Metrics`.
 4. Accrue all `Attribute` documents directly referenced in `include.attributes`.
 5. Accrue all `Entity` documents directly referenced in accrued `Attributes`.
