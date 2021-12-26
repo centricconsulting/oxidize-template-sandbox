@@ -128,7 +128,7 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 
 - `grain` **{Boolean}** Indicates whether the `Attribute` defines uniqueness of its parent `Entity`, potentially among other *grain* Attributes.
 - `qualityRule` **{String | RegExp}** Description of how quality is assessed for the `Attribute`. A Regex literal may also be provided.
-- `multiplicityId` **{String}** Identifier of the `Multiplicity`, specifying the number of `Attribute`s that may be assigned to the `Entity`.
+- `multiplicityId` **{String}** Identifier of the `Multiplicity`, specifying the number of `Attributes` that may be assigned to the `Entity`.
 - `derivation` **{String}** Description of how the `Attribute` is derived, if applicable.
 - `attributeClass` **{JSON}** Container for `Attribute Class` information assigned to the `Attribute`.
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Attribute`.
@@ -154,7 +154,7 @@ Instantiation of an `Entity`, providing a value for each scalar `Attribute` of t
 }
 ```
 
-- `values` **{Array\<JSON\>}** List of `Attribute`s and corresponding values.
+- `values` **{Array\<JSON\>}** List of `Attributes` and corresponding values.
 - `values[x].attributeId` **{String}** Identifier of the `Attribute` document for which a value is provided. This will be a scalar `Attribute` in the same `Entity` as the `Instance`.
 - `values[x].value` **{String}** Value for the specified `Attribute`.
 - `entityId` **{String}** Identifier of the `Entity` document in which the `Instance` is contained.
