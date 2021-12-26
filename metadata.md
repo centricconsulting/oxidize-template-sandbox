@@ -60,6 +60,8 @@ All documents share a common set of properties, regardless of document type.
 
 Individual documents properties are specified below. The `type` common property is defined as a distinct **{String}** literal for each type of document. Other common properties (listed above) are not shown in the following specifications.
 
+----
+
 ### **`Project` Document**  
 
 Repesents a collection of documents describing an information space.
@@ -87,7 +89,7 @@ Repesents a collection of documents describing an information space.
 
 ### **`Entity` Document**  
 
-Business document, transaction or other definable concept.
+Document, transaction, process, entity or other definable concept.
 
 ```javascript
 {
@@ -104,7 +106,7 @@ Business document, transaction or other definable concept.
 
 ----
 
-### **`Attribute` Document** (child of Entity)  
+### **`Attribute` Document** (Child of `Entity`)  
 
 A value that describes the current state of an Entity. Through `Multiplicity` an `Attribute` may represent one-to-many scalar values or references to other `Entity` documents.
 
@@ -136,9 +138,9 @@ A value that describes the current state of an Entity. Through `Multiplicity` an
 
 ----
 
-### **`Instance` Document** (child of Entity)  
+### **`Instance` Document** (Child of `Entity`)  
 
-Instantiation of an entity, providing a value for each scalar `Attribute` of the entity.
+Instantiation of an `Entity`, providing a value for each scalar `Attribute` of the `Entity`.
 
 ```javascript
 {
