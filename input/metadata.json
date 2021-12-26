@@ -13993,7 +13993,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14025,7 +14025,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14057,7 +14057,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14089,7 +14089,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14121,7 +14121,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14153,7 +14153,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14185,7 +14185,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14217,7 +14217,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14249,7 +14249,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14281,7 +14281,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14313,7 +14313,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14345,7 +14345,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14377,7 +14377,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14409,7 +14409,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14441,7 +14441,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14473,7 +14473,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14505,7 +14505,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14537,7 +14537,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14569,7 +14569,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14601,7 +14601,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14633,7 +14633,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14665,7 +14665,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14697,7 +14697,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14729,7 +14729,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14761,7 +14761,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14793,7 +14793,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14825,7 +14825,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14857,7 +14857,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14889,7 +14889,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14921,7 +14921,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14953,7 +14953,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -14985,7 +14985,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15017,7 +15017,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15049,7 +15049,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15086,7 +15086,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15118,7 +15118,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15150,7 +15150,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15182,7 +15182,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15214,7 +15214,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15246,7 +15246,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15278,7 +15278,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15315,7 +15315,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15347,7 +15347,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15379,7 +15379,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15411,7 +15411,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15443,7 +15443,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15475,7 +15475,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15507,7 +15507,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15539,7 +15539,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15571,7 +15571,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15603,7 +15603,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15635,7 +15635,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15667,7 +15667,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15699,7 +15699,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15731,7 +15731,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15763,7 +15763,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15795,7 +15795,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15827,7 +15827,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15859,7 +15859,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15891,7 +15891,7 @@
         },
         "methodology": "",
         "multiplicityId": "EXACTLY_ONE",
-        "inputs": {
+        "input": {
           "metrics": [],
           "attributes": []
         },
@@ -15933,24 +15933,18 @@
         "name": "Reinsurance",
         "definition": "Definition of Reinsurance.",
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "include": {
-          "all": true,
-          "entity": [],
-          "attribute": [],
-          "module": [],
-          "metric": []
-        },
         "createTimestamp": "2020-02-14T23:17:01.590Z",
         "modify": {
           "userId": "bill.decker@centricconsulting.com",
           "userName": "Bill Decker",
           "timestamp": "2020-03-15T17:25:48.312Z"
         },
-        "includes": {
+        "include": {
           "all": false,
           "metrics": [],
           "entities": [],
-          "modules": []
+          "attributes": [],
+          "modules": [],
         },
         "alive": true,
         "active": true,
@@ -15966,24 +15960,18 @@
         "name": "Billing",
         "definition": "Definition of Billing.",
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "include": {
-          "all": true,
-          "entity": [],
-          "attribute": [],
-          "module": [],
-          "metric": []
-        },
         "createTimestamp": "2021-06-28T19:08:14.935Z",
         "modify": {
           "userId": "rahul.bansal@centricconsulting.com",
           "userName": "Rahul Bansal",
           "timestamp": "2021-07-09T23:10:09.301Z"
         },
-        "includes": {
+        "include": {
           "all": false,
           "metrics": [],
           "entities": [],
-          "modules": []
+          "attributes": [],
+          "modules": [],
         },
         "alive": true,
         "active": true,
@@ -16001,22 +15989,16 @@
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "include": {
           "all": true,
-          "entity": [],
-          "attribute": [],
-          "module": [],
-          "metric": []
+          "metrics": [],
+          "entities": [],
+          "attributes": [],
+          "modules": []
         },
         "createTimestamp": "2020-12-02T23:00:26.994Z",
         "modify": {
           "userId": "chris.levine@centricconsulting.com",
           "userName": "Chris Levine",
           "timestamp": "2020-12-21T16:35:52.824Z"
-        },
-        "includes": {
-          "all": false,
-          "metrics": [],
-          "entities": [],
-          "modules": []
         },
         "alive": true,
         "active": true,
@@ -16034,22 +16016,16 @@
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "include": {
           "all": true,
-          "entity": [],
-          "attribute": [],
-          "module": [],
-          "metric": []
+          "metrics": [],
+          "entities": [],
+          "attributes": [],
+          "modules": []
         },
         "createTimestamp": "2020-07-02T22:23:00.121Z",
         "modify": {
           "userId": "pranay.shyam@centricconsulting.com",
           "userName": "Pranay Shyam",
           "timestamp": "2020-07-06T12:13:23.047Z"
-        },
-        "includes": {
-          "all": false,
-          "metrics": [],
-          "entities": [],
-          "modules": []
         },
         "alive": true,
         "active": true,
@@ -16065,23 +16041,17 @@
         "name": "Reference",
         "definition": "Definition of Reference.",
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "include": {
-          "all": true,
-          "entity": [],
-          "attribute": [],
-          "module": [],
-          "metric": []
-        },
         "createTimestamp": "2021-09-09T15:25:19.238Z",
         "modify": {
           "userId": "kris.moniz@centricconsulting.com",
           "userName": "Kris Moniz",
           "timestamp": "2021-09-13T17:58:51.554Z"
         },
-        "includes": {
-          "all": false,
+        "include": {
+          "all": true,
           "metrics": [],
           "entities": [],
+          "attributes": [],
           "modules": []
         },
         "alive": true,
@@ -16100,22 +16070,16 @@
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "include": {
           "all": true,
-          "entity": [],
-          "attribute": [],
-          "module": [],
-          "metric": []
+          "metrics": [],
+          "entities": [],
+          "attributes": [],
+          "modules": []
         },
         "createTimestamp": "2020-07-13T22:04:50.718Z",
         "modify": {
           "userId": "colin.mcgee@centricconsulting.com",
           "userName": "Colin McGee",
           "timestamp": "2020-07-26T00:37:31.926Z"
-        },
-        "includes": {
-          "all": false,
-          "metrics": [],
-          "entities": [],
-          "modules": []
         },
         "alive": true,
         "active": true,

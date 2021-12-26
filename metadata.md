@@ -262,6 +262,7 @@ Packaging of objects for deployment.
 {
   type: "module",
   include: {
+    all: ...
     metrics: [...],
     entities: [...],
     attributes: [...],
@@ -272,6 +273,7 @@ Packaging of objects for deployment.
 ```
 
 - `include` **{JSON}** Container for document specification for the `Module`.
+- `include.all` **{Boolean}** Indicates whether all `Metric`, `Entity`, `Attributes` and `Module` documents should be included.  If `true`, other properties of `include` will be ignored.
 - `include.metrics` **{Array\<String\>}** List of identifiers for `Metric` documents that are included in the `Module`.
 - `include.entities` **{Array\<String\>}** List of identifiers for `Entity` documents that are included in the `Module`.
 - `include.attributes` **{Array\<String\>}** List of identifiers for `Attribute` documents that are included in the `Module`.
