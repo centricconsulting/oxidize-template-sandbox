@@ -334,8 +334,8 @@ Functional component of the solution architecture characterized by a consistent 
 
 - `lock` **{Boolean}** Indicates whether a `Project` contributor has permission to modify the `Component` or its child `Templates`.
 - `render` **{JSON}** Container for `Sources` to be rendered by the child `Templates`.
-- `render.allSources` **{Boolean}** Indicates whether all `Sources` should be rendered by the child `Templates`. If `true` then other `render` properties will be ignored.
-- `render.allSources` **{Array\<String\>}** List of identifiers for `Source` documents that will be rendered in the child `Templates`.
+- `render.all` **{Boolean}** Indicates whether all `Sources` should be rendered by the child `Templates`. If `true` then other `render` properties will be ignored.
+- `render.sources` **{Array\<String\>}** List of identifiers for `Source` documents that will be rendered in the child `Templates`.
 - `componentId` **{String}** _The `id` and `componentId` will be identical for `Component` documents_. Identifier of the `Component` document.
 
 ---
