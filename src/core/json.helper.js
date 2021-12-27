@@ -1,6 +1,16 @@
 import {JSONPath} from 'jsonpath-plus'
 
 /**
+ * Return a reference from an array of references based on an `id` value.
+ * @param {Array<JSON>} references Array of objects minimally have a structure of {id}.
+ * @param {*} id Identifier to be matched in the retrieval.
+ * @returns Returns the first matching reference.
+ */
+const getReferenceById = (references, id) => {
+  return references.find((r) => r.id === id)
+}
+
+/**
  * Returns objects corresponding the the Json Path.
  * @param {JSON} json Json object to search.
  * @param {String} jsonPath Json Path query statement.
@@ -66,7 +76,7 @@ const buildFilterPhrase = (filters) => {
   if (phrases.length == 0) {
     return null
   } else {
-    return `[?(${phrases.join(' && ')})]`
+    return `[?(@ && ${phrases.join(' && ')})]`
   }
 
   /**
@@ -98,11 +108,11 @@ const buildFilterPhrase = (filters) => {
     // build the phrase
     if (comparisons.length === 0) return undefined
     if (target === 'array') {
-      return `@.${key}?.find(x => (${comparisons.join(' || ')}))`
+      return `@ && @.${key}?.find(x => (${comparisons.join(' || ')}))`
     } else {
       return `${comparisons.join(' || ')}`
     }
   }
 }
 
-export default {getObjects, getObjectsByFilter, getObjectsByTag, getObjectsById, buildFilterPhrase}
+export default {getReferenceById, getObjects, getObjectsByFilter, getObjectsByTag, getObjectsById, buildFilterPhrase}

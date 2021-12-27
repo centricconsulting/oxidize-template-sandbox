@@ -1,3 +1,6 @@
+/**
+ * Cases used to specify Codify Options.
+ */
 const CaseOptionEnum = {
   Upper: 'upper',
   Lower: 'lower',
@@ -5,7 +8,10 @@ const CaseOptionEnum = {
   Camel: 'camel',
 }
 
-const DatabaseOptions = {
+/**
+ * Complete set of Codify Options for databases.
+ */
+const DatabaseCodifyOptions = {
   case: CaseOptionEnum.Upper,
   substitutions: [
     {find: /(\s+|\W)+/gim, replace: '_'}, // replace whitespace with underscore
@@ -13,7 +19,10 @@ const DatabaseOptions = {
   wrapper: {left: '[', right: ']'},
 }
 
-const JavascriptOptions = {
+/**
+ * Complete set of Codify Options for Javascript.
+ */
+const JavascriptCodifyOptions = {
   case: CaseOptionEnum.Camel,
   preserveCaps: true,
   substitutions: [
@@ -22,6 +31,12 @@ const JavascriptOptions = {
   ],
 }
 
+/**
+ * Codifies a text value based on the Codify Options provided.
+ * @param {String} text Text value to Codify.
+ * @param {JSON} codifyOptions Complete set of Codify Options.
+ * @returns Codified version of the original text value.
+ */
 const codifyText = (text, codifyOptions) => {
   if (!codifyOptions) return text
   if (!text) return undefined
@@ -86,12 +101,20 @@ const codifyText = (text, codifyOptions) => {
   return text
 }
 
+/**
+ * Codifies the value of all nested Json source keys.
+ * @param {*} json Json object to codify.  This object is codified in place `by reference`.
+ * @param {*} codifyOptions Complete set of Codify Options.
+ * @param {*} sourceKey Name of the key whose text will be codified.
+ * @param {*} targetKey Name of the key to which the codified text will be assigned.
+ */
 const codifyJson = (json, codifyOptions, sourceKey, targetKey) => {
   if (!sourceKey) sourceKey = 'name'
   if (!targetKey) targetKey = '__code'
   codifyObject(json)
 
   function codifyObject(obj) {
+    if (!obj) return obj
     if (Array.isArray(obj) && obj.length > 0) {
       // recurse on each array element
       obj.forEach((element) => {
@@ -117,4 +140,4 @@ const codifyJson = (json, codifyOptions, sourceKey, targetKey) => {
   }
 }
 
-export default {codifyJson, codifyText, CaseOptionEnum, DatabaseOptions, JavascriptOptions}
+export default {codifyJson, codifyText, CaseOptionEnum, DatabaseCodifyOptions, JavascriptCodifyOptions}

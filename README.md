@@ -2,7 +2,9 @@
 
 This repository is a sandbox for developing EJS templates that will be used in the Oxidize application.
 
-# Valuable Concepts to Learn
+----
+
+## Valuable Concepts to Learn
 
 - Oxidize Metadata Json Structure. [Metadata Documentation](metadata.md)
 - Embedded Javascript Templating. [EJS](https://ejs.co/)
@@ -14,7 +16,9 @@ This repository is a sandbox for developing EJS templates that will be used in t
   - Destructuring. [Mozilla - Destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
 - console.log. [Mozilla - Console](https://developer.mozilla.org/en-US/docs/Web/API/Console/log)
 
-# Installation Steps
+----
+
+## Installation Steps
 
 ### **Prepare Environment**
 
@@ -30,13 +34,17 @@ This repository is a sandbox for developing EJS templates that will be used in t
 3. Open the terminal window and type `yarn install`. This will pull down all the packages for this repository.
 4. In the terminal window type `yarn run start`.
 
-# Recommendations
+----
+
+## Recommendations
 
 - Install the VSCode Extension: EJS language support
 - Examine demos for `codifier` and `jsonHelper`
 - Exensively use `console.log` for troublshooting.
 
-# Templated Code Generation
+----
+
+## Templated Code Generation
 
 ### **EJS Template**
 

@@ -2,10 +2,12 @@
 /** @format */
 
 import Asset from './src/core/asset.js'
-import CodeGenerator from './src/generator.js'
+import CodeGenerator from './src/code.generator.js'
 import fs from 'fs'
 import jsonHelper from './src/core/json.helper.js'
 import codifier from './src/core/codifier.js'
+import databasifier from './src/core/databasifier.js'
+import beautify from 'json-beautify'
 
 main()
 /**
@@ -22,15 +24,29 @@ function main() {
   // load the json text
   const payloadJson = JSON.parse(payload)
 
-  // ######  execute code generation ######
-  const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
-  codeGenerator.generate()
-
   // ###### demonstrate JsonHelper ######
   // demoJsonHelper(payloadJson)
 
+  // ###### demonstrate Databasifier ######
+  // demoDatabasifier(payloadJson)
+
   // ###### demonstrate Codifier ######
   // demoCodifier()
+
+  // ######  execute code generation ######
+  const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
+  codeGenerator.generate()
+}
+
+/**
+ * Demonstrates the use of jsonHelper functions.
+ * @param {*} json Json object used for the demo.
+ */
+function demoDatabasifier(json) {
+  const codifyOptions = codifier.DatabaseCodifyOptions
+  const databaseOptions = databasifier.SqlServerDatabaseOptions
+  const dbJson = databasifier.getDatabaseJson(json.project, codifyOptions, databaseOptions)
+  fs.writeFileSync('output/db.json', beautify(dbJson))
 }
 
 /**
@@ -46,14 +62,22 @@ function demoCodifier() {
   }
 
   console.log('\ncodifier - DEMO #1')
-  codifyOptions = codifier.DatabaseOptions
+  codifyOptions = codifier.DatabaseCodifyOptions
   codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
-  console.log('DatabaseOptions - PRE-BUILT DATABASE OPTIONS\n', `name: ${json.name}\n`, `__code: ${json.__code}\n`)
+  console.log(
+    'DatabaseCodifyOptions - PRE-BUILT DATABASE OPTIONS\n',
+    `name: ${json.name}\n`,
+    `__code: ${json.__code}\n`
+  )
 
   console.log('\ncodifier - DEMO #2')
-  codifyOptions = codifier.JavascriptOptions
+  codifyOptions = codifier.JavascriptCodifyOptions
   codifier.codifyJson(json, codifyOptions, sourceKey, targetKey)
-  console.log('JavascriptOptions - PRE-BUILT JAVASCRIPT OPTIONS\n', `name: ${json.name}\n`, `__code: ${json.__code}\n`)
+  console.log(
+    'JavascriptCodifyOptions - PRE-BUILT JAVASCRIPT OPTIONS\n',
+    `name: ${json.name}\n`,
+    `__code: ${json.__code}\n`
+  )
 
   console.log('\ncodifier - DEMO #3')
   codifyOptions = {
@@ -76,8 +100,8 @@ function demoJsonHelper(json) {
   let result, jsonPath, filters
 
   console.log('\njsonHelper - DEMO #1')
-  jsonPath = `$..*[?(@.type=='attribute' && /Account/gmi.test(@.name))]`
-  result = jsonHelper.getObjects(json, jsonPath)
+  jsonPath = `$..*[?(@ && @.type=='attribute' && /Account/gmi.test(@.name))]`
+  result = jsonHelper.getObjects(json.project, jsonPath)
   console.log('getObjects - MULTIPLE CONDITIONS ...first item\n', result[0])
 
   console.log('\njsonHelper - DEMO #2')

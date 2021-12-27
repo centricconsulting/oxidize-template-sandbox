@@ -1,6 +1,6 @@
 import ejs from 'ejs'
 import Asset from './core/asset.js'
-import codifier from '../src/core/codifier.js'
+import codifier from './core/codifier.js'
 import jsonHelper from './core/json.helper.js'
 
 /**
