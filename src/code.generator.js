@@ -1,7 +1,9 @@
+import AdmZip from 'adm-zip'
 import ejs from 'ejs'
 import Asset from './core/asset.js'
 import codifier from './core/codifier.js'
 import jsonHelper from './core/json.helper.js'
+import databasifier from './core/databasifier.js'
 
 /**
  * This class must be derived from the GeneratorBase class and the class name must remain "Generator".
@@ -20,10 +22,12 @@ export default class CodeGenerator {
 
   static FileSplitRegex = /(?:^@@@FILE:\[(?<path>[\S ]+)\]@@@$)/gm
 
-  generate() {
+  generate(zip = false) {
     // global makes it possible to see these libraries in EJS
     global.jsonHelper = jsonHelper
     global.codifier = codifier
+    global.databasifier = databasifier
+
     // generate raw output
     const script = ejs.render(this.templateScript, this.payloadJson)
 
@@ -31,6 +35,16 @@ export default class CodeGenerator {
     const fileInfo = CodeGenerator.splitFiles(script)
 
     // generate the files
+    if (zip) {
+      // zip the files and save
+      const zip = new AdmZip()
+      fileInfo.forEach((f) => {
+        zip.addFile(f.path, Buffer.from(f.content, 'utf8'))
+      })
+      zip.writeZip(this.targetFolderPath.concat('/assets.zip'))
+    } else {
+      // write to target
+    }
     this.#generateFiles(fileInfo)
   }
 

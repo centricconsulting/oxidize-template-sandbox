@@ -34,7 +34,6 @@ All documents share a common set of properties, regardless of document type.
   id: ...,
   type: ...,
   name: ...,
-  pluralName: ...,
   definition: ...,
   projectId: ...,
   tags: [...],
@@ -52,7 +51,6 @@ All documents share a common set of properties, regardless of document type.
 - `id` **{String}** Globally unique identifier for the document.
 - `type` **{String}** Text field indicating the type of document.
 - `name` **{String}** Name of the document unique for the document type within a given project.
-- `pluralName` **{String}** Plural version of the name.
 - `definition` **{String}** Description or definition of the document.
 - `projectId` **{String}** Identifier of the `Project` document to which the document belongs.
 - `tags` **{Array\<String\>}** List of text values specifically instructing code generation.
@@ -102,12 +100,14 @@ Document, transaction, process, entity or other definable concept.
 ```javascript
 {
   type: "entity",
+  pluralName: ...,
   attributes: [...],
   instances: [...],
   entityId: ...,
 }
 ```
 
+- `pluralName` **{String}** Plural version of the name.
 - `attributes` **{Array\<String\>}** List of identifiers for `Attribute` documents contained in the `Entity`.
 - `instances` **{Array\<String\>}** List of identifiers for `Instance` documents contained in the `Entit`y.
 - `entityId` **{String}** _`id` and `entityId` will be identical for `Entity` documents ._ Identifier of the `Entity` document.
@@ -178,10 +178,9 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 ```javascript
 {
   type: "metric",
-  qualityRule: ...,
   multiplicityId: ...,
   formula: ...,
-  methodology: ...,
+  derivation: ...,
   input: {
     metrics: [...],
     attributes: [...],
@@ -189,12 +188,10 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
   attributeClass: {
     id: ...,
     entityId: ...,
-    context: ...,
   },
 }
 ```
 
-- `qualityRule` **{String | RegExp}** Description of how quality is assessed for the `Attribute`. A Regex literal may also be provided.
 - `multiplicityId` **{String}** Identifier of the `Multiplicity`, specifying the number of values that may result from a `Metric` `formula` calculation.
 - `formula` **{String}** Specifies the mathematical derivation or shorthand for calculating the `Metric` result.
 - `methodology` **{String}** Describes the approach for calculation the `Metric` result under different scenarios, e.g., time range, special conditions.
@@ -203,7 +200,7 @@ Derivation that takes one-or-more inputs and produces a result or collection of 
 - `input.attributes` **{Array\<String\>}** List of identifiers for `Attribute` documents that are inputs to the `Metric` `formula`.
 - `attributeClass` **{JSON}** Container for `Attribute Class` information assigned to the `Metric`.
 - `attributeClass.id` **{String}** Identifer of the `Attribute Class` document assigned to the `Metric`.
-- `attributeClass.entityId` **{String}** _Only valid for `Attribute Class` references with scalar type of `Entity`._ Identifier of the `Entity` document referenced in the `Attribute Class`.
+- `attributeClass.entityId` **{String}** Only valid for `Attribute Class` references with scalar type of `Entity`.\_ Identifier of the `Entity` document referenced in the `Attribute Class`.
 - `attributeClass.context` **{String}** Text describing the context of the referenced `Entity` relative to the `Metric` result. Note that `Metrics` do not feature a `bridge` property.
 
 ---
@@ -324,6 +321,7 @@ Functional component of the solution architecture characterized by a consistent 
 {
   type: "component",
   lock: ...,
+  function: ...,
   render: {
     all: ...,
     sources: [...],
@@ -333,6 +331,7 @@ Functional component of the solution architecture characterized by a consistent 
 ```
 
 - `lock` **{Boolean}** Indicates whether a `Project` contributor has permission to modify the `Component` or its child `Templates`.
+- `function` **{String}** Function of the component in the solution architecture.
 - `render` **{JSON}** Container for `Sources` to be rendered by the child `Templates`.
 - `render.all` **{Boolean}** Indicates whether all `Sources` should be rendered by the child `Templates`. If `true` then other `render` properties will be ignored.
 - `render.sources` **{Array\<String\>}** List of identifiers for `Source` documents that will be rendered in the child `Templates`.

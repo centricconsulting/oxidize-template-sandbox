@@ -115,4 +115,11 @@ const buildFilterPhrase = (filters) => {
   }
 }
 
-export default {getReferenceById, getObjects, getObjectsByFilter, getObjectsByTag, getObjectsById, buildFilterPhrase}
+export default {
+  getReferenceById,
+  getObjects,
+  getObjectsByFilter,
+  getObjectsByTag,
+  getObjectsById,
+  buildFilterPhrase,
+}

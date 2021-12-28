@@ -33,8 +33,7 @@ const SqlServerDatabaseOptions = {
 
 function getDataType({type, scale, precision}, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
-  let dtItem
-  dtItem = dtm.find((m) => m.nominal === type)
+  let dtItem = dtm.find((m) => m.nominal === type)
   if (dtItem) return dtItem.target(scale, precision)
   return dtm.defaultDataType ?? 'Unknown'
 }
@@ -45,6 +44,10 @@ function multiplicityRequired(multiplicityId) {
 
 function multiplicityInferTable(multiplicityId) {
   return ['ONE_TO_MANY', 'ZERO_TO_MANY'].includes(multiplicityId)
+}
+
+function multiplicitySingleValue(multiplicityId) {
+  return ['EXACTLY_ONE', 'ZERO_TO_ONE'].includes(multiplicityId)
 }
 
 const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
@@ -58,7 +61,9 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
     // populate entity info
     const table = {
       type: 'table',
-      name: entity.__code,
+      name: codifier.codifyText(entity.name, codifyOptions),
+      baseName: codifier.codifyText(entity.name, {...codifyOptions, wrapper: undefined}),
+      originalName: entity.name,
       columns: [],
     }
 
@@ -68,6 +73,11 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
       index: 0,
       primary: true,
       name: codifier.codifyText(`${entity.name} ${databaseOptions.columnKeySegment}`, codifyOptions),
+      baseName: codifier.codifyText(`${entity.name} ${databaseOptions.columnKeySegment}`, {
+        ...codifyOptions,
+        wrapper: undefined,
+      }),
+      originalName: null,
       grain: false,
       dataType: getDataType('identififer', databaseOptions),
       required: true,
@@ -77,14 +87,16 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
     entity.attributes.forEach((attribute, attributeIndex) => {
       // find the attribute class
       const ac = json.attributeClasses.find((x) => x.id === attribute.attributeClass?.id)
-      console.log(`entity: ${entity.name}, attribute: ${attribute.name}, ac: ${ac?.name}`)
       // determine if a foreign key is warranted
       // AC specifies a reference and the entityId has a value
-      const generatesFK = ac?.reference && attribute?.attributeClass?.entityId
+      const generatesFK =
+        ac?.reference &&
+        attribute?.attributeClass?.entityId &&
+        multiplicitySingleValue(attribute?.multiplicityId)
       if (generatesFK) {
         // find the target entity
         const targetEntity = json.entities.find((x) => x.id === attribute.attributeClass?.entityId)
-        console.log(`targetEntity: ${targetEntity?.name}`)
+
         if (targetEntity) {
           // resolve the target table name
 
@@ -104,15 +116,25 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
         }
       }
 
+      const revisedColumnName = (attributeName, excludeWrapper = false) => {
+        const localCodifyOptions = excludeWrapper ? {...codifyOptions, wrapper: undefined} : codifyOptions
+
+        if (ac.reference) {
+          return codifier.codifyText(
+            `${ac.context?.concat(' ') ?? ''}${attributeName} ${databaseOptions.columnKeySegment}`,
+            localCodifyOptions
+          )
+        } else {
+          return codifier.codifyText(attributeName, localCodifyOptions)
+        }
+      }
+
       table.columns.push({
         type: 'column',
         index: attributeIndex + 1,
-        name: ac.reference
-          ? codifier.codifyText(
-              `${ac.context?.concat(' ') ?? ''}${attribute.name} ${databaseOptions.columnKeySegment}`,
-              codifyOptions
-            )
-          : attribute.__code,
+        name: revisedColumnName(attribute.name),
+        baseName: revisedColumnName(attribute.name, true),
+        originalName: attribute.name,
         grain: attribute.grain,
         dataType: ac.reference
           ? getDataType({type: 'identifier'}, databaseOptions)

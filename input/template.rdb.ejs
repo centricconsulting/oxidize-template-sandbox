@@ -1,0 +1,65 @@
+@@@FILE:[test/databasify.sql]@@@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+const databaseOptions = databasifier.SqlServerDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+%>
+/* ###################################################### */
+
+CREATE TABLE dbo.<%- table.name %> (
+<% // javascript
+
+  applyColumnSort(table.columns) // see function at end of script
+  table.columns.forEach((column, columnIndex) => {
+
+%><%- columnIndex > 0 ? "," : " " 
+%><%- " ".concat(column.name) 
+%><%- " ".concat(column.dataType) 
+%><%- column.required ? " NOT NULL" : null %>
+<% // javascript
+  
+  })
+
+  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
+  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
+
+%>, [BUSINESS_EFFECTIVE_DATE] DATETIME2(7)
+, [BUSINESS_EFFECTIVE_END_DATE] DATETIME2(7)
+<%- // javascript
+  pkColumns.length > 0 ?  `, CONSTRAINT PK_${table.baseName} PRIMARY KEY (${ pkColumns.join(",") })\n` : null
+%>);
+<% // javascript
+  if(grainColumns.length > 0) {
+%>
+CREATE UNIQUE INDEX UX_<%- table.baseName -%>_GRAIN ON <%= table.name %> (
+  <%- grainColumns.join(",") %>
+);
+<% // javascript
+  }
+})
+
+function applyColumnSort(columns) {
+  columns.sort((a, b) => {
+    let sortValue
+    // 1. primary
+    sortValue = (b.primary === true ? 1 : 0)- (a.primary === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 2. grain
+    sortValue = (b.grain === true ? 1 : 0) - (a.grain === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 3. fks
+    sortValue = (!!b.attributeClass?.entityId ? 1 : 0) - (!!a.attributeClass?.entityId ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 4. alpha
+    return a.name.localeCompare(b.name)
+  })
+
+}
+%>

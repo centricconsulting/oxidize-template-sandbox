@@ -1,0 +1,155 @@
+@@@FILE:[test/<%- project.name %>.mdj]@@@
+<% // javascript
+ const UmlModelEntitiesId = "Entities-".concat(project.id)
+%> 
+{
+  "_type": "Project",
+  "_id": "<%- project.id %>",
+  "name": "<%- project.name %>",
+  "ownedElements": [
+      {
+          "_type": "UMLModel",
+          "_id": "<%- UmlModelEntitiesId %>",
+          "_parent": {
+              "$ref": "<%- project.id %>"
+          },
+          "name": "Entities",
+          "ownedElements": [
+            {
+                "_type": "UMLClassDiagram",
+                "_id": "<%- "MainDiagram-".concat(project.id) %>",
+                "_parent": {
+                    "$ref": "<%- UmlModelEntitiesId %>"
+                },
+                "name": "Main",
+                "defaultDiagram": true
+            }
+
+<% // javascript
+    applyEntitySort(project.entities)
+    project.entities.forEach((entity, entityIndex) => {
+%>
+<%# Render the Entity as UMLClass   %>
+    , {
+        "_type": "UMLClass",
+        "_id": "<%- entity.id %>",
+        "_parent": {
+            "$ref": "<%- project.id %>"
+        },
+        "name": "<%- entity.name %>",
+        "attributes": [
+        
+<% // javascript
+
+    applyAttributeSort(entity.attributes) // see function at end of script
+    entity.attributes.forEach((attribute, attributeIndex) => {
+        const ac = project.attributeClasses.find(x => x.id === attribute.attributeClass?.id)
+        
+%>
+<%# Render the Attribute as UMLAttribute  %>
+            <%- attributeIndex > 0 ? ',' : null %>
+            {
+                "_type": "UMLAttribute",
+                "_id": "<%- attribute.id %>",
+                "_parent": {
+                    "$ref": "<%- entity.id %>"
+                },
+                "name": "<%- attribute.name %>"
+<% // javascript
+
+    if(ac.reference === true && !!attribute.attributeClass?.entityId) { 
+
+%><%# Render the Attribute Class Reference as Stereotype  %>
+                , "stereotype": {
+                  "$ref": "<%- attribute.attributeClass.entityId %>"
+                }
+<% // javascript
+
+    } else if(ac.scalar?.length > 0) {
+
+%><%# Render the Attribute Class Type as Type  %>
+              , "type": "<%- ac.scalar?.type %>"
+<% // javascript
+    }
+%><%# Close the UMLAttribute  %>
+            }
+<% // javascript
+
+    }) // END  entity.attributes.forEach
+
+%>
+<%# Close the UMLClass Attributes %>
+        ]
+
+<% // javascript
+
+    if(entity.instances?.length > 0) {
+%>
+<%# Render the UMLEnumeration  %>
+        , "ownedElements": [
+            {
+            "_type": "UMLEnumeration",
+            "_id": "Instances-<%- entity.id %>",
+            "_parent": {
+                "$ref": "<%- UmlModelEntitiesId %>"
+            },
+            "name": "<%- entity.pluralName ?? entity.name.concat(" Instances") %>",
+            "stereotype": {
+                "$ref": "<%- entity.id %>"
+            },
+            "literals": [
+<% // javascript
+        entity.instances.forEach((instance, instanceIndex) => {
+%><%# Render the UMLEnumerationLiterals %>
+                <%- instanceIndex > 0 ? ',' : null %>
+                {
+                    "_type": "UMLEnumerationLiteral",
+                    "_id": "<%- instance.id %>",
+                    "_parent": {
+                        "$ref": "<%- entity.id %>"
+                    },
+                    "name": "<%- instance.name %>"
+                }
+<% // javascript
+        }) // END entity.instance.forEach
+%><%# Close the UMLEnumerationLiterals, UMLEnumeration, UMLClass ownedElements %>
+            ]
+        }]
+<%
+    } // END instance render IF statement
+%><%# Close the UMLClass %>
+    }
+<%
+    }) // END project.entities.forEach
+%>
+<%# Close the Project ownedElements and Entity ownedElements   %>
+      ]
+    }
+  ]
+}
+<% // javascript
+
+function applyAttributeSort(columns) {
+  columns.sort((a, b) => {
+    let sortValue
+
+    // 2. grain
+    sortValue = (b.grain === true ? 1 : 0) - (a.grain === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 3. fks
+    sortValue = (!!b.attributeClass?.entityId ? 1 : 0) - (!!a.attributeClass?.entityId ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 4. alpha
+    return a.name.localeCompare(b.name)
+  })
+}
+
+function applyEntitySort(entities) {
+  entities.sort((a, b) => {
+    return a.name.localeCompare(b.name)
+  })
+}
+
+%>
