@@ -35,7 +35,7 @@ function main() {
 
   // ######  execute code generation ######
   const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
-  codeGenerator.generate()
+  codeGenerator.generate(true)
 }
 
 /**

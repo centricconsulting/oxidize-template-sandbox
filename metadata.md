@@ -155,17 +155,17 @@ Instantiation of an `Entity`, providing a value for each scalar `Attribute` of t
 ```javascript
 {
   type: "instance",
-  values: [
-    {attributeId: ..., value: ...},
-    {attributeId: ..., value: ...},
-    {attributeId: ..., value: ...},
+  attributes: [
+    {id: ..., value: ...},
+    {id: ..., value: ...},
+    {id: ..., value: ...},
   ],
   entityId: ...,
 }
 ```
 
 - `values` **{Array\<JSON\>}** List of `Attributes` and corresponding values.
-- `values[x].attributeId` **{String}** Identifier of the `Attribute` document for which a value is provided. This will be a scalar `Attribute` in the same `Entity` as the `Instance`.
+- `attributes[x].id` **{String}** Identifier of the `Attribute` document for which a value is provided. Only scalar `Attributes` (excludes `Entity` references) are valid.
 - `values[x].value` **{String}** Value for the specified `Attribute`.
 - `entityId` **{String}** Identifier of the `Entity` document in which the `Instance` is contained.
 
@@ -321,20 +321,21 @@ Functional component of the solution architecture characterized by a consistent 
 {
   type: "component",
   lock: ...,
-  function: ...,
-  render: {
-    all: ...,
-    sources: [...],
-  },
+  purpose: ...,
+  mappings: [
+    {sourceSourceId: ..., targetSourceId: ...},
+    {sourceSourceId: ..., targetSourceId: ...},
+    {sourceSourceId: ..., targetSourceId: ...}
+  ],
   componentId: ...,
 }
 ```
 
 - `lock` **{Boolean}** Indicates whether a `Project` contributor has permission to modify the `Component` or its child `Templates`.
-- `function` **{String}** Function of the component in the solution architecture.
-- `render` **{JSON}** Container for `Sources` to be rendered by the child `Templates`.
-- `render.all` **{Boolean}** Indicates whether all `Sources` should be rendered by the child `Templates`. If `true` then other `render` properties will be ignored.
-- `render.sources` **{Array\<String\>}** List of identifiers for `Source` documents that will be rendered in the child `Templates`.
+- `purpose` **{String}** Purpose or function of the component in the solution architecture.
+- `mappings` **{Array\<JSON\>}** List of mapping objects, each indicating a source (origination) and target (destination) `Source`.
+- `mappings[x].sourceSourceId` **{String}** Identifier for the source (origination) `Source` referenced in a mapping object.
+- `mappings[x].targetSourceId` **{String}** Identifier for the target (destination) `Source` referenced in a mapping object.
 - `componentId` **{String}** _The `id` and `componentId` will be identical for `Component` documents_. Identifier of the `Component` document.
 
 ---
