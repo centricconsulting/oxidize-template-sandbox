@@ -33,7 +33,7 @@
         "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
         "alive": true,
         "active": true,
-        "tags": [],
+        "tags": ["DOMAIN: Agency", "TRANSITION: true", "BITEMPORAL: false"],
         "config": {},
         "attributes": [
           {

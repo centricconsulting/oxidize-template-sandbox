@@ -37,7 +37,7 @@ const JavascriptCodifyOptions = {
  * @param {JSON} codifyOptions Complete set of Codify Options.
  * @returns Codified version of the original text value.
  */
-const codifyText = (text, codifyOptions) => {
+const codifyText = (text, codifyOptions, excludeWrapper = false) => {
   if (!codifyOptions) return text
   if (!text) return undefined
 
@@ -90,12 +90,14 @@ const codifyText = (text, codifyOptions) => {
   }
 
   // wrappers
-  if (codifyOptions.wrapper?.left?.length > 0) {
-    text = codifyOptions.wrapper.left.concat(text)
-  }
+  if (!excludeWrapper) {
+    if (codifyOptions.wrapper?.left?.length > 0) {
+      text = codifyOptions.wrapper.left.concat(text)
+    }
 
-  if (codifyOptions.wrapper?.right?.length > 0) {
-    text = text.concat(codifyOptions.wrapper.right)
+    if (codifyOptions.wrapper?.right?.length > 0) {
+      text = text.concat(codifyOptions.wrapper.right)
+    }
   }
 
   return text

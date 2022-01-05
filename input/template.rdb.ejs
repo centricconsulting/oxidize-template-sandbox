@@ -3,14 +3,19 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+const tagPrefixes = ['domain','transition','bitemporal']
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
 
 dbJson.tables.forEach(table => {
+
+  const domain = codifier.codifyText(table.domain, codifyOptions, true)
+  const bitemporal = (table.bitemporal === "true")
+  const transition = (table.transition === "true")
 
 %>
 /* ###################################################### */
 
-CREATE TABLE dbo.[Policy_<%- table.baseName %>] ( 
+CREATE TABLE dbo.[<%- domain ? domain.concat("_") : null %><%- table.baseName %>] ( c
   [Policy_<%- table.baseName %>_PK] BIGINT IDENTITY(1,1) NOT NULL,
   [Policy_<%- table.baseName %>_NK] [varchar](200) NOT NULL,
 <% // javascript

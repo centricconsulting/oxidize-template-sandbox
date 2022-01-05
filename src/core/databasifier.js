@@ -50,9 +50,48 @@ function multiplicitySingleValue(multiplicityId) {
   return ['EXACTLY_ONE', 'ZERO_TO_ONE'].includes(multiplicityId)
 }
 
-const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
+/**
+ *
+ * @param {JSON} json JSON containing nested project metadata.
+ * @param {JSON} codifyOptions JSON containing codify options
+ * @param {JSON} databaseOptions JSON containing databaseify options
+ * @param {Array<String>} tagPrefixes Array of tag prefixes to promote to properites.
+ * @returns
+ */
+const getDatabaseJson = (json, codifyOptions, databaseOptions, tagPrefixes) => {
   // codify everything first
   codifier.codifyJson(json, codifyOptions)
+
+  // create regex version of tag prefixes
+  const tagPrefixSearches = tagPrefixes
+    ?.map((prefix) => {
+      try {
+        return {
+          prefix: prefix,
+          regex: RegExp(`^${prefix}\\s*:\\s*(?<value>.*)\\s*$`, 'gi'),
+        }
+      } catch {
+        return undefined
+      }
+    })
+    .filter((x) => !!x)
+
+  const transferTagAsProperty = (fromObject, toObject) => {
+    if (Array.isArray(tagPrefixSearches) && Array.isArray(fromObject.tags)) {
+      tagPrefixSearches.forEach((search) => {
+        fromObject.tags.forEach((tag) => {
+          const matches = tag.matchAll(search.regex)
+          for (const match of matches) {
+            const propName = search.prefix.toLowerCase()
+            const propValue = match.groups?.value
+            if (propValue && !toObject[propName]) {
+              toObject[propName] = propValue
+            }
+          }
+        })
+      })
+    }
+  }
 
   // iterate through entities (these will be tables)
   const dbJson = {tables: []}
@@ -66,6 +105,8 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
       originalName: entity.name,
       columns: [],
     }
+
+    transferTagAsProperty(entity, table)
 
     // add the primary key based on entity name
     table.columns.push({
@@ -129,7 +170,7 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
         }
       }
 
-      table.columns.push({
+      const column = {
         type: 'column',
         index: attributeIndex + 1,
         name: revisedColumnName(attribute.name),
@@ -141,12 +182,15 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
           : getDataType(ac.scalar, databaseOptions) ?? databaseOptions.defaultDataType,
 
         required: multiplicityRequired(attribute.multiplicityId),
-      })
+      }
+      transferTagAsProperty(attribute, column)
+      table.columns.push(column)
     }) // END attributes
 
     table.foreignKeys = foreignKeys
     dbJson.tables.push(table)
   }) // END entities
+
   return dbJson
 }
 
