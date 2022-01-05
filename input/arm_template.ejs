@@ -1,0 +1,1240 @@
+@@@FILE:[test/arm_template_v1.json]@@@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+const databaseOptions = databasifier.AdfOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+%>
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "factoryName": {
+          "type": "string",
+          "metadata": "Data Factory name",
+          "defaultValue": "d-bia-adf"
+      },
+      "Audit_properties_typeProperties_connectionString_secretName": {
+          "type": "string",
+          "defaultValue": "connectionstring-audit"
+      },
+      "EDW_properties_typeProperties_connectionString_secretName": {
+          "type": "string",
+          "defaultValue": "connectionstring-PLM-EDW"
+      },
+      
+      "lnk_AzSql_Instec_Policy_properties_typeProperties_connectionString_secretName": {
+          "type": "string",
+          "defaultValue": "connectionstring-QSInterfacePLMProd"
+      },
+      "lnk_OpSql_Insurity_Claim_properties_typeProperties_connectionString_secretName": {
+          "type": "string",
+          "defaultValue": "connectionstring-PLM-Sims"
+      }
+      
+  },
+  "variables": {
+      "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+  },
+  "resources": [
+  
+    <%
+dbJson.tables.forEach(table => {
+%>
+{
+"name": "[concat(parameters('factoryName'), '/<%- table.baseName %>')]",
+"type": "Microsoft.DataFactory/factories/pipelines",
+"apiVersion": "2018-06-01",
+"properties": {
+    "activities": [
+        {
+            "name": "cdmProcessBatchInitiate",
+            "description": "Process Batch Initiate will register the pipeline run in the CDM Framework. As an output it gives process_batch_key to be utilized in the Pipeline workflow.",
+            "type": "Lookup",
+            "dependsOn": [],
+            "policy": {
+                "timeout": "7.00:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+            },
+            "userProperties": [],
+            "typeProperties": {
+                "source": {
+                    "type": "AzureSqlSource",
+                    "sqlReaderStoredProcedureName": "cdm.process_batch_initiate_internal",
+                    "storedProcedureParameters": {
+                        "channel_uid": {
+                            "type": "String",
+                            "value": null
+                        },
+                        "comments": {
+                            "type": "String",
+                            "value": null
+                        },
+                        "limit_channel_uid": {
+                            "type": "String",
+                            "value": null
+                        },
+                        "limit_process_uid": {
+                            "type": "String",
+                            "value": null
+                        },
+                        "process_uid": {
+                            "type": "String",
+                            "value": {
+                                "value": "@CONCAT(pipeline().parameters.ProjectName, '::',pipeline().Pipeline)",
+                                "type": "Expression"
+                            }
+                        },
+                        "scope": {
+                            "type": "String",
+                            "value": null
+                        },
+                        "workflow_guid": {
+                            "type": "String",
+                            "value": {
+                                "value": "@pipeline().RunId",
+                                "type": "Expression"
+                            }
+                        },
+                        "workflow_name": {
+                            "type": "String",
+                            "value": {
+                                "value": "@pipeline().Pipeline",
+                                "type": "Expression"
+                            }
+                        },
+                        "workflow_version": {
+                            "type": "String",
+                            "value": {
+                                "value": "@pipeline().parameters.PipelineVersionID",
+                                "type": "Expression"
+                            }
+                        }
+                    },
+                    "queryTimeout": "02:00:00",
+                    "partitionOption": "None"
+                },
+                "dataset": {
+                    "referenceName": "Audit",
+                    "type": "DatasetReference",
+                    "parameters": {}
+                }
+            }
+        },
+        {
+          "name": "setProcessBatchKey",
+          "description": "Assign ProcessBatchKey value returned from ProcessBatchInitiate to Variable",
+          "type": "SetVariable",
+          "dependsOn": [
+              {
+                  "activity": "cdmProcessBatchInitiate",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "variableName": "ProcessBatchKey",
+              "value": {
+                  "value": "@string(activity('cdmProcessBatchInitiate').output.firstrow.process_batch_key)",
+                  "type": "Expression"
+              }
+          }
+      },
+      {
+          "name": "setSourceSqlQuery",
+          "description": "Construct Source SQL Query to be used in CopyData Activity i.e. Load Transient Table.\nQuery is Constructed from SourceStoredProcedure + StartDate + CutOffDate.",
+          "type": "SetVariable",
+          "dependsOn": [
+              {
+                  "activity": "setProcessBatchKey",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "variableName": "SourceSqlQuery",
+              "value": {
+                  "value": "@CONCAT('EXEC ',variables('SourceStoredProcedure'),\n' '''\n,pipeline().parameters.StartDate\n,'''  '\n,','\n,''' '\n,pipeline().parameters.CutOffDate\n,''''\n)",
+                  "type": "Expression"
+              }
+          }
+      },
+      {
+          "name": "Load Transient Table",
+          "description": "Copy Activity will Truncate and Load Transient Table.",
+          "type": "Copy",
+          "dependsOn": [
+              {
+                  "activity": "setSourceSqlQuery",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "policy": {
+              "timeout": "7.00:00:00",
+              "retry": 0,
+              "retryIntervalInSeconds": 30,
+              "secureOutput": false,
+              "secureInput": false
+          },
+          "userProperties": [],
+          "typeProperties": {
+              "source": {
+                  "type": "AzureSqlSource",
+                  "sqlReaderQuery": {
+                      "value": "@variables('SourceSqlQuery')",
+                      "type": "Expression"
+                  },
+                  "queryTimeout": "02:00:00",
+                  "partitionOption": "None"
+              },
+              "sink": {
+                  "type": "AzureSqlSink",
+                  "preCopyScript": {
+                      "value": "@{concat('TRUNCATE TABLE ' ,variables('TransientTable'))}",
+                      "type": "Expression"
+                  },
+                  "disableMetricsCollection": false
+              },
+              "enableStaging": false,
+              "translator": {
+                  "type": "TabularTranslator",
+                  "mappings": [
+                  
+                  {
+                    "source": {
+                    "name": "Policy_<%- table.baseName %>_NK",
+                    "type": "VARCHAR(200)"
+                    },
+                    "sink": {
+                    "name": "Policy_<%- table.baseName %>_NK",
+                    "type": "VARCHAR(200)"
+                    }
+                    },
+                    {
+                      "source": {
+                      "name": "Policy_<%- table.baseName %>_FK",
+                      "type": "VARCHAR(200)"
+                      },
+                      "sink": {
+                      "name": "Policy_<%- table.baseName %>_FK",
+                      "type": "VARCHAR(200)"
+                      }
+                      },
+                   <% // javascript
+                    applyColumnSort(table.columns) // see function at end of script
+                    table.columns.forEach((column, columnIndex) => {
+                      %>
+                      {
+                        "source": {
+                        "name": "<%- column.baseName %>",
+                        "type": "<%- column.dataType %>"
+                        },
+                        "sink": {
+                        "name": "<%- column.baseName %>",
+                        "type": "<%- column.dataType %>"
+                        }
+                        },
+                  %>
+                  <% // javascript
+                  }) 
+                  %> 
+                  {
+                    "source": {
+                    "name": "Business_Effective_Begin_Datetime",
+                    "type": "DateTime"
+                    },
+                    "sink": {
+                    "name": "Business_Effective_Begin_Datetime",
+                    "type": "DateTime"
+                    }
+                    },
+										{
+                    "source": {
+                    "name": "Business_Effective_End_Datetime",
+                    "type": "DateTime"
+                    },
+                    "sink": {
+                    "name": "Business_Effective_End_Datetime",
+                    "type": "DateTime"
+                    }
+                    },
+										{
+                    "source": {
+                    "name": "Record_Valid_Begin_Datetime",
+                    "type": "DateTime"
+                    },
+                    "sink": {
+                    "name": "Record_Valid_Begin_Datetime",
+                    "type": "DateTime"
+                    }
+                    },
+										{
+                    "source": {
+                    "name": "Record_Valid_End_Datetime",
+                    "type": "DateTime"
+                    },
+                    "sink": {
+                    "name": "Record_Valid_End_Datetime",
+                    "type": "DateTime"
+                    }
+                    },
+										{
+                    "source": {
+                    "name": "Entered_Datetime",
+                    "type": "DateTime"
+                    },
+                    "sink": {
+                    "name": "Entered_Datetime",
+                    "type": "DateTime"
+                    }
+                    },
+										{
+                    "source": {
+                    "name": "Updated_Datetime",
+                    "type": "DateTime"
+                    },
+                    "sink": {
+                    "name": "Updated_Datetime",
+                    "type": "DateTime"
+                    }
+                    },
+					          {
+                    "source": {
+                    "name": "Batch_ID",
+                    "type": "INT"
+                    },
+                    "sink": {
+                    "name": "Batch_ID",
+                    "type": "INT"
+                    }
+                    },
+                    {
+                        "source": {
+                        "name": "Invalidated_Batch_ID",
+                        "type": "INT"
+                        },
+                        "sink": {
+                        "name": "Invalidated_Batch_ID",
+                        "type": "INT"
+                        }
+                        },
+					          {
+                    "source": {
+                    "name": "Intra_Batch_Loop_Sequence",
+                    "type": "INT"
+                    },
+                    "sink": {
+                    "name": "Intra_Batch_Loop_Sequence",
+                    "type": "INT"
+                    }
+                    },
+				    {
+                        "source": {
+                        "name": "Generated_Record_Ind",
+                        "type": "String"
+                        },
+                        "sink": {
+                        "name": "Generated_Record_Ind",
+                        "type": "String"
+                        }
+                        },      	
+                    {
+                    "source": {
+                    "name": "Source_System_Code",
+                    "type": "String"
+                    },
+                    "sink": {
+                    "name": "Source_System_Code",
+                    "type": "String"
+                    }
+                    },
+				          	{
+                    "source": {
+                    "name": "CHANGE_HASH",
+                    "type": "Byte[]"
+                    },
+                    "sink": {
+                    "name": "CHANGE_HASH",
+                    "type": "Byte[]"
+                    }
+                    }
+                  
+                  ]
+              }
+          },
+          "inputs": [
+              {
+                  "referenceName": "DataLake_Instec",
+                  "type": "DatasetReference",
+                  "parameters": {}
+              }
+          ],
+          "outputs": [
+              {
+                  "referenceName": "Transient_Policy_Account",
+                  "type": "DatasetReference",
+                  "parameters": {}
+              }
+          ]
+      },
+      {
+"name": "List INTRA_BATCH_LOOP_INT",
+          "description": "List INTRA_BATCH_LOOP_INT that will be looped in ASC order in ForEach Loop Activity to Implement Bi-Temporal.",
+          "type": "Lookup",
+          "dependsOn": [
+              {
+                  "activity": "setSourceCount",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "policy": {
+              "timeout": "7.00:00:00",
+              "retry": 0,
+              "retryIntervalInSeconds": 30,
+              "secureOutput": false,
+              "secureInput": false
+          },
+          "userProperties": [],
+          "typeProperties": {
+              "source": {
+                  "type": "AzureSqlSource",
+                  "sqlReaderQuery": {
+                      "value": "@concat('SELECT DISTINCT INTRA_BATCH_LOOP_INT FROM ',variables('TransientTable'),' ORDER BY INTRA_BATCH_LOOP_INT')",
+                      "type": "Expression"
+                  },
+                  "queryTimeout": "02:00:00",
+                  "partitionOption": "None"
+              },
+              "dataset": {
+                  "referenceName": "EDW",
+                  "type": "DatasetReference",
+                  "parameters": {}
+              },
+              "firstRowOnly": false
+          }
+      },
+      {
+          "name": "SubBatchProcessing",
+          "description": "Loop over List INTRA_BATCH_LOOP_INT Value set.",
+          "type": "ForEach",
+          "dependsOn": [
+              {
+                  "activity": "List INTRA_BATCH_LOOP_INT",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "items": {
+                  "value": "@activity('List INTRA_BATCH_LOOP_INT').output.value",
+                  "type": "Expression"
+              },
+              "isSequential": true,
+              "activities": [
+                  {
+                      "name": "Two Insert - One Update",
+                      "type": "Lookup",
+                      "dependsOn": [],
+                      "policy": {
+                          "timeout": "7.00:00:00",
+                          "retry": 0,
+                          "retryIntervalInSeconds": 30,
+                          "secureOutput": false,
+                          "secureInput": false
+                      },
+                      "userProperties": [],
+                      "typeProperties": {
+                          "source": {
+                              "type": "AzureSqlSource",
+                              "sqlReaderStoredProcedureName": "dbo.usp_ProcessBiTemporal_NonTran",
+                              "storedProcedureParameters": {
+                                  "AttrList": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@variables('AttributeList')",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "IterationTimestamp": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@utcnow()",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "NaturalKeyColumns": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@variables('NaturalKeyColumns')",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "PrimaryKeyColumns": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@variables('PrimaryKeyColumns')",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "process_batch_key": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@variables('ProcessBatchKey')",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "SeqNum": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@item().INTRA_BATCH_LOOP_INT",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "targettable": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@variables('TargetTable')",
+                                          "type": "Expression"
+                                      }
+                                  },
+                                  "transienttable": {
+                                      "type": "String",
+                                      "value": {
+                                          "value": "@variables('TransientTable')",
+                                          "type": "Expression"
+                                      }
+                                  }
+                              },
+                              "queryTimeout": "02:00:00",
+                              "partitionOption": "None"
+                          },
+                          "dataset": {
+                              "referenceName": "EDW",
+                              "type": "DatasetReference",
+                              "parameters": {}
+                          }
+                      }
+                  },
+                  {
+                      "name": "setInsertedCount",
+                      "type": "SetVariable",
+                      "dependsOn": [
+                          {
+                              "activity": "Two Insert - One Update",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          }
+                      ],
+                      "userProperties": [],
+                      "typeProperties": {
+                          "variableName": "InsertedCount",
+                          "value": {
+                              "value": "@string(activity('Two Insert - One Update').output.firstrow.InsertedCount)",
+                              "type": "Expression"
+                          }
+                      }
+                  },
+                  {
+                      "name": "setTotalInsertedCount",
+                      "type": "SetVariable",
+                      "dependsOn": [
+                          {
+                              "activity": "setInterimInsertedCount",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          },
+                          {
+                              "activity": "setInsertedCount",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          }
+                      ],
+                      "userProperties": [],
+                      "typeProperties": {
+                          "variableName": "TotalInsertedCount",
+                          "value": {
+                              "value": "@string(add(int(variables('InterimInsertedCount')),int(variables('InsertedCount'))))",
+                              "type": "Expression"
+                          }
+                      }
+                  },
+                  {
+                      "name": "setInterimInsertedCount",
+                      "type": "SetVariable",
+                      "dependsOn": [
+                          {
+                              "activity": "Two Insert - One Update",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          }
+                      ],
+                      "userProperties": [],
+                      "typeProperties": {
+                          "variableName": "InterimInsertedCount",
+                          "value": {
+                              "value": "@variables('TotalInsertedCount')",
+                              "type": "Expression"
+                          }
+                      }
+                  },
+                  {
+                      "name": "setUpdatedCount",
+                      "type": "SetVariable",
+                      "dependsOn": [
+                          {
+                              "activity": "Two Insert - One Update",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          }
+                      ],
+                      "userProperties": [],
+                      "typeProperties": {
+                          "variableName": "UpdatedCount",
+                          "value": {
+                              "value": "@string(activity('Two Insert - One Update').output.firstrow.UpdatedCount)",
+                              "type": "Expression"
+                          }
+                      }
+                  },
+                  {
+                      "name": "setInterimUpdatedCount",
+                      "type": "SetVariable",
+                      "dependsOn": [
+                          {
+                              "activity": "Two Insert - One Update",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          }
+                      ],
+                      "userProperties": [],
+                      "typeProperties": {
+                          "variableName": "InterimUpdatedCount",
+                          "value": {
+                              "value": "@variables('TotalUpdatedCount')",
+                              "type": "Expression"
+                          }
+                      }
+                  },
+                  {
+                      "name": "setTotalUpdatedCount",
+                      "type": "SetVariable",
+                      "dependsOn": [
+                          {
+                              "activity": "setUpdatedCount",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          },
+                          {
+                              "activity": "setInterimUpdatedCount",
+                              "dependencyConditions": [
+                                  "Succeeded"
+                              ]
+                          }
+                      ],
+                      "userProperties": [],
+                      "typeProperties": {
+                          "variableName": "TotalUpdatedCount",
+                          "value": {
+                              "value": "@string(add(int(variables('InterimUpdatedCount')),int(variables('UpdatedCount'))))",
+                              "type": "Expression"
+                          }
+                      }
+                  }
+              ]
+          }
+      },
+      {
+          "name": "cdmProcessBatchConclude",
+          "type": "ExecutePipeline",
+          "dependsOn": [
+              {
+                  "activity": "SubBatchProcessing",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "pipeline": {
+                  "referenceName": "cdmProcessBatchConclude",
+                  "type": "PipelineReference"
+              },
+              "waitOnCompletion": true,
+              "parameters": {
+                  "process_batch_key": {
+                      "value": "@variables('ProcessBatchKey')",
+                      "type": "Expression"
+                  },
+                  "source_record_ct": {
+                      "value": "@variables('SourceCount')",
+                      "type": "Expression"
+                  },
+                  "inserted_record_ct": {
+                      "value": "@variables('TotalInsertedCount')",
+                      "type": "Expression"
+                  },
+                  "updated_record_ct": {
+                      "value": "@variables('TotalUpdatedCount')",
+                      "type": "Expression"
+                  },
+                  "deleted_record_ct": "0",
+                  "completed_ind": "1"
+              }
+          }
+      },
+      {
+          "name": "cdmProcessBatchErrorListIntraBatchLoopInt",
+          "type": "ExecutePipeline",
+          "dependsOn": [
+              {
+                  "activity": "List INTRA_BATCH_LOOP_INT",
+                  "dependencyConditions": [
+                      "Failed"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "pipeline": {
+                  "referenceName": "cdmProcessBatchError",
+                  "type": "PipelineReference"
+              },
+              "waitOnCompletion": true,
+              "parameters": {
+                  "ProcessBatchKey": {
+                      "value": "@variables('ProcessBatchKey')",
+                      "type": "Expression"
+                  },
+                  "ErrorMessage": {
+                      "value": "@activity('List INTRA_BATCH_LOOP_INT').error.message",
+                      "type": "Expression"
+                  },
+                  "ErrorNumber": {
+                      "value": "-1",
+                      "type": "Expression"
+                  },
+                  "ErrorScope": {
+                      "value": "@activity('List INTRA_BATCH_LOOP_INT').activityrunid",
+                      "type": "Expression"
+                  }
+              }
+          }
+      },
+      {
+          "name": "cdmProcessBatchErrorLoadTransientTable",
+          "type": "ExecutePipeline",
+          "dependsOn": [
+              {
+                  "activity": "Load Transient Table",
+                  "dependencyConditions": [
+                      "Failed"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "pipeline": {
+                  "referenceName": "cdmProcessBatchError",
+                  "type": "PipelineReference"
+              },
+              "waitOnCompletion": true,
+              "parameters": {
+                  "ProcessBatchKey": {
+                      "value": "@variables('ProcessBatchKey')",
+                      "type": "Expression"
+                  },
+                  "ErrorMessage": {
+                      "value": "@activity('Load Transient Table').error.message",
+                      "type": "Expression"
+                  },
+                  "ErrorNumber": {
+                      "value": "-1",
+                      "type": "Expression"
+                  },
+                  "ErrorScope": {
+                      "value": "@activity('Load Transient Table').activityrunid",
+                      "type": "Expression"
+                  }
+              }
+          }
+      },
+      {
+          "name": "cdmProcessBatchError",
+          "type": "ExecutePipeline",
+          "dependsOn": [
+              {
+                  "activity": "SubBatchProcessing",
+                  "dependencyConditions": [
+                      "Failed"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "pipeline": {
+                  "referenceName": "cdmProcessBatchError",
+                  "type": "PipelineReference"
+              },
+              "waitOnCompletion": true,
+              "parameters": {
+                  "ProcessBatchKey": {
+                      "value": "@variables('ProcessBatchKey')",
+                      "type": "Expression"
+                  },
+                  "ErrorMessage": {
+                      "value": "@concat('Failed:SubBatchProcessing','')",
+                      "type": "Expression"
+                  },
+                  "ErrorNumber": {
+                      "value": "-1",
+                      "type": "Expression"
+                  },
+                  "ErrorScope": {
+                      "value": "@pipeline().RunId",
+                      "type": "Expression"
+                  }
+              }
+          }
+      },
+      {
+          "name": "setSourceCount",
+          "type": "SetVariable",
+          "dependsOn": [
+              {
+                  "activity": "Load Transient Table",
+                  "dependencyConditions": [
+                      "Succeeded"
+                  ]
+              }
+          ],
+          "userProperties": [],
+          "typeProperties": {
+              "variableName": "SourceCount",
+              "value": {
+                  "value": "@string(activity('Load Transient Table').output.rowsRead)",
+                  "type": "Expression"
+              }
+          }
+      }
+  ],
+  "policy": {
+    "elapsedTimeMetric": {},
+    "cancelAfter": {}
+},
+"parameters": {
+    "ProjectName": {
+        "type": "string",
+        "defaultValue": "DataLakeToEDW"
+    },
+    "PipelineVersionID": {
+        "type": "string",
+        "defaultValue": "1.0"
+    },
+    "StartDate": {
+        "type": "string",
+        "defaultValue": "2019-06-06"
+    },
+    "CutOffDate": {
+        "type": "string",
+        "defaultValue": "2019-06-07"
+    }
+},
+               
+"variables": {
+  "ProcessBatchKey": {
+      "type": "String"
+  },
+  "AttributeList": {
+    "type": "String",
+    "defaultValue": "<% // javascript
+
+  applyColumnSort(table.columns) // see function at end of script
+  table.columns.forEach((column, columnIndex) => {
+%><%- columnIndex > 0 ? "," : ""%><%-"ZZ_".concat(column.baseName)%><% // javascript 
+}) 
+%>"
+  },
+  "NaturalKeyColumns": {
+      "type": "String",
+      "defaultValue": "<%- table.baseName %>_NK"
+  },
+  "NaturalKeyDelimiter": {
+      "type": "String",
+      "defaultValue": "#"
+  },
+  "PrimaryKeyColumns": {
+      "type": "String",
+      "defaultValue": "<%- table.baseName %>_PK"
+  },
+  "SourceStoredProcedure": {
+      "type": "String",
+      "defaultValue": "usp_Instec_Policy_<%- table.baseName %>"
+  },
+  "TargetTable": {
+      "type": "String",
+      "defaultValue": "Policy_<%- table.baseName %>"
+  },
+  "TransientTable": {
+      "type": "String",
+      "defaultValue": "Transient_Policy_<%- table.baseName %>"
+  },
+  "SourceSqlQuery": {
+      "type": "String",
+      "defaultValue": "EXEC usp_Instec_Policy_<%- table.baseName %> '2019-06-06' , '2019-06-07'"
+  },
+  "InsertedCount": {
+      "type": "String",
+      "defaultValue": "0"
+  },
+  "UpdatedCount": {
+      "type": "String",
+      "defaultValue": "0"
+  },
+  "SourceCount": {
+      "type": "String",
+      "defaultValue": "0"
+  },
+  "TotalInsertedCount": {
+      "type": "String",
+      "defaultValue": "0"
+  },
+  "InterimInsertedCount": {
+      "type": "String",
+      "defaultValue": "0"
+  },
+  "TotalUpdatedCount": {
+      "type": "String",
+      "defaultValue": "0"
+  },
+  "InterimUpdatedCount": {
+      "type": "String",
+      "defaultValue": "0"
+  }
+},
+"folder": {
+  "name": "DataLakeToEDW/Policy_Instec"
+},
+"annotations": [],
+"lastPublishTime": "2021-04-06T10:49:23Z"
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/datasets/Audit')]",
+"[concat(variables('factoryId'), '/datasets/DataLake_Instec')]",
+"[concat(variables('factoryId'), '/datasets/Transient_Policy_<%- table.baseName %>')]",
+"[concat(variables('factoryId'), '/datasets/EDW')]",
+"[concat(variables('factoryId'), '/pipelines/cdmProcessBatchConclude')]",
+"[concat(variables('factoryId'), '/pipelines/cdmProcessBatchError')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/Audit')]",
+"type": "Microsoft.DataFactory/factories/datasets",
+"apiVersion": "2018-06-01",
+"properties": {
+"description": "This is datasets point to Audit Database and will be used to execute Stored procedures of it.",
+"linkedServiceName": {
+  "referenceName": "Audit",
+  "type": "LinkedServiceReference"
+},
+"folder": {
+  "name": "Azure SQL/Audit"
+},
+"annotations": [],
+"type": "AzureSqlMITable",
+"schema": [],
+"typeProperties": {}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/linkedServices/Audit')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/DataLake')]",
+"type": "Microsoft.DataFactory/factories/datasets",
+"apiVersion": "2018-06-01",
+"properties": {
+"description": "This is datasets point to DataLake Database and will be used to execute Stored procedures of it.",
+"linkedServiceName": {
+  "referenceName": "lnk_AzSqlMi_Current_Insurity_Claim",
+  "type": "LinkedServiceReference"
+},
+"folder": {
+  "name": "Azure SQL/DataLake"
+},
+"annotations": [],
+"type": "AzureSqlMITable",
+"schema": [],
+"typeProperties": {}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/linkedServices/lnk_AzSqlMi_Current_Insurity_Claim')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/DataLake_Instec')]",
+"type": "Microsoft.DataFactory/factories/datasets",
+"apiVersion": "2018-06-01",
+"properties": {
+"description": "This is datasets point to DataLake_Instec Database and will be used to execute Stored procedures of it.",
+"linkedServiceName": {
+  "referenceName": "lnk_AzSqlMi_Current_Instec_Policy",
+  "type": "LinkedServiceReference"
+},
+"folder": {
+  "name": "Azure SQL/DataLake"
+},
+"annotations": [],
+"type": "AzureSqlMITable",
+"schema": [],
+"typeProperties": {}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/linkedServices/lnk_AzSqlMi_Current_Instec_Policy')]"
+]
+},
+
+{
+"name": "[concat(parameters('factoryName'), '/EDW')]",
+"type": "Microsoft.DataFactory/factories/datasets",
+"apiVersion": "2018-06-01",
+"properties": {
+"description": "This is datasets point to EDW Database and will be used to execute Stored procedures of it.",
+"linkedServiceName": {
+  "referenceName": "EDW",
+  "type": "LinkedServiceReference"
+},
+"folder": {
+  "name": "Azure SQL/EDW"
+},
+"annotations": [],
+"type": "AzureSqlMITable",
+"schema": [],
+"typeProperties": {}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/linkedServices/EDW')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/Transient_Policy_<%- table.baseName %>')]",
+"type": "Microsoft.DataFactory/factories/datasets",
+"apiVersion": "2018-06-01",
+"properties": {
+"linkedServiceName": {
+  "referenceName": "EDW",
+  "type": "LinkedServiceReference"
+},
+"folder": {
+  "name": "Azure SQL/EDW"
+},
+"annotations": [],
+"type": "AzureSqlMITable",
+"schema": [],
+"typeProperties": {
+  "schema": "dbo",
+  "table": "Transient_Policy_<%- table.baseName %>"
+}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/linkedServices/EDW')]"
+]
+},
+
+{
+"name": "[concat(parameters('factoryName'), '/Audit')]",
+"type": "Microsoft.DataFactory/factories/linkedServices",
+"apiVersion": "2018-06-01",
+"properties": {
+"annotations": [],
+"type": "AzureSqlMI",
+"typeProperties": {
+  "connectionString": {
+      "type": "AzureKeyVaultSecret",
+      "store": {
+          "referenceName": "bia_keyvault01",
+          "type": "LinkedServiceReference"
+      },
+      "secretName": "[parameters('Audit_properties_typeProperties_connectionString_secretName')]"
+  }
+},
+"connectVia": {
+  "referenceName": "d-bia-self-priv-01",
+  "type": "IntegrationRuntimeReference"
+}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
+"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
+]
+},
+
+{
+"name": "[concat(parameters('factoryName'), '/EDW')]",
+"type": "Microsoft.DataFactory/factories/linkedServices",
+"apiVersion": "2018-06-01",
+"properties": {
+"annotations": [],
+"type": "AzureSqlMI",
+"typeProperties": {
+  "connectionString": {
+      "type": "AzureKeyVaultSecret",
+      "store": {
+          "referenceName": "bia_keyvault01",
+          "type": "LinkedServiceReference"
+      },
+      "secretName": "[parameters('EDW_properties_typeProperties_connectionString_secretName')]"
+  }
+},
+"connectVia": {
+  "referenceName": "d-bia-self-priv-01",
+  "type": "IntegrationRuntimeReference"
+}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
+"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/lnk_AzSql_Instec_Policy')]",
+"type": "Microsoft.DataFactory/factories/linkedServices",
+"apiVersion": "2018-06-01",
+"properties": {
+"annotations": [],
+"type": "AzureSqlDatabase",
+"typeProperties": {
+  "connectionString": {
+      "type": "AzureKeyVaultSecret",
+      "store": {
+          "referenceName": "bia_keyvault01",
+          "type": "LinkedServiceReference"
+      },
+      "secretName": "[parameters('lnk_AzSql_Instec_Policy_properties_typeProperties_connectionString_secretName')]"
+  }
+},
+"connectVia": {
+  "referenceName": "d-bia-self-priv-01",
+  "type": "IntegrationRuntimeReference"
+}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
+"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/lnk_OpSql_Insurity_Claim')]",
+"type": "Microsoft.DataFactory/factories/linkedServices",
+"apiVersion": "2018-06-01",
+"properties": {
+"description": "Most Essential -- Link to OnPrem SQL Insurity Claims DB",
+"annotations": [],
+"type": "SqlServer",
+"typeProperties": {
+  "connectionString": {
+      "type": "AzureKeyVaultSecret",
+      "store": {
+          "referenceName": "bia_keyvault01",
+          "type": "LinkedServiceReference"
+      },
+      "secretName": "[parameters('lnk_OpSql_Insurity_Claim_properties_typeProperties_connectionString_secretName')]"
+  }
+},
+"connectVia": {
+  "referenceName": "d-bia-self-priv-01",
+  "type": "IntegrationRuntimeReference"
+}
+},
+"dependsOn": [
+"[variables('factoryId')]",
+"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
+"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
+]
+},
+{
+"name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
+"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+"apiVersion": "2018-06-01",
+"properties": {
+"type": "Managed",
+"typeProperties": {
+  "computeProperties": {
+      "location": "AutoResolve",
+      "dataFlowProperties": {
+          "computeType": "General",
+          "coreCount": 8,
+          "timeToLive": 0
+      }
+  }
+}
+},
+"dependsOn": [
+"[variables('factoryId')]"
+]
+},
+
+
+<% // javascript
+
+  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
+  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
+
+%>
+
+<% // javascript
+  
+})
+
+function applyColumnSort(columns) {
+  columns.sort((a, b) => {
+    let sortValue
+    // 1. primary
+    sortValue = (b.primary === true ? 1 : 0)- (a.primary === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 2. grain
+    sortValue = (b.grain === true ? 1 : 0) - (a.grain === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 3. fks
+    sortValue = (!!b.attributeClass?.entityId ? 1 : 0) - (!!a.attributeClass?.entityId ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 4. alpha
+    return a.name.localeCompare(b.name)
+  })
+
+}
+%>
+]
+}

@@ -1,0 +1,121 @@
+@@@FILE:[test/databasifySP.sql]@@@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+const databaseOptions = databasifier.SqlServerDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+%>
+/* ################### Strting New Code for Stored Procedure ################## */
+
+CREATE OR ALTER PROCEDURE usp_Instec_<%- table.baseName %> (@START_DATE datetime , @END_DATE datetime) AS
+
+--BEGIN Cast Block
+DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+/*DO NOT  EDIT THIS CODE.*/
+
+--BEGIN Cast Block
+
+SELECT 
+ CAST(<%- table.baseName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- table.baseName %>_NK
+,CAST(<%- table.baseName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- table.baseName %>_FK,
+<% // javascript
+
+  applyColumnSort(table.columns) // see function at end of script
+  table.columns.forEach((column, columnIndex) => {
+
+%><%- columnIndex > 0 ? "," : " " 
+%><%- "CAST([".concat(column.baseName)
+%><%- "] AS ".concat(column.dataType) 
+%><%- ") AS [".concat(column.baseName)
+%>]<%- column.required ? " " : null %>
+<% // javascript
+  
+}) 
+
+  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
+  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
+
+%>,CAST(Business_Effective_Begin_Datetime AS DATETIME2(3)) AS Business_Effective_Begin_Datetime
+,CAST(Business_Effective_End_Datetime AS DATETIME2(3)) AS Business_Effective_End_Datetime
+,CAST(Record_Valid_Begin_Datetime AS DATETIME2(3)) AS Record_Valid_Begin_Datetime
+,CAST(Record_Valid_End_Datetime AS DATETIME2(3)) AS Record_Valid_End_Datetime
+,CAST(Entered_Datetime AS DATETIME2(3)) AS Entered_Datetime
+,CAST(Updated_Datetime AS DATETIME2(3)) AS Updated_Datetime
+,CAST(Batch_ID AS INT) AS Batch_ID
+,CAST(Invalidated_Batch_ID AS VARCHAR(200)) AS Invalidated_Batch_ID
+,CAST(Intra_Batch_Loop_Sequence AS INT) AS Intra_Batch_Loop_Sequence
+,CAST(Generated_Record_Ind AS int) AS Generated_Record_Ind
+,CAST(CHANGE_HASH AS BINARY(32)) AS CHANGE_HASH
+,CAST(Source_System_Code AS VARCHAR(100)) AS Source_System_Code
+FROM(
+--END Cast Block
+
+/* EDIT YOUR SOURCE SQL QUERY HERE  */
+
+--BEGIN Custom Block
+SELECT
+(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- table.baseName %>_NK
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- table.baseName %>_FK,
+<% // javascript
+
+  applyColumnSort(table.columns) // see function at end of script
+  table.columns.forEach((column, columnIndex) => {
+
+%><%- columnIndex > 0 ? "," : " " 
+%><%- "CAST(GETDATE()"
+%><%- " AS ".concat(column.dataType) 
+%><%- ") AS [".concat(column.baseName)
+%>]<%- column.required ? " " : null %>
+<% // javascript
+
+}) 
+%>,CAST(GETDATE() AS VARCHAR(100)) AS Business_Effective_Begin_Datetime
+,CAST(GETDATE() AS VARCHAR(100)) AS Business_Effective_End_Datetime
+,CAST(GETDATE() AS VARCHAR(100)) AS Record_Valid_Begin_Datetime
+,CAST(GETDATE() AS VARCHAR(100)) AS Record_Valid_End_Datetime
+,CAST(GETDATE() AS VARCHAR(100)) AS Entered_Datetime
+,CAST(GETDATE() AS VARCHAR(100)) AS Updated_Datetime
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Batch_ID
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Invalidated_Batch_ID
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Intra_Batch_Loop_Sequence
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Generated_Record_Ind
+,0x1234 AS CHANGE_HASH
+,(CAST(RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) +RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) AS VARCHAR(10))) AS Source_System_Code
+--END Custom Block
+
+--BEGIN Close Block
+) MyTable
+
+--END Close Block
+GO
+<% // javascript
+  if(grainColumns.length > 0) {
+%>
+<% // javascript
+  }
+})
+
+function applyColumnSort(columns) {
+  columns.sort((a, b) => {
+    let sortValue
+    // 1. primary
+    sortValue = (b.primary === true ? 1 : 0)- (a.primary === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 2. grain
+    sortValue = (b.grain === true ? 1 : 0) - (a.grain === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 3. fks
+    sortValue = (!!b.attributeClass?.entityId ? 1 : 0) - (!!a.attributeClass?.entityId ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 4. alpha
+    return a.name.localeCompare(b.name)
+  })
+
+}
+%>
