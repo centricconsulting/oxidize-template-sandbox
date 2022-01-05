@@ -18,7 +18,12 @@ function main() {
   // specificy the folder path
   const targetFolderPath = './output'
   // load the script text
-  const templateScript = fs.readFileSync('./input/template.rdb.ejs', 'utf8')
+  const templateScript_ARM_Template = fs.readFileSync('./input/arm_template.ejs', 'utf8')
+  const templateScript_Target_tab = fs.readFileSync('./input/template.rdb.ejs', 'utf8')
+  const templateScript_TransientEDW_tab = fs.readFileSync('./input/template.rdbTransientEDWtab.ejs', 'utf8')
+  const templateScript_BiTemporalSP = fs.readFileSync('./input/template.rdbBiTemporalSP.ejs', 'utf8')
+  const templateScript_BiTemporalTransSP = fs.readFileSync('./input/template.rdbBiTemporalTransSP.ejs', 'utf8')
+  const templateScript_SourceSP = fs.readFileSync('./input/template.rdbSP.ejs', 'utf8')
   // convert the payload to parsed json
   const payload = fs.readFileSync('./input/metadata.json', 'utf8')
   // load the json text
@@ -34,8 +39,19 @@ function main() {
   // demoCodifier()
 
   // ######  execute code generation ######
-  const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
-  codeGenerator.generate(true)
+  const codeGenerator_1 = new CodeGenerator(payloadJson, templateScript_ARM_Template, targetFolderPath)
+  const codeGenerator_2 = new CodeGenerator(payloadJson, templateScript_Target_tab, targetFolderPath)
+  const codeGenerator_3 = new CodeGenerator(payloadJson, templateScript_TransientEDW_tab, targetFolderPath)
+  const codeGenerator_4 = new CodeGenerator(payloadJson, templateScript_BiTemporalSP, targetFolderPath)
+  const codeGenerator_5 = new CodeGenerator(payloadJson, templateScript_BiTemporalTransSP, targetFolderPath)
+  const codeGenerator_6 = new CodeGenerator(payloadJson, templateScript_SourceSP, targetFolderPath)
+
+  codeGenerator_1.generate()
+  codeGenerator_2.generate()
+  codeGenerator_3.generate()
+  codeGenerator_4.generate()
+  codeGenerator_5.generate()
+  codeGenerator_6.generate()
 }
 
 /**
