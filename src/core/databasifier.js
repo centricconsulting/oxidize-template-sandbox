@@ -31,6 +31,37 @@ const SqlServerDatabaseOptions = {
   ],
 }
 
+const AdfOptions = {
+  columnKeySegment: 'ID',
+  defaultDataType: 'VARCHAR(200)',
+  dataTypeMap: [
+    {nominal: 'text', target: (scale) => `String`},
+    {nominal: 'character', target: () => `String`},
+    {nominal: 'boolean', target: () => `Boolean`},
+    {nominal: 'bit', target: () => `BIT`},
+    {
+      nominal: 'integer',
+      target: (scale) => {
+        // scale corresponds to number of Integer bits.
+        if (!scale) return 'INT'
+        if (scale <= 0) return 'INT'
+        if (scale <= 1) return 'INT'
+        if (scale <= 2) return 'INT'
+        if (scale <= 4) return 'INT'
+        return 'INT'
+      },
+    },
+    {nominal: 'decimal', target: (scale, precision) => `DECIMAL`},
+    {nominal: 'identifier', target: () => 'String'},
+    {nominal: 'float', target: (scale, precision) => `DECIMAL`},
+    {nominal: 'date', target: () => `DateTime`},
+    {nominal: 'time', target: () => `DateTime`},
+    {nominal: 'timestamp', target: () => `DateTime`},
+    {default: true, target: () => 'String'},
+  ],
+}
+
+
 function getDataType({type, scale, precision}, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
   let dtItem = dtm.find((m) => m.nominal === type)
@@ -194,4 +225,4 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions, tagPrefixes) => {
   return dbJson
 }
 
-export default {getDatabaseJson, SqlServerDatabaseOptions}
+export default {getDatabaseJson, SqlServerDatabaseOptions, AdfOptions}
