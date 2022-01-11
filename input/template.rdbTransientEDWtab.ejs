@@ -3,23 +3,28 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+const tagPrefixes = ['domain','transition','bitemporal']
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
 
 dbJson.tables.forEach(table => {
+
+  const domain = codifier.codifyText(table.domain, codifyOptions, true)
+  const bitemporal = (table.bitemporal === "true")
+  const transition = (table.transition === "true")
 
 %>
 /* ###################################################### */
 --Transient EDW table
-/****** Object:  Table [dbo].[Transient_<%- table.baseName %>_<%- table.baseName %>]    Script Date: 12/31/2021 8:51:04 PM ******/
+/****** Object:  Table [dbo].[Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>]    Script Date: 12/31/2021 8:51:04 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[Transient_Policy_<%- table.baseName %>]( 
-  [Policy_<%- table.baseName %>_PK] BIGINT NOT NULL,
-  [Policy_<%- table.baseName %>_NK] [varchar](200) NULL,
+CREATE TABLE [dbo].[Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>]( 
+  [<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK] [varchar](200) NULL,
+  [<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK] [varchar](200) NULL,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -36,18 +41,18 @@ CREATE TABLE [dbo].[Transient_Policy_<%- table.baseName %>](
   const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
   const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
 
-%>,[Business_Effective_Begin_Datetime] [datetime2](7) NULL,
-[Business_Effective_End_Datetime] [datetime2](7) NULL,
-[Record_Valid_Begin_Datetime] [datetime2](7) NULL,
-[Record_Valid_End_Datetime] [datetime2](7) NULL,
-[Entered_Datetime] [datetime2](7) NULL,
-[Updated_Datetime] [datetime2](7) NULL,
-[Batch_ID] [varchar](200) NULL,
-[Invalidated_Batch_ID] [varchar](200) NULL,
-[Intra_Batch_Loop_Sequence] [int] NULL,
-[Generated_Record_Ind] [int] NULL,
-[Change_HASH] [binary](32) NULL,
-[Source_System_Code] [varchar](100) NULL
+%>,[BUSINESS_EFFECTIVE_BEGIN_DATETIME] [DATETIME2](7) NULL,
+[BUSINESS_EFFECTIVE_END_DATETIME] [DATETIME2](7) NULL,
+[RECORD_VALID_BEGIN_DATETIME] [DATETIME2](7) NULL,
+[RECORD_VALID_END_DATETIME] [DATETIME2](7) NULL,
+[ENTERED_DATETIME] [DATETIME2](7) NULL,
+[UPDATED_DATETIME] [DATETIME2](7) NULL,
+[BATCH_ID] [VARCHAR](200) NULL,
+[INVALIDATED_BATCH_ID] [VARCHAR](200) NULL,
+[INTRA_BATCH_LOOP_SEQUENCE] [INT] NULL,
+[GENERATED_RECORD_IND] [INT] NULL,
+[CHANGE_HASH] [BINARY](32) NULL,
+[SOURCE_SYSTEM_CODE] [VARCHAR](100) NULL
 ) ON [PRIMARY]
 GO
 
