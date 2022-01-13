@@ -1,64 +1,64 @@
 @@@FILE:[test/databasify.sql]@@@
 <% // javascript
 
+
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
-const tagPrefixes = ['domain','transition','bitemporal']
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+const codifyText = (text, excludeWrapper = false) => {
+  return codifier.codifyText(text, codifyOptions, excludeWrapper)
+}
 
 dbJson.tables.forEach(table => {
 
-  const domain = codifier.codifyText(table.domain, codifyOptions, true)
-  const bitemporal = (table.bitemporal === "true")
-  const transition = (table.transition === "true")
+  const domain = table.tagProperties?.domain
+  const tableNameUnwrapped = codifyText(domain ? domain.concat("_", table.baseName) : table.baseName, true)
+  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
 
 %>
 /* ###################################################### */
 
-CREATE TABLE dbo.[<%- domain ? domain.concat("_") : null %><%- table.baseName %>] ( c
-  [Policy_<%- table.baseName %>_PK] BIGINT IDENTITY(1,1) NOT NULL,
-  [Policy_<%- table.baseName %>_NK] [varchar](200) NOT NULL,
+CREATE TABLE dbo.[<%- tableNameUnwrapped %>] (
+  [<%- tableNameUnwrapped.concat("_", databaseOptions.primaryKeyDescriptor) %>] BIGINT IDENTITY(1,1) NOT NULL
+, [<%- tableNameUnwrapped.concat("_", databaseOptions.naturalKeyDescriptor) %>] [varchar](200) NOT NULL
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
   table.columns.forEach((column, columnIndex) => {
 
-%><%- columnIndex > 0 ? "," : " " 
-%><%- " ".concat(column.name) 
-%><%- " ".concat(column.dataType) 
+%>,<%- ` [${column.name}]`
+%><%-  ` ${column.dataType}`
 %><%- column.required ? " NOT NULL" : null %>
 <% // javascript
-  
+
   })
 
-  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
-  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
+%>, [BUSINESS_EFFECTIVE_BEGIN_DATETIME] [DATETIME2](7) NULL
+, [BUSINESS_EFFECTIVE_END_DATETIME] [DATETIME2](7) NULL
+, [RECORD_VALID_BEGIN_DATETIME] [DATETIME2](7) NULL
+, [RECORD_VALID_END_DATETIME] [DATETIME2](7) NULL
+, [ENTERED_DATETIME] [DATETIME2](7) NULL
+, [UPDATED_DATETIME] [DATETIME2](7) NULL
+, [BATCH_ID] [VARCHAR](200) NULL
+, [INVALIDATED_BATCH_ID] [VARCHAR](200) NULL
+, [INTRA_BATCH_LOOP_SEQUENCE] [INT] NULL
+, [GENERATED_RECORD_IND] [INT] NULL
+, [CHANGE_HASH] [BINARY](32) NULL
+, [SOURCE_SYSTEM_CODE] [VARCHAR](100) NULL
+, CONSTRAINT [PK_<%- tableNameUnwrapped %>] PRIMARY KEY CLUSTERED ([<%- tableNameUnwrapped.concat("_", databaseOptions.primaryKeyDescriptor) %>] ASC)
+) WITH (
+  PAD_INDEX = OFF
+, STATISTICS_NORECOMPUTE = OFF
+, IGNORE_DUP_KEY = OFF
+, ALLOW_ROW_LOCKS = ON
+, ALLOW_PAGE_LOCKS = ON
+) ON [PRIMARY]
 
-%>,[Business_Effective_Begin_Datetime] [datetime2](7) NULL,
-[Business_Effective_End_Datetime] [datetime2](7) NULL,
-[Record_Valid_Begin_Datetime] [datetime2](7) NULL,
-[Record_Valid_End_Datetime] [datetime2](7) NULL,
-[Entered_Datetime] [datetime2](7) NULL,
-[Updated_Datetime] [datetime2](7) NULL,
-[Batch_ID] [varchar](200) NULL,
-[Invalidated_Batch_ID] [varchar](200) NULL,
-[Intra_Batch_Loop_Sequence] [int] NULL,
-[Generated_Record_Ind] [int] NULL,
-[Change_HASH] [binary](32) NULL,
-[Source_System_Code] [varchar](100) NULL
-<%- // javascript
-  pkColumns.length > 0 ?  ` 
-  
-  CONSTRAINT [Policy_${table.baseName}_PK] PRIMARY KEY CLUSTERED 
-   ( 
-   ${ pkColumns.join(",") } ASC )
-  WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY] 
-  \n` : null
-%>;
 <% // javascript
   if(grainColumns.length > 0) {
 %>
-CREATE UNIQUE INDEX UX_<%- table.baseName -%>_GRAIN ON [Policy_<%= table.baseName %>] (
+CREATE UNIQUE INDEX [UX_<%- tableNameUnwrapped %>_GRAIN] ON [<%- tableNameUnwrapped %>] (
   <%- grainColumns.join(",") %>
 );
 <% // javascript

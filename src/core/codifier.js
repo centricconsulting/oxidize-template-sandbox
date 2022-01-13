@@ -16,7 +16,7 @@ const DatabaseCodifyOptions = {
   substitutions: [
     {find: /(\s+|\W)+/gim, replace: '_'}, // replace whitespace with underscore
   ],
-  wrapper: {left: '[', right: ']'},
+  wrapper: undefined,
 }
 
 /**
@@ -27,7 +27,7 @@ const JavascriptCodifyOptions = {
   preserveCaps: true,
   substitutions: [
     {find: /\s+/gim, replace: ''}, // remove all whitespace
-    {find: /\W+/gim, replace: '-'}, // replace non-words with hyphen
+    {find: /\W+/gim, replace: ''}, // replace non-words with hyphen
   ],
 }
 
