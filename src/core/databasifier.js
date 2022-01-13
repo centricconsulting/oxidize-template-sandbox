@@ -5,25 +5,25 @@ const SqlServerDatabaseOptions = {
   columnKeySegment: 'ID',
   defaultDataType: 'VARCHAR(200)',
   dataTypeMap: [
-    {nominal: 'text', target: (scale) => `VARCHAR(${scale ?? 200})`},
+    {nominal: 'text', target: (precision) => `VARCHAR(${precision ?? 200})`},
     {nominal: 'character', target: () => `CHAR`},
     {nominal: 'boolean', target: () => `BIT`},
     {nominal: 'bit', target: () => `BIT`},
     {
       nominal: 'integer',
-      target: (scale) => {
-        // scale corresponds to number of Integer bits.
-        if (!scale) return 'INT'
-        if (scale <= 0) return 'BIT'
-        if (scale <= 1) return 'TINYINT'
-        if (scale <= 2) return 'SMALLINT'
-        if (scale <= 4) return 'INT'
+      target: (precision) => {
+        // precision corresponds to number of Integer bytes.
+        if (!precision) return 'INT'
+        if (precision <= 0) return 'BIT'
+        if (precision <= 1) return 'TINYINT'
+        if (precision <= 2) return 'SMALLINT'
+        if (precision <= 4) return 'INT'
         return 'BIGINT'
       },
     },
-    {nominal: 'decimal', target: (scale, precision) => `DECIMAL(${scale ?? 20},${precision ?? 8})`},
+    {nominal: 'decimal', target: (precision, scale) => `DECIMAL(${precision ?? 20},${scale ?? 8})`},
     {nominal: 'identifier', target: () => 'VARCHAR(200)'},
-    {nominal: 'float', target: (scale, precision) => `FLOAT(${scale ?? 20},${precision ?? 8})`},
+    {nominal: 'float', target: (precision, scale) => `FLOAT(${precision ?? 20},${scale ?? 8})`},
     {nominal: 'date', target: () => `DATE`},
     {nominal: 'time', target: () => `DATETIME2(7)`},
     {nominal: 'timestamp', target: () => `DATETIME2(7)`},
@@ -35,25 +35,25 @@ const AdfOptions = {
   columnKeySegment: 'ID',
   defaultDataType: 'VARCHAR(200)',
   dataTypeMap: [
-    {nominal: 'text', target: (scale) => `String`},
+    {nominal: 'text', target: () => `String`},
     {nominal: 'character', target: () => `String`},
     {nominal: 'boolean', target: () => `Boolean`},
     {nominal: 'bit', target: () => `BIT`},
     {
       nominal: 'integer',
-      target: (scale) => {
-        // scale corresponds to number of Integer bits.
-        if (!scale) return 'INT'
-        if (scale <= 0) return 'INT'
-        if (scale <= 1) return 'INT'
-        if (scale <= 2) return 'INT'
-        if (scale <= 4) return 'INT'
+      target: (precision) => {
+        // precision corresponds to number of Integer bytes.
+        if (!precision) return 'INT'
+        if (precision <= 0) return 'INT'
+        if (precision <= 1) return 'INT'
+        if (precision <= 2) return 'INT'
+        if (precision <= 4) return 'INT'
         return 'INT'
       },
     },
-    {nominal: 'decimal', target: (scale, precision) => `DECIMAL`},
+    {nominal: 'decimal', target: () => `DECIMAL`},
     {nominal: 'identifier', target: () => 'String'},
-    {nominal: 'float', target: (scale, precision) => `DECIMAL`},
+    {nominal: 'float', target: () => `DECIMAL`},
     {nominal: 'date', target: () => `DateTime`},
     {nominal: 'time', target: () => `DateTime`},
     {nominal: 'timestamp', target: () => `DateTime`},
@@ -61,11 +61,10 @@ const AdfOptions = {
   ],
 }
 
-
-function getDataType({type, scale, precision}, databaseOptions) {
+function getDataType({type, precision, scale}, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
   let dtItem = dtm.find((m) => m.nominal === type)
-  if (dtItem) return dtItem.target(scale, precision)
+  if (dtItem) return dtItem.target(precision, scale)
   return dtm.defaultDataType ?? 'Unknown'
 }
 
