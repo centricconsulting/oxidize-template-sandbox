@@ -3,19 +3,21 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
-const tagPrefixes = ['domain','transition','bitemporal']
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
 
 dbJson.tables.forEach(table => {
 
-  const domain = codifier.codifyText(table.domain, codifyOptions, true)
+  const tableName = codifier.codifyText(
+      table.domain ? table.domain.concat("_", table.name) : table.name,
+      codifyOptions
+    )
   const bitemporal = (table.bitemporal === "true")
   const transition = (table.transition === "true")
 
 %>
 /* ################### Strting New Code for Stored Procedure ################## */
 
-CREATE OR ALTER PROCEDURE usp_Instec_<%- domain ? domain.concat("_") : null %><%- table.baseName %> (@START_DATE datetime , @END_DATE datetime) AS
+CREATE OR ALTER PROCEDURE usp_Instec_<%- tableName %> (@START_DATE datetime , @END_DATE datetime) AS
 
 --BEGIN Cast Block
 DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -24,17 +26,17 @@ DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 --BEGIN Cast Block
 
 SELECT 
- CAST(<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK
-,CAST(<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK,
+ CAST(<%- tableName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_NK
+,CAST(<%- tableName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_FK,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
   table.columns.forEach((column, columnIndex) => {
 
 %><%- columnIndex > 0 ? "," : " " 
-%><%- "CAST([".concat(column.baseName)
+%><%- "CAST([".concat(column.name)
 %><%- "] AS ".concat(column.dataType) 
-%><%- ") AS [".concat(column.baseName)
+%><%- ") AS [".concat(column.name)
 %>]<%- column.required ? " " : null %>
 <% // javascript
   
@@ -62,8 +64,8 @@ FROM(
 
 --BEGIN Custom Block
 SELECT
-(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK,
+(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_NK
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_FK,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -72,7 +74,7 @@ SELECT
 %><%- columnIndex > 0 ? "," : " " 
 %><%- "CAST(GETDATE()"
 %><%- " AS ".concat(column.dataType) 
-%><%- ") AS [".concat(column.baseName)
+%><%- ") AS [".concat(column.name)
 %>]<%- column.required ? " " : null %>
 <% // javascript
 

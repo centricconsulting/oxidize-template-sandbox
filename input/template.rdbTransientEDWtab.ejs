@@ -3,28 +3,30 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
-const tagPrefixes = ['domain','transition','bitemporal']
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
 
 dbJson.tables.forEach(table => {
 
-  const domain = codifier.codifyText(table.domain, codifyOptions, true)
+  const tableName = codifier.codifyText(
+      table.domain ? table.domain.concat("_", table.name) : table.name,
+      codifyOptions
+    )
   const bitemporal = (table.bitemporal === "true")
   const transition = (table.transition === "true")
 
 %>
 /* ###################################################### */
 --Transient EDW table
-/****** Object:  Table [dbo].[Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>]    Script Date: 12/31/2021 8:51:04 PM ******/
+/****** Object:  Table [dbo].[Transient_<%- tableName %>]    Script Date: 12/31/2021 8:51:04 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>]( 
-  [<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK] [varchar](200) NULL,
-  [<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK] [varchar](200) NULL,
+CREATE TABLE [dbo].[Transient_<%- tableName %>]( 
+  [<%- tableName %>_NK] [varchar](200) NULL,
+  [<%- tableName %>_FK] [varchar](200) NULL,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script

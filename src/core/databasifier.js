@@ -2,7 +2,9 @@ import codifier from './codifier.js'
 import jsonHelper from './json.helper.js'
 
 const SqlServerDatabaseOptions = {
-  columnKeySegment: 'ID',
+  primaryKeyDescriptor: 'PK',
+  naturalKeyDescriptor: 'NK',
+  foreignKeyDescriptor: 'FK',
   defaultDataType: 'VARCHAR(200)',
   dataTypeMap: [
     {nominal: 'text', target: (precision) => `VARCHAR(${precision ?? 200})`},
@@ -32,7 +34,9 @@ const SqlServerDatabaseOptions = {
 }
 
 const AdfOptions = {
-  columnKeySegment: 'ID',
+  primaryKeyDescriptor: 'PK',
+  naturalKeyDescriptor: 'NK',
+  foreignKeyDescriptor: 'FK',
   defaultDataType: 'VARCHAR(200)',
   dataTypeMap: [
     {nominal: 'text', target: () => `String`},
@@ -41,13 +45,7 @@ const AdfOptions = {
     {nominal: 'bit', target: () => `BIT`},
     {
       nominal: 'integer',
-      target: (precision) => {
-        // precision corresponds to number of Integer bytes.
-        if (!precision) return 'INT'
-        if (precision <= 0) return 'INT'
-        if (precision <= 1) return 'INT'
-        if (precision <= 2) return 'INT'
-        if (precision <= 4) return 'INT'
+      target: () => {
         return 'INT'
       },
     },
@@ -61,9 +59,9 @@ const AdfOptions = {
   ],
 }
 
-function getDataType({type, precision, scale}, databaseOptions) {
+function getDataType({scalar, precision, scale}, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
-  let dtItem = dtm.find((m) => m.nominal === type)
+  let dtItem = dtm.find((m) => m.nominal === scalar)
   if (dtItem) return dtItem.target(precision, scale)
   return dtm.defaultDataType ?? 'Unknown'
 }
@@ -88,40 +86,9 @@ function multiplicitySingleValue(multiplicityId) {
  * @param {Array<String>} tagPrefixes Array of tag prefixes to promote to properites.
  * @returns
  */
-const getDatabaseJson = (json, codifyOptions, databaseOptions, tagPrefixes) => {
+const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
   // codify everything first
   codifier.codifyJson(json, codifyOptions)
-
-  // create regex version of tag prefixes
-  const tagPrefixSearches = tagPrefixes
-    ?.map((prefix) => {
-      try {
-        return {
-          prefix: prefix,
-          regex: RegExp(`^${prefix}\\s*:\\s*(?<value>.*)\\s*$`, 'gi'),
-        }
-      } catch {
-        return undefined
-      }
-    })
-    .filter((x) => !!x)
-
-  const transferTagAsProperty = (fromObject, toObject) => {
-    if (Array.isArray(tagPrefixSearches) && Array.isArray(fromObject.tags)) {
-      tagPrefixSearches.forEach((search) => {
-        fromObject.tags.forEach((tag) => {
-          const matches = tag.matchAll(search.regex)
-          for (const match of matches) {
-            const propName = search.prefix.toLowerCase()
-            const propValue = match.groups?.value
-            if (propValue && !toObject[propName]) {
-              toObject[propName] = propValue
-            }
-          }
-        })
-      })
-    }
-  }
 
   // iterate through entities (these will be tables)
   const dbJson = {tables: []}
@@ -129,91 +96,78 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions, tagPrefixes) => {
     const foreignKeys = []
     // populate entity info
     const table = {
+      ...entity.tagProperties,
       type: 'table',
+      id: entity.id,
       name: codifier.codifyText(entity.name, codifyOptions),
-      baseName: codifier.codifyText(entity.name, {...codifyOptions, wrapper: undefined}),
       originalName: entity.name,
       columns: [],
     }
 
-    transferTagAsProperty(entity, table)
-
-    // add the primary key based on entity name
-    table.columns.push({
-      type: 'column',
-      index: 0,
-      primary: true,
-      name: codifier.codifyText(`${entity.name} ${databaseOptions.columnKeySegment}`, codifyOptions),
-      baseName: codifier.codifyText(`${entity.name} ${databaseOptions.columnKeySegment}`, {
-        ...codifyOptions,
-        wrapper: undefined,
-      }),
-      originalName: null,
-      grain: false,
-      dataType: getDataType('identififer', databaseOptions),
-      required: true,
-    })
-
     // iterate through attributes (these will be columns)
     entity.attributes.forEach((attribute, attributeIndex) => {
       // find the attribute class
-      const ac = json.attributeClasses.find((x) => x.id === attribute.attributeClass?.id)
+      let attributeName, columnName
+      const ac = json.attributeClasses.find((x) => x.id === attribute.return?.attributeClassId)
+
       // determine if a foreign key is warranted
       // AC specifies a reference and the entityId has a value
       const generatesFK =
-        ac?.reference &&
-        attribute?.attributeClass?.entityId &&
-        multiplicitySingleValue(attribute?.multiplicityId)
+        attribute?.return?.reference === true && multiplicitySingleValue(attribute?.multiplicityId)
+
+      // generate a foreign key if FK
       if (generatesFK) {
         // find the target entity
-        const targetEntity = json.entities.find((x) => x.id === attribute.attributeClass?.entityId)
+        const targetEntityName =
+          json.entities.find((x) => x.id === attribute?.return?.entityId)?.name ?? 'Unknown'
 
-        if (targetEntity) {
-          // resolve the target table name
+        // construct the target entity name with context
+        attributeName = attribute.return?.context
+          ? attribute.return.context.concat(' ', targetEntityName)
+          : targetEntityName
 
-          const targetTableName = ac.bridge
-            ? // calculate a new table name based on the bridge
-              codifier.codifyText(
-                `${ac.bridge?.concat(' ') ?? ''}${entity.name} ${targetEntity.name}`,
-                codifyOptions
-              )
-            : targetEntity?.__code
+        columnName = codifier.codifyText(
+          attributeName.concat(' ', databaseOptions.foreignKeyDescriptor),
+          codifyOptions
+        )
 
-          foreignKeys.push({
-            sourceTableName: entity.__code,
-            sourceColumnName: attribute.__code,
-            targetTableName: targetTableName,
-          })
-        }
-      }
-
-      const revisedColumnName = (attributeName, excludeWrapper = false) => {
-        const localCodifyOptions = excludeWrapper ? {...codifyOptions, wrapper: undefined} : codifyOptions
-
-        if (ac.reference) {
-          return codifier.codifyText(
-            `${ac.context?.concat(' ') ?? ''}${attributeName} ${databaseOptions.columnKeySegment}`,
-            localCodifyOptions
-          )
-        } else {
-          return codifier.codifyText(attributeName, localCodifyOptions)
-        }
+        foreignKeys.push({
+          foreignColumnName: codifier.codifyText(
+            attributeName.concat(' ', databaseOptions.foreignKeyDescriptor),
+            codifyOptions
+          ),
+          referenceTableName: codifier.codifyText(targetEntityName, codifyOptions),
+          referenceColumnName: codifier.codifyText(
+            targetEntityName.concat(' ', databaseOptions.primaryKeyDescriptor),
+            codifyOptions
+          ),
+        })
+      } else {
+        attributeName = attribute.name
+        columnName = codifier.codifyText(attributeName, codifyOptions)
       }
 
       const column = {
+        ...attribute.tagProperties,
         type: 'column',
+        id: attribute.id,
+        tableId: entity.id,
         index: attributeIndex + 1,
-        name: revisedColumnName(attribute.name),
-        baseName: revisedColumnName(attribute.name, true),
-        originalName: attribute.name,
+        name: columnName,
+        originalName: attributeName,
         grain: attribute.grain,
-        dataType: ac.reference
-          ? getDataType({type: 'identifier'}, databaseOptions)
-          : getDataType(ac.scalar, databaseOptions) ?? databaseOptions.defaultDataType,
+        dataType:
+          attribute.return?.reference === true
+            ? getDataType({type: 'identifier'}, databaseOptions)
+            : getDataType(
+                {type: ac?.scalar, precision: ac?.precision, scale: ac?.scale},
+                databaseOptions
+              ) ?? databaseOptions.defaultDataType,
 
         required: multiplicityRequired(attribute.multiplicityId),
+        tagProperties: attribute.tagProperties,
       }
-      transferTagAsProperty(attribute, column)
+
       table.columns.push(column)
     }) // END attributes
 

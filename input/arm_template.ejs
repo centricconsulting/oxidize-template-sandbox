@@ -3,8 +3,7 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.AdfOptions
-const tagPrefixes = ['domain','transition','bitemporal']
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
 %>
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
@@ -46,12 +45,15 @@ const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOpti
   
     <%
 dbJson.tables.forEach(table => {
-  const domain = codifier.codifyText(table.domain, codifyOptions, true)
-  const bitemporal = (table.bitemporal === "true")
-  const transition = (table.transition === "true")
+
+    const tableName = codifier.codifyText(
+      table.domain ? table.domain.concat("_", table.name) : table.name,
+      codifyOptions
+    )
+
 %>
 {
-"name": "[concat(parameters('factoryName'), '/<%- table.baseName %>')]",
+"name": "[concat(parameters('factoryName'), '/<%- tableName %>')]",
 "type": "Microsoft.DataFactory/factories/pipelines",
 "apiVersion": "2018-06-01",
 "properties": {
@@ -220,21 +222,21 @@ dbJson.tables.forEach(table => {
                   
                   {
                     "source": {
-                    "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK",
+                    "name": "<%- tableName %>_NK",
                     "type": "String"
                     },
                     "sink": {
-                    "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK",
+                    "name": "<%- tableName %>_NK",
                     "type": "String"
                     }
                     },
                     {
                       "source": {
-                      "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK",
+                      "name": "<%- tableName %>_FK",
                       "type": "String"
                       },
                       "sink": {
-                      "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK",
+                      "name": "<%- tableName %>_FK",
                       "type": "String"
                       }
                       },
@@ -389,7 +391,7 @@ dbJson.tables.forEach(table => {
           ],
           "outputs": [
               {
-                  "referenceName": "Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>",
+                  "referenceName": "Transient_<%- tableName %>",
                   "type": "DatasetReference",
                   "parameters": {}
               }
@@ -468,7 +470,7 @@ dbJson.tables.forEach(table => {
                       "typeProperties": {
                           "source": {
                               "type": "AzureSqlSource",
-                              "sqlReaderStoredProcedureName": "dbo.usp_LOAD_<%- domain ? domain.concat("_") : null %><%- table.baseName %>",
+                              "sqlReaderStoredProcedureName": "dbo.usp_LOAD_<%- tableName %>",
                               "storedProcedureParameters": {
                                   "AttrList": {
                                       "type": "String",
@@ -886,7 +888,7 @@ dbJson.tables.forEach(table => {
   },
   "NaturalKeyColumns": {
       "type": "String",
-      "defaultValue": "<%- table.baseName %>_NK"
+      "defaultValue": "<%- tableName %>_NK"
   },
   "NaturalKeyDelimiter": {
       "type": "String",
@@ -894,23 +896,23 @@ dbJson.tables.forEach(table => {
   },
   "PrimaryKeyColumns": {
       "type": "String",
-      "defaultValue": "<%- table.baseName %>_PK"
+      "defaultValue": "<%- tableName %>_PK"
   },
   "SourceStoredProcedure": {
       "type": "String",
-      "defaultValue": "usp_Instec_<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
+      "defaultValue": "usp_Instec_<%- tableName %>"
   },
   "TargetTable": {
       "type": "String",
-      "defaultValue": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
+      "defaultValue": "<%- tableName %>"
   },
   "TransientTable": {
       "type": "String",
-      "defaultValue": "Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
+      "defaultValue": "Transient_<%- tableName %>"
   },
   "SourceSqlQuery": {
       "type": "String",
-      "defaultValue": "EXEC usp_Instec_<%- domain ? domain.concat("_") : null %><%- table.baseName %> '2019-06-06' , '2019-06-07'"
+      "defaultValue": "EXEC usp_Instec_<%- tableName %> '2019-06-06' , '2019-06-07'"
   },
   "InsertedCount": {
       "type": "String",
@@ -951,12 +953,12 @@ dbJson.tables.forEach(table => {
 
 "[concat(variables('factoryId'), '/datasets/Audit')]",
 "[concat(variables('factoryId'), '/datasets/DataLake_Instec')]",
-"[concat(variables('factoryId'), '/datasets/Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>')]",
+"[concat(variables('factoryId'), '/datasets/Transient_<%- tableName %>')]",
 "[concat(variables('factoryId'), '/datasets/EDW')]"
 ]
 },
 {
-"name": "[concat(parameters('factoryName'), '/Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>')]",
+"name": "[concat(parameters('factoryName'), '/Transient_<%- tableName %>')]",
 "type": "Microsoft.DataFactory/factories/datasets",
 "apiVersion": "2018-06-01",
 "properties": {
@@ -972,7 +974,7 @@ dbJson.tables.forEach(table => {
 "schema": [],
 "typeProperties": {
   "schema": "dbo",
-  "table": "Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
+  "table": "Transient_<%- tableName %>"
 }
 },
 "dependsOn": [
