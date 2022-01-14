@@ -3,7 +3,7 @@ const codifyOptions = codifier.DatabaseCodifyOptions
 codifier.codifyJson(project, codifyOptions, "name", "__code")
 const entities = jsonHelper.getObjectsByFilter(project, [{key: "type", value: "entity"}])
 
-sources.forEach((source, sourceIndex) => {
+project.sources.forEach((source, sourceIndex) => {
   entities.forEach((entity, entityIndex) => {
 
 %>
