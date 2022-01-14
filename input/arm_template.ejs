@@ -40,9 +40,13 @@ const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOpti
   
     <%
 dbJson.tables.forEach(table => {
+    const tableName = codifier.codifyText(
+        table.domain ? table.domain.concat("_", table.name) : table.name,
+        codifyOptions
+    )
 %>
 {
-"name": "[concat(parameters('factoryName'), '/<%- table.baseName %>')]",
+"name": "[concat(parameters('factoryName'), '/<%- tableName %>')]",
 "type": "Microsoft.DataFactory/factories/pipelines",
 "apiVersion": "2018-06-01",
 "properties": {
@@ -211,21 +215,21 @@ dbJson.tables.forEach(table => {
                   
                   {
                     "source": {
-                    "name": "Policy_<%- table.baseName %>_NK",
+                    "name": "Policy_<%- tableName %>_NK",
                     "type": "VARCHAR(200)"
                     },
                     "sink": {
-                    "name": "Policy_<%- table.baseName %>_NK",
+                    "name": "Policy_<%- tableName %>_NK",
                     "type": "VARCHAR(200)"
                     }
                     },
                     {
                       "source": {
-                      "name": "Policy_<%- table.baseName %>_FK",
+                      "name": "Policy_<%- tableName %>_FK",
                       "type": "VARCHAR(200)"
                       },
                       "sink": {
-                      "name": "Policy_<%- table.baseName %>_FK",
+                      "name": "Policy_<%- tableName %>_FK",
                       "type": "VARCHAR(200)"
                       }
                       },
@@ -235,11 +239,11 @@ dbJson.tables.forEach(table => {
                       %>
                       {
                         "source": {
-                        "name": "<%- column.baseName %>",
+                        "name": "<%- column.name %>",
                         "type": "<%- column.dataType %>"
                         },
                         "sink": {
-                        "name": "<%- column.baseName %>",
+                        "name": "<%- column.name %>",
                         "type": "<%- column.dataType %>"
                         }
                         },
@@ -871,13 +875,13 @@ dbJson.tables.forEach(table => {
 
   applyColumnSort(table.columns) // see function at end of script
   table.columns.forEach((column, columnIndex) => {
-%><%- columnIndex > 0 ? "," : ""%><%-"ZZ_".concat(column.baseName)%><% // javascript 
+%><%- columnIndex > 0 ? "," : ""%><%-"ZZ_".concat(column.name)%><% // javascript 
 }) 
 %>"
   },
   "NaturalKeyColumns": {
       "type": "String",
-      "defaultValue": "<%- table.baseName %>_NK"
+      "defaultValue": "<%- tableName %>_NK"
   },
   "NaturalKeyDelimiter": {
       "type": "String",
@@ -885,23 +889,23 @@ dbJson.tables.forEach(table => {
   },
   "PrimaryKeyColumns": {
       "type": "String",
-      "defaultValue": "<%- table.baseName %>_PK"
+      "defaultValue": "<%- tableName %>_PK"
   },
   "SourceStoredProcedure": {
       "type": "String",
-      "defaultValue": "usp_Instec_Policy_<%- table.baseName %>"
+      "defaultValue": "usp_Instec_Policy_<%- tableName %>"
   },
   "TargetTable": {
       "type": "String",
-      "defaultValue": "Policy_<%- table.baseName %>"
+      "defaultValue": "Policy_<%- tableName %>"
   },
   "TransientTable": {
       "type": "String",
-      "defaultValue": "Transient_Policy_<%- table.baseName %>"
+      "defaultValue": "Transient_Policy_<%- tableName %>"
   },
   "SourceSqlQuery": {
       "type": "String",
-      "defaultValue": "EXEC usp_Instec_Policy_<%- table.baseName %> '2019-06-06' , '2019-06-07'"
+      "defaultValue": "EXEC usp_Instec_Policy_<%- tableName %> '2019-06-06' , '2019-06-07'"
   },
   "InsertedCount": {
       "type": "String",
@@ -942,7 +946,7 @@ dbJson.tables.forEach(table => {
 "[variables('factoryId')]",
 "[concat(variables('factoryId'), '/datasets/Audit')]",
 "[concat(variables('factoryId'), '/datasets/DataLake_Instec')]",
-"[concat(variables('factoryId'), '/datasets/Transient_Policy_<%- table.baseName %>')]",
+"[concat(variables('factoryId'), '/datasets/Transient_Policy_<%- tableName %>')]",
 "[concat(variables('factoryId'), '/datasets/EDW')]",
 "[concat(variables('factoryId'), '/pipelines/cdmProcessBatchConclude')]",
 "[concat(variables('factoryId'), '/pipelines/cdmProcessBatchError')]"
@@ -1042,7 +1046,7 @@ dbJson.tables.forEach(table => {
 ]
 },
 {
-"name": "[concat(parameters('factoryName'), '/Transient_Policy_<%- table.baseName %>')]",
+"name": "[concat(parameters('factoryName'), '/Transient_Policy_<%- tableName %>')]",
 "type": "Microsoft.DataFactory/factories/datasets",
 "apiVersion": "2018-06-01",
 "properties": {
@@ -1058,7 +1062,7 @@ dbJson.tables.forEach(table => {
 "schema": [],
 "typeProperties": {
   "schema": "dbo",
-  "table": "Transient_Policy_<%- table.baseName %>"
+  "table": "Transient_Policy_<%- tableName %>"
 }
 },
 "dependsOn": [
@@ -1202,14 +1206,6 @@ dbJson.tables.forEach(table => {
 "[variables('factoryId')]"
 ]
 },
-
-
-<% // javascript
-
-  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
-  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
-
-%>
 
 <% // javascript
   

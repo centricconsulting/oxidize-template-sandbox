@@ -7,19 +7,24 @@ const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOpti
 
 dbJson.tables.forEach(table => {
 
+  const tableName = codifier.codifyText(
+      table.domain ? table.domain.concat("_", table.name) : table.name,
+      codifyOptions
+  )
+
 %>
 /* ###################################################### */
 --Transient EDW table
-/****** Object:  Table [dbo].[Transient_<%- table.baseName %>_<%- table.baseName %>]    Script Date: 12/31/2021 8:51:04 PM ******/
+/****** Object:  Table [dbo].[Transient_<%- tableName %>_<%- tableName %>]    Script Date: 12/31/2021 8:51:04 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[Transient_Policy_<%- table.baseName %>]( 
-  [Policy_<%- table.baseName %>_PK] BIGINT NOT NULL,
-  [Policy_<%- table.baseName %>_NK] [varchar](200) NULL,
+CREATE TABLE [dbo].[Transient_Policy_<%- tableName %>]( 
+  [Policy_<%- tableName %>_PK] BIGINT NOT NULL,
+  [Policy_<%- tableName %>_NK] [varchar](200) NULL,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script

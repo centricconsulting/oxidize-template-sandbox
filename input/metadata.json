@@ -3259,13 +3259,12 @@
             "name": "Producer",
             "definition": "Business definition of Producer.",
             "entityId": "a9181cd4-4248-4d33-8fc0-a2fcfdb917d5",
-            "attributeClass": {
-              "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
-              "entityId": null,
-              "context": null,
-              "bridge": null
+            "return": {
+              "reference": true,
+              "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
+              "context": null
             },
-            "grain": false,
+            "grain": true,
             "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
             "createTimestamp": "2020-07-25T13:12:10.952Z",
@@ -3287,13 +3286,12 @@
             "name": "Agency",
             "definition": "Business definition of Agency.",
             "entityId": "a9181cd4-4248-4d33-8fc0-a2fcfdb917d5",
-            "attributeClass": {
-              "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
-              "entityId": null,
-              "context": null,
-              "bridge": null
+            "return": {
+              "reference": true,
+              "entityId": "e1ee287b-008f-4186-b257-7e1f8b0be241",
+              "context": null
             },
-            "grain": false,
+            "grain": true,
             "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
             "createTimestamp": "2020-07-31T07:32:21.259Z",

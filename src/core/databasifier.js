@@ -96,13 +96,12 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
     const foreignKeys = []
     // populate entity info
     const table = {
+      ...entity.tagProperties,
       type: 'table',
       id: entity.id,
       name: codifier.codifyText(entity.name, codifyOptions),
-      baseName: codifier.codifyText(entity.name, codifyOptions, true),
       originalName: entity.name,
       columns: [],
-      tagProperties: entity.tagProperties,
     }
 
     // iterate through attributes (these will be columns)
@@ -149,6 +148,7 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
       }
 
       const column = {
+        ...attribute.tagProperties,
         type: 'column',
         id: attribute.id,
         tableId: entity.id,

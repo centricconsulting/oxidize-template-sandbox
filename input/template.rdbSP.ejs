@@ -7,10 +7,15 @@ const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOpti
 
 dbJson.tables.forEach(table => {
 
+  const tableName = codifier.codifyText(
+      table.domain ? table.domain.concat("_", table.name) : table.name,
+      codifyOptions
+  )
+
 %>
 /* ################### Strting New Code for Stored Procedure ################## */
 
-CREATE OR ALTER PROCEDURE usp_Instec_<%- table.baseName %> (@START_DATE datetime , @END_DATE datetime) AS
+CREATE OR ALTER PROCEDURE usp_Instec_<%- tableName %> (@START_DATE datetime , @END_DATE datetime) AS
 
 --BEGIN Cast Block
 DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -19,23 +24,22 @@ DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 --BEGIN Cast Block
 
 SELECT 
- CAST(<%- table.baseName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- table.baseName %>_NK
-,CAST(<%- table.baseName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- table.baseName %>_FK,
+ CAST(<%- tableName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_NK
+,CAST(<%- tableName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_FK,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
   table.columns.forEach((column, columnIndex) => {
 
 %><%- columnIndex > 0 ? "," : " " 
-%><%- "CAST([".concat(column.baseName)
+%><%- "CAST([".concat(column.name)
 %><%- "] AS ".concat(column.dataType) 
-%><%- ") AS [".concat(column.baseName)
+%><%- ") AS [".concat(column.name)
 %>]<%- column.required ? " " : null %>
 <% // javascript
   
 }) 
 
-  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
   const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
 
 %>,CAST(Business_Effective_Begin_Datetime AS DATETIME2(3)) AS Business_Effective_Begin_Datetime
@@ -57,8 +61,8 @@ FROM(
 
 --BEGIN Custom Block
 SELECT
-(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- table.baseName %>_NK
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- table.baseName %>_FK,
+(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_NK
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_FK,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -67,7 +71,7 @@ SELECT
 %><%- columnIndex > 0 ? "," : " " 
 %><%- "CAST(GETDATE()"
 %><%- " AS ".concat(column.dataType) 
-%><%- ") AS [".concat(column.baseName)
+%><%- ") AS [".concat(column.name)
 %>]<%- column.required ? " " : null %>
 <% // javascript
 
@@ -92,10 +96,7 @@ SELECT
 --END Close Block
 GO
 <% // javascript
-  if(grainColumns.length > 0) {
-%>
-<% // javascript
-  }
+
 })
 
 function applyColumnSort(columns) {

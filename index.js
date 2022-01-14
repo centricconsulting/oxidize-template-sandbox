@@ -18,7 +18,7 @@ function main() {
   // specificy the folder path
   const targetFolderPath = './output'
   // load the script text
-  const templateScript = fs.readFileSync('./input/template.ejs', 'utf8')
+  const templateScript = fs.readFileSync('./input/template.staruml.ejs', 'utf8')
   // convert the payload to parsed json
   const payload = fs.readFileSync('./input/metadata.json', 'utf8')
   // load the json text
