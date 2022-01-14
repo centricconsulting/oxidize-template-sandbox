@@ -3,19 +3,19 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+const tagPrefixes = ['domain','transition','bitemporal']
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
 
 dbJson.tables.forEach(table => {
 
-  const tableName = codifier.codifyText(
-      table.domain ? table.domain.concat("_", table.name) : table.name,
-      codifyOptions
-  )
+  const domain = codifier.codifyText(table.domain, codifyOptions, true)
+  const bitemporal = (table.bitemporal === "true")
+  const transition = (table.transition === "true")
 
 %>
 /* ################### Strting New Code for Stored Procedure ################## */
 
-CREATE OR ALTER PROCEDURE usp_Instec_<%- tableName %> (@START_DATE datetime , @END_DATE datetime) AS
+CREATE OR ALTER PROCEDURE usp_Instec_<%- domain ? domain.concat("_") : null %><%- table.baseName %> (@START_DATE datetime , @END_DATE datetime) AS
 
 --BEGIN Cast Block
 DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -24,36 +24,37 @@ DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 --BEGIN Cast Block
 
 SELECT 
- CAST(<%- tableName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_NK
-,CAST(<%- tableName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_FK,
+ CAST(<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK
+,CAST(<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
   table.columns.forEach((column, columnIndex) => {
 
 %><%- columnIndex > 0 ? "," : " " 
-%><%- "CAST([".concat(column.name)
+%><%- "CAST([".concat(column.baseName)
 %><%- "] AS ".concat(column.dataType) 
-%><%- ") AS [".concat(column.name)
+%><%- ") AS [".concat(column.baseName)
 %>]<%- column.required ? " " : null %>
 <% // javascript
   
 }) 
 
+  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
   const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
 
-%>,CAST(Business_Effective_Begin_Datetime AS DATETIME2(3)) AS Business_Effective_Begin_Datetime
-,CAST(Business_Effective_End_Datetime AS DATETIME2(3)) AS Business_Effective_End_Datetime
-,CAST(Record_Valid_Begin_Datetime AS DATETIME2(3)) AS Record_Valid_Begin_Datetime
-,CAST(Record_Valid_End_Datetime AS DATETIME2(3)) AS Record_Valid_End_Datetime
-,CAST(Entered_Datetime AS DATETIME2(3)) AS Entered_Datetime
-,CAST(Updated_Datetime AS DATETIME2(3)) AS Updated_Datetime
-,CAST(Batch_ID AS INT) AS Batch_ID
-,CAST(Invalidated_Batch_ID AS VARCHAR(200)) AS Invalidated_Batch_ID
-,CAST(Intra_Batch_Loop_Sequence AS INT) AS Intra_Batch_Loop_Sequence
-,CAST(Generated_Record_Ind AS int) AS Generated_Record_Ind
+%>,CAST(BUSINESS_EFFECTIVE_BEGIN_DATETIME AS DATETIME2(3)) AS BUSINESS_EFFECTIVE_BEGIN_DATETIME
+,CAST(BUSINESS_EFFECTIVE_END_DATETIME AS DATETIME2(3)) AS BUSINESS_EFFECTIVE_END_DATETIME
+,CAST(RECORD_VALID_BEGIN_DATETIME AS DATETIME2(3)) AS RECORD_VALID_BEGIN_DATETIME
+,CAST(RECORD_VALID_END_DATETIME AS DATETIME2(3)) AS RECORD_VALID_END_DATETIME
+,CAST(ENTERED_DATETIME AS DATETIME2(3)) AS ENTERED_DATETIME
+,CAST(UPDATED_DATETIME AS DATETIME2(3)) AS UPDATED_DATETIME
+,CAST(BATCH_ID AS INT) AS BATCH_ID
+,CAST(INVALIDATED_BATCH_ID AS VARCHAR(200)) AS INVALIDATED_BATCH_ID
+,CAST(INTRA_BATCH_LOOP_SEQUENCE AS INT) AS INTRA_BATCH_LOOP_SEQUENCE
+,CAST(GENERATED_RECORD_IND AS INT) AS GENERATED_RECORD_IND
 ,CAST(CHANGE_HASH AS BINARY(32)) AS CHANGE_HASH
-,CAST(Source_System_Code AS VARCHAR(100)) AS Source_System_Code
+,CAST(SOURCE_SYSTEM_CODE AS VARCHAR(100)) AS SOURCE_SYSTEM_CODE
 FROM(
 --END Cast Block
 
@@ -61,8 +62,8 @@ FROM(
 
 --BEGIN Custom Block
 SELECT
-(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_NK
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_FK,
+(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -71,23 +72,23 @@ SELECT
 %><%- columnIndex > 0 ? "," : " " 
 %><%- "CAST(GETDATE()"
 %><%- " AS ".concat(column.dataType) 
-%><%- ") AS [".concat(column.name)
+%><%- ") AS [".concat(column.baseName)
 %>]<%- column.required ? " " : null %>
 <% // javascript
 
 }) 
-%>,CAST(GETDATE() AS VARCHAR(100)) AS Business_Effective_Begin_Datetime
-,CAST(GETDATE() AS VARCHAR(100)) AS Business_Effective_End_Datetime
-,CAST(GETDATE() AS VARCHAR(100)) AS Record_Valid_Begin_Datetime
-,CAST(GETDATE() AS VARCHAR(100)) AS Record_Valid_End_Datetime
-,CAST(GETDATE() AS VARCHAR(100)) AS Entered_Datetime
-,CAST(GETDATE() AS VARCHAR(100)) AS Updated_Datetime
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Batch_ID
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Invalidated_Batch_ID
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Intra_Batch_Loop_Sequence
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS Generated_Record_Ind
-,0x1234 AS CHANGE_HASH
-,(CAST(RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) +RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@AlLChars,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) AS VARCHAR(10))) AS Source_System_Code
+%>,CAST(GETDATE() AS VARCHAR(100)) AS BUSINESS_EFFECTIVE_BEGIN_DATETIME
+,CAST(GETDATE() AS VARCHAR(100)) AS BUSINESS_EFFECTIVE_END_DATETIME
+,CAST(GETDATE() AS VARCHAR(100)) AS RECORD_VALID_BEGIN_DATETIME
+,CAST(GETDATE() AS VARCHAR(100)) AS RECORD_VALID_END_DATETIME
+,CAST(GETDATE() AS VARCHAR(100)) AS ENTERED_DATETIME
+,CAST(GETDATE() AS VARCHAR(100)) AS UPDATED_DATETIME
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS BATCH_ID
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS INVALIDATED_BATCH_ID
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS INTRA_BATCH_LOOP_SEQUENCE
+,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(100))) AS GENERATED_RECORD_IND
+,0X1234 AS CHANGE_HASH
+,(CAST(RIGHT( LEFT(@ALLCHARS,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@ALLCHARS,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) +RIGHT( LEFT(@ALLCHARS,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@ALLCHARS,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) + RIGHT( LEFT(@ALLCHARS,ABS(BINARY_CHECKSUM(NEWID())%35) + 1 ),1) AS VARCHAR(10))) AS SOURCE_SYSTEM_CODE
 --END Custom Block
 
 --BEGIN Close Block
@@ -96,7 +97,10 @@ SELECT
 --END Close Block
 GO
 <% // javascript
-
+  if(grainColumns.length > 0) {
+%>
+<% // javascript
+  }
 })
 
 function applyColumnSort(columns) {

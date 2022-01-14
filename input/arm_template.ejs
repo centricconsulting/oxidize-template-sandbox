@@ -3,7 +3,8 @@
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.AdfOptions
-const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+const tagPrefixes = ['domain','transition','bitemporal']
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions, tagPrefixes)
 %>
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
@@ -23,13 +24,18 @@ const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOpti
           "defaultValue": "connectionstring-PLM-EDW"
       },
       
-      "lnk_AzSql_Instec_Policy_properties_typeProperties_connectionString_secretName": {
-          "type": "string",
-          "defaultValue": "connectionstring-QSInterfacePLMProd"
-      },
-      "lnk_OpSql_Insurity_Claim_properties_typeProperties_connectionString_secretName": {
-          "type": "string",
-          "defaultValue": "connectionstring-PLM-Sims"
+      "lnk_AzSqlMi_Current_Instec_Policy_properties_typeProperties_connectionString_secretName": {
+        "type": "string",
+        "defaultValue": "DataLakeIAP"
+        },
+        "lnk_AzSqlMi_Current_Insurity_Claim_properties_typeProperties_connectionString_secretName": {
+        "type": "string",
+        "defaultValue": "DataLakeIAP"
+        },
+     
+      "AKV_properties_typeProperties_baseUrl": {
+      "type": "string",
+      "defaultValue": "https://mkv.vault.azure.net/"
       }
       
   },
@@ -40,13 +46,12 @@ const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOpti
   
     <%
 dbJson.tables.forEach(table => {
-    const tableName = codifier.codifyText(
-        table.domain ? table.domain.concat("_", table.name) : table.name,
-        codifyOptions
-    )
+  const domain = codifier.codifyText(table.domain, codifyOptions, true)
+  const bitemporal = (table.bitemporal === "true")
+  const transition = (table.transition === "true")
 %>
 {
-"name": "[concat(parameters('factoryName'), '/<%- tableName %>')]",
+"name": "[concat(parameters('factoryName'), '/<%- table.baseName %>')]",
 "type": "Microsoft.DataFactory/factories/pipelines",
 "apiVersion": "2018-06-01",
 "properties": {
@@ -215,22 +220,22 @@ dbJson.tables.forEach(table => {
                   
                   {
                     "source": {
-                    "name": "Policy_<%- tableName %>_NK",
-                    "type": "VARCHAR(200)"
+                    "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK",
+                    "type": "String"
                     },
                     "sink": {
-                    "name": "Policy_<%- tableName %>_NK",
-                    "type": "VARCHAR(200)"
+                    "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_NK",
+                    "type": "String"
                     }
                     },
                     {
                       "source": {
-                      "name": "Policy_<%- tableName %>_FK",
-                      "type": "VARCHAR(200)"
+                      "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK",
+                      "type": "String"
                       },
                       "sink": {
-                      "name": "Policy_<%- tableName %>_FK",
-                      "type": "VARCHAR(200)"
+                      "name": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>_FK",
+                      "type": "String"
                       }
                       },
                    <% // javascript
@@ -239,11 +244,11 @@ dbJson.tables.forEach(table => {
                       %>
                       {
                         "source": {
-                        "name": "<%- column.name %>",
+                        "name": "<%- column.baseName %>",
                         "type": "<%- column.dataType %>"
                         },
                         "sink": {
-                        "name": "<%- column.name %>",
+                        "name": "<%- column.baseName %>",
                         "type": "<%- column.dataType %>"
                         }
                         },
@@ -253,122 +258,122 @@ dbJson.tables.forEach(table => {
                   %> 
                   {
                     "source": {
-                    "name": "Business_Effective_Begin_Datetime",
-                    "type": "DateTime"
-                    },
-                    "sink": {
-                    "name": "Business_Effective_Begin_Datetime",
-                    "type": "DateTime"
-                    }
-                    },
-										{
-                    "source": {
-                    "name": "Business_Effective_End_Datetime",
-                    "type": "DateTime"
-                    },
-                    "sink": {
-                    "name": "Business_Effective_End_Datetime",
-                    "type": "DateTime"
-                    }
-                    },
-										{
-                    "source": {
-                    "name": "Record_Valid_Begin_Datetime",
-                    "type": "DateTime"
-                    },
-                    "sink": {
-                    "name": "Record_Valid_Begin_Datetime",
-                    "type": "DateTime"
-                    }
-                    },
-										{
-                    "source": {
-                    "name": "Record_Valid_End_Datetime",
-                    "type": "DateTime"
-                    },
-                    "sink": {
-                    "name": "Record_Valid_End_Datetime",
-                    "type": "DateTime"
-                    }
-                    },
-										{
-                    "source": {
-                    "name": "Entered_Datetime",
-                    "type": "DateTime"
-                    },
-                    "sink": {
-                    "name": "Entered_Datetime",
-                    "type": "DateTime"
-                    }
-                    },
-										{
-                    "source": {
-                    "name": "Updated_Datetime",
-                    "type": "DateTime"
-                    },
-                    "sink": {
-                    "name": "Updated_Datetime",
-                    "type": "DateTime"
-                    }
-                    },
-					          {
-                    "source": {
-                    "name": "Batch_ID",
-                    "type": "INT"
-                    },
-                    "sink": {
-                    "name": "Batch_ID",
-                    "type": "INT"
-                    }
-                    },
-                    {
+                        "name": "BUSINESS_EFFECTIVE_BEGIN_DATETIME",
+                        "type": "DateTime"
+                        },
+                        "sink": {
+                        "name": "BUSINESS_EFFECTIVE_BEGIN_DATETIME",
+                        "type": "DateTime"
+                        }
+                        },
+                                            {
                         "source": {
-                        "name": "Invalidated_Batch_ID",
+                        "name": "BUSINESS_EFFECTIVE_END_DATETIME",
+                        "type": "DateTime"
+                        },
+                        "sink": {
+                        "name": "BUSINESS_EFFECTIVE_END_DATETIME",
+                        "type": "DateTime"
+                        }
+                        },
+                                            {
+                        "source": {
+                        "name": "RECORD_VALID_BEGIN_DATETIME",
+                        "type": "DateTime"
+                        },
+                        "sink": {
+                        "name": "RECORD_VALID_BEGIN_DATETIME",
+                        "type": "DateTime"
+                        }
+                        },
+                                            {
+                        "source": {
+                        "name": "RECORD_VALID_END_DATETIME",
+                        "type": "DateTime"
+                        },
+                        "sink": {
+                        "name": "RECORD_VALID_END_DATETIME",
+                        "type": "DateTime"
+                        }
+                        },
+                                            {
+                        "source": {
+                        "name": "ENTERED_DATETIME",
+                        "type": "DateTime"
+                        },
+                        "sink": {
+                        "name": "ENTERED_DATETIME",
+                        "type": "DateTime"
+                        }
+                        },
+                                            {
+                        "source": {
+                        "name": "UPDATED_DATETIME",
+                        "type": "DateTime"
+                        },
+                        "sink": {
+                        "name": "UPDATED_DATETIME",
+                        "type": "DateTime"
+                        }
+                        },
+                                  {
+                        "source": {
+                        "name": "BATCH_ID",
                         "type": "INT"
                         },
                         "sink": {
-                        "name": "Invalidated_Batch_ID",
+                        "name": "BATCH_ID",
                         "type": "INT"
                         }
                         },
-					          {
-                    "source": {
-                    "name": "Intra_Batch_Loop_Sequence",
-                    "type": "INT"
-                    },
-                    "sink": {
-                    "name": "Intra_Batch_Loop_Sequence",
-                    "type": "INT"
-                    }
-                    },
-				    {
+                        {
+                            "source": {
+                            "name": "INVALIDATED_BATCH_ID",
+                            "type": "INT"
+                            },
+                            "sink": {
+                            "name": "INVALIDATED_BATCH_ID",
+                            "type": "INT"
+                            }
+                            },
+                                  {
                         "source": {
-                        "name": "Generated_Record_Ind",
+                        "name": "INTRA_BATCH_LOOP_SEQUENCE",
+                        "type": "INT"
+                        },
+                        "sink": {
+                        "name": "INTRA_BATCH_LOOP_SEQUENCE",
+                        "type": "INT"
+                        }
+                        },
+                        {
+                            "source": {
+                            "name": "GENERATED_RECORD_IND",
+                            "type": "String"
+                            },
+                            "sink": {
+                            "name": "GENERATED_RECORD_IND",
+                            "type": "String"
+                            }
+                            },      	
+                        {
+                        "source": {
+                        "name": "SOURCE_SYSTEM_CODE",
                         "type": "String"
                         },
                         "sink": {
-                        "name": "Generated_Record_Ind",
+                        "name": "SOURCE_SYSTEM_CODE",
                         "type": "String"
                         }
-                        },      	
-                    {
-                    "source": {
-                    "name": "Source_System_Code",
-                    "type": "String"
-                    },
-                    "sink": {
-                    "name": "Source_System_Code",
-                    "type": "String"
-                    }
-                    },
-				          	{
-                    "source": {
-                    "name": "CHANGE_HASH",
-                    "type": "Byte[]"
-                    },
-                    "sink": {
-                    "name": "CHANGE_HASH",
-                    "type": "Byte[]"
+                        },
+                                  {
+                        "source": {
+                        "name": "CHANGE_HASH",
+                        "type": "Byte[]"
+                        },
+                        "sink": {
+                        "name": "CHANGE_HASH",
+                        "type": "Byte[]"
                     }
                     }
                   
@@ -384,15 +389,15 @@ dbJson.tables.forEach(table => {
           ],
           "outputs": [
               {
-                  "referenceName": "Transient_Policy_Account",
+                  "referenceName": "Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>",
                   "type": "DatasetReference",
                   "parameters": {}
               }
           ]
       },
       {
-"name": "List INTRA_BATCH_LOOP_INT",
-          "description": "List INTRA_BATCH_LOOP_INT that will be looped in ASC order in ForEach Loop Activity to Implement Bi-Temporal.",
+"name": "List INTRA_BATCH_LOOP_SEQUENCE",
+          "description": "List INTRA_BATCH_LOOP_SEQUENCE that will be looped in ASC order in ForEach Loop Activity to Implement Bi-Temporal.",
           "type": "Lookup",
           "dependsOn": [
               {
@@ -414,7 +419,7 @@ dbJson.tables.forEach(table => {
               "source": {
                   "type": "AzureSqlSource",
                   "sqlReaderQuery": {
-                      "value": "@concat('SELECT DISTINCT INTRA_BATCH_LOOP_INT FROM ',variables('TransientTable'),' ORDER BY INTRA_BATCH_LOOP_INT')",
+                      "value": "@concat('SELECT DISTINCT INTRA_BATCH_LOOP_SEQUENCE FROM ',variables('TransientTable'),' ORDER BY INTRA_BATCH_LOOP_SEQUENCE')",
                       "type": "Expression"
                   },
                   "queryTimeout": "02:00:00",
@@ -430,11 +435,11 @@ dbJson.tables.forEach(table => {
       },
       {
           "name": "SubBatchProcessing",
-          "description": "Loop over List INTRA_BATCH_LOOP_INT Value set.",
+          "description": "Loop over List INTRA_BATCH_LOOP_SEQUENCE Value set.",
           "type": "ForEach",
           "dependsOn": [
               {
-                  "activity": "List INTRA_BATCH_LOOP_INT",
+                  "activity": "List INTRA_BATCH_LOOP_SEQUENCE",
                   "dependencyConditions": [
                       "Succeeded"
                   ]
@@ -443,7 +448,7 @@ dbJson.tables.forEach(table => {
           "userProperties": [],
           "typeProperties": {
               "items": {
-                  "value": "@activity('List INTRA_BATCH_LOOP_INT').output.value",
+                  "value": "@activity('List INTRA_BATCH_LOOP_SEQUENCE').output.value",
                   "type": "Expression"
               },
               "isSequential": true,
@@ -463,7 +468,7 @@ dbJson.tables.forEach(table => {
                       "typeProperties": {
                           "source": {
                               "type": "AzureSqlSource",
-                              "sqlReaderStoredProcedureName": "dbo.usp_ProcessBiTemporal_NonTran",
+                              "sqlReaderStoredProcedureName": "dbo.usp_LOAD_<%- domain ? domain.concat("_") : null %><%- table.baseName %>",
                               "storedProcedureParameters": {
                                   "AttrList": {
                                       "type": "String",
@@ -503,7 +508,7 @@ dbJson.tables.forEach(table => {
                                   "SeqNum": {
                                       "type": "String",
                                       "value": {
-                                          "value": "@item().INTRA_BATCH_LOOP_INT",
+                                          "value": "@item().INTRA_BATCH_LOOP_SEQUENCE",
                                           "type": "Expression"
                                       }
                                   },
@@ -712,7 +717,7 @@ dbJson.tables.forEach(table => {
           "type": "ExecutePipeline",
           "dependsOn": [
               {
-                  "activity": "List INTRA_BATCH_LOOP_INT",
+                  "activity": "List INTRA_BATCH_LOOP_SEQUENCE",
                   "dependencyConditions": [
                       "Failed"
                   ]
@@ -731,7 +736,7 @@ dbJson.tables.forEach(table => {
                       "type": "Expression"
                   },
                   "ErrorMessage": {
-                      "value": "@activity('List INTRA_BATCH_LOOP_INT').error.message",
+                      "value": "@activity('List INTRA_BATCH_LOOP_SEQUENCE').error.message",
                       "type": "Expression"
                   },
                   "ErrorNumber": {
@@ -739,7 +744,7 @@ dbJson.tables.forEach(table => {
                       "type": "Expression"
                   },
                   "ErrorScope": {
-                      "value": "@activity('List INTRA_BATCH_LOOP_INT').activityrunid",
+                      "value": "@activity('List INTRA_BATCH_LOOP_SEQUENCE').activityrunid",
                       "type": "Expression"
                   }
               }
@@ -875,13 +880,13 @@ dbJson.tables.forEach(table => {
 
   applyColumnSort(table.columns) // see function at end of script
   table.columns.forEach((column, columnIndex) => {
-%><%- columnIndex > 0 ? "," : ""%><%-"ZZ_".concat(column.name)%><% // javascript 
+%><%- columnIndex > 0 ? "," : ""%><%-"ZZ_".concat(column.baseName)%><% // javascript 
 }) 
 %>"
   },
   "NaturalKeyColumns": {
       "type": "String",
-      "defaultValue": "<%- tableName %>_NK"
+      "defaultValue": "<%- table.baseName %>_NK"
   },
   "NaturalKeyDelimiter": {
       "type": "String",
@@ -889,23 +894,23 @@ dbJson.tables.forEach(table => {
   },
   "PrimaryKeyColumns": {
       "type": "String",
-      "defaultValue": "<%- tableName %>_PK"
+      "defaultValue": "<%- table.baseName %>_PK"
   },
   "SourceStoredProcedure": {
       "type": "String",
-      "defaultValue": "usp_Instec_Policy_<%- tableName %>"
+      "defaultValue": "usp_Instec_<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
   },
   "TargetTable": {
       "type": "String",
-      "defaultValue": "Policy_<%- tableName %>"
+      "defaultValue": "<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
   },
   "TransientTable": {
       "type": "String",
-      "defaultValue": "Transient_Policy_<%- tableName %>"
+      "defaultValue": "Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
   },
   "SourceSqlQuery": {
       "type": "String",
-      "defaultValue": "EXEC usp_Instec_Policy_<%- tableName %> '2019-06-06' , '2019-06-07'"
+      "defaultValue": "EXEC usp_Instec_<%- domain ? domain.concat("_") : null %><%- table.baseName %> '2019-06-06' , '2019-06-07'"
   },
   "InsertedCount": {
       "type": "String",
@@ -943,110 +948,15 @@ dbJson.tables.forEach(table => {
 "lastPublishTime": "2021-04-06T10:49:23Z"
 },
 "dependsOn": [
-"[variables('factoryId')]",
+
 "[concat(variables('factoryId'), '/datasets/Audit')]",
 "[concat(variables('factoryId'), '/datasets/DataLake_Instec')]",
-"[concat(variables('factoryId'), '/datasets/Transient_Policy_<%- tableName %>')]",
-"[concat(variables('factoryId'), '/datasets/EDW')]",
-"[concat(variables('factoryId'), '/pipelines/cdmProcessBatchConclude')]",
-"[concat(variables('factoryId'), '/pipelines/cdmProcessBatchError')]"
+"[concat(variables('factoryId'), '/datasets/Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>')]",
+"[concat(variables('factoryId'), '/datasets/EDW')]"
 ]
 },
 {
-"name": "[concat(parameters('factoryName'), '/Audit')]",
-"type": "Microsoft.DataFactory/factories/datasets",
-"apiVersion": "2018-06-01",
-"properties": {
-"description": "This is datasets point to Audit Database and will be used to execute Stored procedures of it.",
-"linkedServiceName": {
-  "referenceName": "Audit",
-  "type": "LinkedServiceReference"
-},
-"folder": {
-  "name": "Azure SQL/Audit"
-},
-"annotations": [],
-"type": "AzureSqlMITable",
-"schema": [],
-"typeProperties": {}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/linkedServices/Audit')]"
-]
-},
-{
-"name": "[concat(parameters('factoryName'), '/DataLake')]",
-"type": "Microsoft.DataFactory/factories/datasets",
-"apiVersion": "2018-06-01",
-"properties": {
-"description": "This is datasets point to DataLake Database and will be used to execute Stored procedures of it.",
-"linkedServiceName": {
-  "referenceName": "lnk_AzSqlMi_Current_Insurity_Claim",
-  "type": "LinkedServiceReference"
-},
-"folder": {
-  "name": "Azure SQL/DataLake"
-},
-"annotations": [],
-"type": "AzureSqlMITable",
-"schema": [],
-"typeProperties": {}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/linkedServices/lnk_AzSqlMi_Current_Insurity_Claim')]"
-]
-},
-{
-"name": "[concat(parameters('factoryName'), '/DataLake_Instec')]",
-"type": "Microsoft.DataFactory/factories/datasets",
-"apiVersion": "2018-06-01",
-"properties": {
-"description": "This is datasets point to DataLake_Instec Database and will be used to execute Stored procedures of it.",
-"linkedServiceName": {
-  "referenceName": "lnk_AzSqlMi_Current_Instec_Policy",
-  "type": "LinkedServiceReference"
-},
-"folder": {
-  "name": "Azure SQL/DataLake"
-},
-"annotations": [],
-"type": "AzureSqlMITable",
-"schema": [],
-"typeProperties": {}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/linkedServices/lnk_AzSqlMi_Current_Instec_Policy')]"
-]
-},
-
-{
-"name": "[concat(parameters('factoryName'), '/EDW')]",
-"type": "Microsoft.DataFactory/factories/datasets",
-"apiVersion": "2018-06-01",
-"properties": {
-"description": "This is datasets point to EDW Database and will be used to execute Stored procedures of it.",
-"linkedServiceName": {
-  "referenceName": "EDW",
-  "type": "LinkedServiceReference"
-},
-"folder": {
-  "name": "Azure SQL/EDW"
-},
-"annotations": [],
-"type": "AzureSqlMITable",
-"schema": [],
-"typeProperties": {}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/linkedServices/EDW')]"
-]
-},
-{
-"name": "[concat(parameters('factoryName'), '/Transient_Policy_<%- tableName %>')]",
+"name": "[concat(parameters('factoryName'), '/Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>')]",
 "type": "Microsoft.DataFactory/factories/datasets",
 "apiVersion": "2018-06-01",
 "properties": {
@@ -1062,153 +972,22 @@ dbJson.tables.forEach(table => {
 "schema": [],
 "typeProperties": {
   "schema": "dbo",
-  "table": "Transient_Policy_<%- tableName %>"
+  "table": "Transient_<%- domain ? domain.concat("_") : null %><%- table.baseName %>"
 }
 },
 "dependsOn": [
-"[variables('factoryId')]",
+
 "[concat(variables('factoryId'), '/linkedServices/EDW')]"
 ]
 },
-
-{
-"name": "[concat(parameters('factoryName'), '/Audit')]",
-"type": "Microsoft.DataFactory/factories/linkedServices",
-"apiVersion": "2018-06-01",
-"properties": {
-"annotations": [],
-"type": "AzureSqlMI",
-"typeProperties": {
-  "connectionString": {
-      "type": "AzureKeyVaultSecret",
-      "store": {
-          "referenceName": "bia_keyvault01",
-          "type": "LinkedServiceReference"
-      },
-      "secretName": "[parameters('Audit_properties_typeProperties_connectionString_secretName')]"
-  }
-},
-"connectVia": {
-  "referenceName": "d-bia-self-priv-01",
-  "type": "IntegrationRuntimeReference"
-}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
-"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
-]
-},
-
-{
-"name": "[concat(parameters('factoryName'), '/EDW')]",
-"type": "Microsoft.DataFactory/factories/linkedServices",
-"apiVersion": "2018-06-01",
-"properties": {
-"annotations": [],
-"type": "AzureSqlMI",
-"typeProperties": {
-  "connectionString": {
-      "type": "AzureKeyVaultSecret",
-      "store": {
-          "referenceName": "bia_keyvault01",
-          "type": "LinkedServiceReference"
-      },
-      "secretName": "[parameters('EDW_properties_typeProperties_connectionString_secretName')]"
-  }
-},
-"connectVia": {
-  "referenceName": "d-bia-self-priv-01",
-  "type": "IntegrationRuntimeReference"
-}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
-"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
-]
-},
-{
-"name": "[concat(parameters('factoryName'), '/lnk_AzSql_Instec_Policy')]",
-"type": "Microsoft.DataFactory/factories/linkedServices",
-"apiVersion": "2018-06-01",
-"properties": {
-"annotations": [],
-"type": "AzureSqlDatabase",
-"typeProperties": {
-  "connectionString": {
-      "type": "AzureKeyVaultSecret",
-      "store": {
-          "referenceName": "bia_keyvault01",
-          "type": "LinkedServiceReference"
-      },
-      "secretName": "[parameters('lnk_AzSql_Instec_Policy_properties_typeProperties_connectionString_secretName')]"
-  }
-},
-"connectVia": {
-  "referenceName": "d-bia-self-priv-01",
-  "type": "IntegrationRuntimeReference"
-}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
-"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
-]
-},
-{
-"name": "[concat(parameters('factoryName'), '/lnk_OpSql_Insurity_Claim')]",
-"type": "Microsoft.DataFactory/factories/linkedServices",
-"apiVersion": "2018-06-01",
-"properties": {
-"description": "Most Essential -- Link to OnPrem SQL Insurity Claims DB",
-"annotations": [],
-"type": "SqlServer",
-"typeProperties": {
-  "connectionString": {
-      "type": "AzureKeyVaultSecret",
-      "store": {
-          "referenceName": "bia_keyvault01",
-          "type": "LinkedServiceReference"
-      },
-      "secretName": "[parameters('lnk_OpSql_Insurity_Claim_properties_typeProperties_connectionString_secretName')]"
-  }
-},
-"connectVia": {
-  "referenceName": "d-bia-self-priv-01",
-  "type": "IntegrationRuntimeReference"
-}
-},
-"dependsOn": [
-"[variables('factoryId')]",
-"[concat(variables('factoryId'), '/integrationRuntimes/d-bia-self-priv-01')]",
-"[concat(variables('factoryId'), '/linkedServices/bia_keyvault01')]"
-]
-},
-{
-"name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
-"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-"apiVersion": "2018-06-01",
-"properties": {
-"type": "Managed",
-"typeProperties": {
-  "computeProperties": {
-      "location": "AutoResolve",
-      "dataFlowProperties": {
-          "computeType": "General",
-          "coreCount": 8,
-          "timeToLive": 0
-      }
-  }
-}
-},
-"dependsOn": [
-"[variables('factoryId')]"
-]
-},
-
 <% // javascript
-  
+
+  const pkColumns = table.columns.filter(c => c.primary === true).map(c => c.name) ?? []
+  const grainColumns = table.columns.filter(c => c.grain === true && !(c.primary === true)).map(c => c.name) ?? []
+
+%>
+<% // javascript
+ 
 })
 
 function applyColumnSort(columns) {
@@ -1232,5 +1011,248 @@ function applyColumnSort(columns) {
 
 }
 %>
+{
+    "name": "[concat(parameters('factoryName'), '/Audit')]",
+    "type": "Microsoft.DataFactory/factories/datasets",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "description": "This is datasets point to Audit Database and will be used to execute Stored procedures of it.",
+    "linkedServiceName": {
+      "referenceName": "Audit",
+      "type": "LinkedServiceReference"
+    },
+    "folder": {
+      "name": "Azure SQL/Audit"
+    },
+    "annotations": [],
+    "type": "AzureSqlMITable",
+    "schema": [],
+    "typeProperties": {}
+    },
+    "dependsOn": [
+    
+    "[concat(variables('factoryId'), '/linkedServices/Audit')]"
+    ]
+    },
+    {
+    "name": "[concat(parameters('factoryName'), '/DataLake')]",
+    "type": "Microsoft.DataFactory/factories/datasets",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "description": "This is datasets point to DataLake Database and will be used to execute Stored procedures of it.",
+    "linkedServiceName": {
+      "referenceName": "lnk_AzSqlMi_Current_Insurity_Claim",
+      "type": "LinkedServiceReference"
+    },
+    "folder": {
+      "name": "Azure SQL/DataLake"
+    },
+    "annotations": [],
+    "type": "AzureSqlMITable",
+    "schema": [],
+    "typeProperties": {}
+    },
+    "dependsOn": [
+    
+    "[concat(variables('factoryId'), '/linkedServices/lnk_AzSqlMi_Current_Insurity_Claim')]"
+    ]
+    },
+    {
+    "name": "[concat(parameters('factoryName'), '/DataLake_Instec')]",
+    "type": "Microsoft.DataFactory/factories/datasets",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "description": "This is datasets point to DataLake_Instec Database and will be used to execute Stored procedures of it.",
+    "linkedServiceName": {
+      "referenceName": "lnk_AzSqlMi_Current_Instec_Policy",
+      "type": "LinkedServiceReference"
+    },
+    "folder": {
+      "name": "Azure SQL/DataLake"
+    },
+    "annotations": [],
+    "type": "AzureSqlMITable",
+    "schema": [],
+    "typeProperties": {}
+    },
+    "dependsOn": [
+    
+    "[concat(variables('factoryId'), '/linkedServices/lnk_AzSqlMi_Current_Instec_Policy')]"
+    ]
+    },
+    
+    {
+    "name": "[concat(parameters('factoryName'), '/EDW')]",
+    "type": "Microsoft.DataFactory/factories/datasets",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "description": "This is datasets point to EDW Database and will be used to execute Stored procedures of it.",
+    "linkedServiceName": {
+      "referenceName": "EDW",
+      "type": "LinkedServiceReference"
+    },
+    "folder": {
+      "name": "Azure SQL/EDW"
+    },
+    "annotations": [],
+    "type": "AzureSqlMITable",
+    "schema": [],
+    "typeProperties": {}
+    },
+    "dependsOn": [
+    
+    "[concat(variables('factoryId'), '/linkedServices/EDW')]"
+    ]
+    },
+    
+{
+    "name": "[concat(parameters('factoryName'), '/Audit')]",
+    "type": "Microsoft.DataFactory/factories/linkedServices",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "annotations": [],
+    "type": "AzureSqlMI",
+    "typeProperties": {
+      "connectionString": {
+          "type": "AzureKeyVaultSecret",
+          "store": {
+              "referenceName": "AKV",
+              "type": "LinkedServiceReference"
+          },
+          "secretName": "[parameters('Audit_properties_typeProperties_connectionString_secretName')]"
+      }
+    },
+    "connectVia": {
+      "referenceName": "AutoResolveIntegrationRuntime",
+      "type": "IntegrationRuntimeReference"
+    }
+    },
+    "dependsOn": [
+    
+    "[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+    "[concat(variables('factoryId'), '/linkedServices/AKV')]"
+    ]
+    },
+    
+
+{
+    "name": "[concat(parameters('factoryName'), '/EDW')]",
+    "type": "Microsoft.DataFactory/factories/linkedServices",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "annotations": [],
+    "type": "AzureSqlMI",
+    "typeProperties": {
+      "connectionString": {
+          "type": "AzureKeyVaultSecret",
+          "store": {
+              "referenceName": "AKV",
+              "type": "LinkedServiceReference"
+          },
+          "secretName": "[parameters('EDW_properties_typeProperties_connectionString_secretName')]"
+      }
+    },
+    "connectVia": {
+      "referenceName": "AutoResolveIntegrationRuntime",
+      "type": "IntegrationRuntimeReference"
+    }
+    },
+    "dependsOn": [
+    
+    "[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+    "[concat(variables('factoryId'), '/linkedServices/AKV')]"
+    ]
+    },
+    
+    {
+        "name": "[concat(parameters('factoryName'), '/lnk_AzSqlMi_Current_Instec_Policy')]",
+        "type": "Microsoft.DataFactory/factories/linkedServices",
+        "apiVersion": "2018-06-01",
+        "properties": {
+        "annotations": [],
+        "type": "AzureSqlMI",
+        "typeProperties": {
+        "connectionString": {
+        "type": "AzureKeyVaultSecret",
+        "store": {
+        "referenceName": "AKV",
+        "type": "LinkedServiceReference"
+        },
+        "secretName": "[parameters('lnk_AzSqlMi_Current_Instec_Policy_properties_typeProperties_connectionString_secretName')]"
+        }
+        },
+        "connectVia": {
+        "referenceName": "AutoResolveIntegrationRuntime",
+        "type": "IntegrationRuntimeReference"
+        }
+        },
+        "dependsOn": [
+        
+        "[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+        "[concat(variables('factoryId'), '/linkedServices/AKV')]"
+        ]
+        },
+        {
+        "name": "[concat(parameters('factoryName'), '/lnk_AzSqlMi_Current_Insurity_Claim')]",
+        "type": "Microsoft.DataFactory/factories/linkedServices",
+        "apiVersion": "2018-06-01",
+        "properties": {
+        "annotations": [],
+        "type": "AzureSqlMI",
+        "typeProperties": {
+        "connectionString": {
+        "type": "AzureKeyVaultSecret",
+        "store": {
+        "referenceName": "AKV",
+        "type": "LinkedServiceReference"
+        },
+        "secretName": "[parameters('lnk_AzSqlMi_Current_Insurity_Claim_properties_typeProperties_connectionString_secretName')]"
+        }
+        },
+        "connectVia": {
+        "referenceName": "AutoResolveIntegrationRuntime",
+        "type": "IntegrationRuntimeReference"
+        }
+        },
+        "dependsOn": [
+        
+        "[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+        "[concat(variables('factoryId'), '/linkedServices/AKV')]"
+        ]
+        }, 
+        {
+            "name": "[concat(parameters('factoryName'), '/AKV')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+            "annotations": [],
+            "type": "AzureKeyVault",
+            "typeProperties": {
+            "baseUrl": "[parameters('AKV_properties_typeProperties_baseUrl')]"
+            }
+            },
+            "dependsOn": []
+            },   
+{
+    "name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
+    "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+    "apiVersion": "2018-06-01",
+    "properties": {
+    "type": "Managed",
+    "typeProperties": {
+      "computeProperties": {
+          "location": "AutoResolve",
+          "dataFlowProperties": {
+              "computeType": "General",
+              "coreCount": 8,
+              "timeToLive": 0
+          }
+      }
+    }
+    },
+    "dependsOn": []
+    }
+
+
 ]
 }

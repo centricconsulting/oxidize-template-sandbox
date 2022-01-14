@@ -3,66 +3,66 @@
     "id": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
     "type": "project",
     "name": "Insurance Analytics Platform",
-    "definition": "Code named \"IAP\". This is a test.",
+    "definition": "Code named \"IAP\". This is a test",
     "category": "industry",
-    "authority": "Centric Consulting",
-    "url": "fhir.org",
-    "tags": ["mart:DimProduct", "mart:FactTransaction", "bitemporal"],
-    "config": "{ \"CONNECTIONSTRING\": \"asdfasfasdfasdf\" }",
+    "authority": "Centric Consulting aaa",
+    "tags": [],
     "active": true,
     "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
     "alive": true,
-    "createTimestamp": "2022-01-03T21:46:13.608Z",
+    "createTimestamp": "2021-12-23T04:20:04.330Z",
     "modify": {
       "userName": "Jeff Kanel",
       "userId": "jeff.kanel@centricconsulting.com",
-      "timestamp": "2022-01-03T21:46:13.608Z"
+      "timestamp": "2021-12-23T04:20:04.330Z"
     },
     "entities": [
       {
         "id": "e20957b6-7f60-4fab-928a-60048a245d75",
         "type": "entity",
         "name": "Producer",
+        "pluralName": null,
         "definition": "Business definition of Producer.",
-        "tags": [
-          "DOMAIN: Agency",
-          "BITEMPORAL: true",
-          "TRANSACTION: false",
-          "hyphen-test: value1",
-          "underscore-test: value2",
-          "space test wow: value3"
-        ],
-        "config": "",
-        "active": true,
-        "entity": "e20957b6-7f60-4fab-928a-60048a245d75",
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-13T17:59:38.765Z",
+        "createTimestamp": "2021-02-02T19:12:15.235Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-13T17:59:38.765Z"
+          "userId": "mike.orr@centricconsulting.com",
+          "userName": "Mike Orr",
+          "timestamp": "2021-02-18T12:07:01.493Z"
         },
+        "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
+        "alive": true,
+        "active": true,
+        "tags": ["DOMAIN: Agency", "TRANSITION: true", "BITEMPORAL: false"],
+        "config": {},
         "attributes": [
           {
             "id": "cedc4f55-1d3d-4095-9f4b-8b88a179144a",
             "type": "attribute",
             "name": "Producer First Name",
             "definition": "Business definition of Producer First Name.",
-            "multiplicityId": "EXACTLY_ONE",
-            "return": {},
-            "tags": [],
-            "config": {},
-            "active": true,
             "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
+            "attributeClass": {
+              "id": "e9e292ec-fb80-43c4-8edd-e465dec3cf18",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2022-01-11T21:33:53.351Z",
+            "createTimestamp": "2021-04-19T08:01:39.221Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-11T21:33:53.351Z"
-            }
+              "userId": "nick.sophinos@centricconsulting.com",
+              "userName": "Nick Sophinos",
+              "timestamp": "2021-05-01T13:20:29.371Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           },
           {
             "id": "c5be2896-10ed-45ea-9078-4084aa7ac19d",
@@ -97,51 +97,59 @@
             "type": "attribute",
             "name": "Producer Last Name",
             "definition": "Business definition of Producer Last Name.",
-            "multiplicityId": "EXACTLY_ONE",
-            "return": {},
-            "tags": [],
-            "config": {},
-            "active": true,
             "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
+            "attributeClass": {
+              "id": "e9e292ec-fb80-43c4-8edd-e465dec3cf18",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2022-01-11T21:33:57.013Z",
+            "createTimestamp": "2021-04-14T13:49:37.215Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-11T21:33:57.013Z"
-            }
+              "userId": "kris.moniz@centricconsulting.com",
+              "userName": "Kris Moniz",
+              "timestamp": "2021-04-25T10:30:55.082Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           },
           {
             "id": "2f63639c-4519-49b4-9cc3-5c3fd3d5ca6a",
             "type": "attribute",
             "name": "Producer Code",
             "definition": "Business definition of Producer Code.",
-            "multiplicityId": "ZERO_TO_MANY",
-            "return": {},
-            "tags": [],
-            "config": {},
-            "active": true,
             "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
+            "attributeClass": {
+              "id": "83b87958-2793-47f0-ad4e-e94e55041fe2",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": true,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2022-01-11T21:34:05.280Z",
+            "createTimestamp": "2021-03-21T17:32:44.615Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-11T21:34:05.280Z"
-            }
+              "userId": "bill.decker@centricconsulting.com",
+              "userName": "Bill Decker",
+              "timestamp": "2021-04-06T02:51:48.201Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           }
         ],
-        "instances": [],
-        "tagProperties": {
-          "domain": "Agency",
-          "bitemporal": "true",
-          "transaction": "false",
-          "hyphenTest": "value1",
-          "underscoreTest": "value2",
-          "spaceTestWow": "value3"
-        }
+        "instances": []
       },
       {
         "id": "83e58629-566c-405d-aca4-6b7c2bc98f50",
@@ -935,18 +943,28 @@
             "type": "attribute",
             "name": "Payment Type Code",
             "definition": "Business definition of Payment Type Code.",
-            "tags": [],
-            "config": "{ \"sdfadfs\": 124 }",
-            "active": true,
             "entityId": "a856b3ac-713b-408c-a5be-b6db655c136d",
+            "attributeClass": {
+              "id": "83b87958-2793-47f0-ad4e-e94e55041fe2",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2021-12-31T00:46:17.605Z",
+            "createTimestamp": "2021-09-26T12:45:04.628Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2021-12-31T00:46:17.605Z"
-            }
+              "userId": "art.smith@centricconsulting.com",
+              "userName": "Art Smith",
+              "timestamp": "2021-10-10T18:54:06.286Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           },
           {
             "id": "9e43e2c5-2b42-4840-869b-4be97c9250e6",
@@ -1238,27 +1256,7 @@
             "config": {}
           }
         ],
-        "instances": [
-          {
-            "id": "i-655c47e-e930-4156-8eaf-6be3099f9a2c",
-            "type": "instance",
-            "name": "Test Instance",
-            "definition": "Business definition of Claim Reserve.",
-            "attributes": [],
-            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "createTimestamp": "2020-08-29T09:17:13.552Z",
-            "modify": {
-              "userId": "monica.lopez@centricconsulting.com",
-              "userName": "Monica Lopez",
-              "timestamp": "2020-09-25T05:10:34.799Z"
-            },
-            "entityId": "0655c47e-e930-4156-8eaf-6be3099f9a2c",
-            "alive": true,
-            "active": true,
-            "tags": [],
-            "config": {}
-          }
-        ]
+        "instances": []
       },
       {
         "id": "138f1763-e81b-4c3c-8c44-c06bb686f00a",
@@ -1638,120 +1636,107 @@
         "id": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
         "type": "entity",
         "name": "Invoice Detail",
+        "pluralName": null,
         "definition": "Business definition of Invoice Detail.",
-        "tags": ["DOMAIN: Billing", "TRANSACTION: true", "BITEMPORAL: false"],
-        "config": {},
-        "active": true,
-        "entity": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-05T20:18:50.580Z",
+        "createTimestamp": "2021-09-17T01:04:31.291Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-05T20:18:50.580Z"
+          "userId": "rahul.bansal@centricconsulting.com",
+          "userName": "Rahul Bansal",
+          "timestamp": "2021-10-02T07:39:45.479Z"
         },
+        "entityId": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {},
         "attributes": [
           {
             "id": "44a6563f-7b63-4c2d-8161-6c691bdb046d",
             "type": "attribute",
             "name": "Line Item Amount",
             "definition": "Business definition of Line Item Amount.",
-            "multiplicityId": "EXACTLY_ONE",
-            "return": {
-              "reference": false,
-              "attributeClassId": "eef7a104-0fa9-4acc-ac49-44cdafeef676",
-              "context": "Primary",
-              "entityId": "15e877ea-f599-4601-a9fb-0f8ebd72e357"
-            },
-            "tags": [],
-            "config": {},
-            "active": true,
             "entityId": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
+            "attributeClass": {
+              "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2022-01-13T16:50:33.572Z",
+            "createTimestamp": "2021-03-27T20:33:13.846Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-13T16:50:33.572Z"
-            }
+              "userId": "bill.decker@centricconsulting.com",
+              "userName": "Bill Decker",
+              "timestamp": "2021-03-28T06:30:24.038Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           },
           {
             "id": "5f58c060-c1bd-40be-aefb-692121834071",
             "type": "attribute",
             "name": "Line Item Description",
             "definition": "Business definition of Line Item Description.",
-            "multiplicityId": "ZERO_TO_ONE",
-            "return": {
-              "reference": false,
-              "attributeClassId": "4ede8dbb-1f01-42b7-8aa9-2a5c6eb2109b"
-            },
-            "tags": [],
-            "config": {},
-            "active": true,
             "entityId": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
+            "attributeClass": {
+              "id": "4ede8dbb-1f01-42b7-8aa9-2a5c6eb2109b",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2022-01-13T16:50:58.946Z",
+            "createTimestamp": "2021-01-05T06:23:29.049Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-13T16:50:58.946Z"
-            }
+              "userId": "monica.lopez@centricconsulting.com",
+              "userName": "Monica Lopez",
+              "timestamp": "2021-01-14T03:47:54.700Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           },
           {
             "id": "a9a7bada-5e2c-4e80-bfe8-26cc4016e63f",
             "type": "attribute",
             "name": "ICD10 Diagnosis",
             "definition": "Business definition of ICD10 Diagnosis.",
+            "entityId": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
+            "attributeClass": {
+              "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
+            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+            "createTimestamp": "2020-02-19T07:14:42.671Z",
+            "modify": {
+              "userId": "kris.moniz@centricconsulting.com",
+              "userName": "Kris Moniz",
+              "timestamp": "2020-02-24T21:00:52.124Z"
+            },
+            "derivation": null,
             "multiplicityId": "EXACTLY_ONE",
-            "return": {
-              "reference": true,
-              "context": "Primary",
-              "attributeClassId": null,
-              "entityId": "6e75ba6a-3698-4c1b-86e4-1ab15d840407"
-            },
-            "tags": [],
-            "config": {},
-            "active": true,
-            "entityId": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
-            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
             "alive": true,
-            "createTimestamp": "2022-01-13T16:51:16.149Z",
-            "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-13T16:51:16.149Z"
-            }
-          },
-          {
-            "id": "34c3ef6d-76b6-4cb6-a26d-f5fdeabc3168",
-            "type": "attribute",
-            "name": "Current Claim Status",
-            "definition": "Business definition of Line Item Amount.",
-            "multiplicityId": "ZERO_TO_ONE",
-            "return": {
-              "reference": true,
-              "context": "Primary",
-              "entityId": "15e877ea-f599-4601-a9fb-0f8ebd72e357"
-            },
-            "tags": [],
-            "config": {},
             "active": true,
-            "entityId": "d0daa70a-f91d-43e4-8959-3ec5d158ff65",
-            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2022-01-13T16:50:06.091Z",
-            "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2022-01-13T16:50:06.091Z"
-            }
+            "tags": [],
+            "config": {}
           }
         ],
-        "instances": [],
-        "tagProperties": {"domain": "Billing", "transaction": "true", "bitemporal": "false"}
+        "instances": []
       },
       {
         "id": "225d123c-70da-4e7e-8fcf-0f0501866c12",
@@ -3259,12 +3244,13 @@
             "name": "Producer",
             "definition": "Business definition of Producer.",
             "entityId": "a9181cd4-4248-4d33-8fc0-a2fcfdb917d5",
-            "return": {
-              "reference": true,
-              "entityId": "e20957b6-7f60-4fab-928a-60048a245d75",
-              "context": null
+            "attributeClass": {
+              "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+              "entityId": null,
+              "context": null,
+              "bridge": null
             },
-            "grain": true,
+            "grain": false,
             "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
             "createTimestamp": "2020-07-25T13:12:10.952Z",
@@ -3286,12 +3272,13 @@
             "name": "Agency",
             "definition": "Business definition of Agency.",
             "entityId": "a9181cd4-4248-4d33-8fc0-a2fcfdb917d5",
-            "return": {
-              "reference": true,
-              "entityId": "e1ee287b-008f-4186-b257-7e1f8b0be241",
-              "context": null
+            "attributeClass": {
+              "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+              "entityId": null,
+              "context": null,
+              "bridge": null
             },
-            "grain": true,
+            "grain": false,
             "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
             "createTimestamp": "2020-07-31T07:32:21.259Z",
@@ -4480,18 +4467,28 @@
             "type": "attribute",
             "name": "Transaction Detail",
             "definition": "Business definition of Transaction Detail.",
-            "tags": [],
-            "config": "{ \"asdf\": 123 }",
-            "active": true,
             "entityId": "ad79f9f3-7773-4fee-ae87-109db668824d",
+            "attributeClass": {
+              "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+              "entityId": null,
+              "context": null,
+              "bridge": null
+            },
+            "grain": false,
+            "qualityRule": null,
             "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-            "alive": true,
-            "createTimestamp": "2021-12-31T03:51:36.475Z",
+            "createTimestamp": "2021-06-26T05:38:30.215Z",
             "modify": {
-              "userName": "Jeff Kanel",
-              "userId": "jeff.kanel@centricconsulting.com",
-              "timestamp": "2021-12-31T03:51:36.475Z"
-            }
+              "userId": "monica.lopez@centricconsulting.com",
+              "userName": "Monica Lopez",
+              "timestamp": "2021-07-25T15:11:57.095Z"
+            },
+            "derivation": null,
+            "multiplicityId": "EXACTLY_ONE",
+            "alive": true,
+            "active": true,
+            "tags": [],
+            "config": {}
           }
         ],
         "instances": []
@@ -8131,7 +8128,7 @@
             "entityId": "95e1dc5c-505c-476b-bf3d-7207164fae1c",
             "attributeClass": {
               "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
-              "entityId": null,
+              "entityId": "617b0bc0-936f-467e-94d7-f3f496a31b78",
               "context": null,
               "bridge": null
             },
@@ -12857,7 +12854,7 @@
         "id": "010f7e40-8f64-493a-bf7c-b98b11d27e35",
         "type": "entity",
         "name": "Policy Status",
-        "pluralName": null,
+        "pluralName": "Policy Statuses",
         "definition": "Business definition of Policy Status.",
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-07-07T07:45:37.505Z",
@@ -12985,7 +12982,64 @@
             "config": {}
           }
         ],
-        "instances": []
+        "instances": [
+          {
+            "id": "A10f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "type": "instance",
+            "name": "Inception",
+            "entityId": "010f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+            "createTimestamp": "2020-11-09T19:17:40.397Z",
+            "modify": {
+              "userId": "nick.sophinos@centricconsulting.com",
+              "userName": "Nick Sophinos",
+              "timestamp": "2020-12-08T23:43:47.004Z"
+            },
+            "active": true
+          },
+          {
+            "id": "B10f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "type": "instance",
+            "name": "Underwriting",
+            "entityId": "010f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+            "createTimestamp": "2020-11-09T19:17:40.397Z",
+            "modify": {
+              "userId": "nick.sophinos@centricconsulting.com",
+              "userName": "Nick Sophinos",
+              "timestamp": "2020-12-08T23:43:47.004Z"
+            },
+            "active": true
+          },
+          {
+            "id": "C10f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "type": "instance",
+            "name": "Written",
+            "entityId": "010f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+            "createTimestamp": "2020-11-09T19:17:40.397Z",
+            "modify": {
+              "userId": "nick.sophinos@centricconsulting.com",
+              "userName": "Nick Sophinos",
+              "timestamp": "2020-12-08T23:43:47.004Z"
+            },
+            "active": true
+          },
+          {
+            "id": "D10f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "type": "instance",
+            "name": "Canceled",
+            "entityId": "010f7e40-8f64-493a-bf7c-b98b11d27e35",
+            "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+            "createTimestamp": "2020-11-09T19:17:40.397Z",
+            "modify": {
+              "userId": "nick.sophinos@centricconsulting.com",
+              "userName": "Nick Sophinos",
+              "timestamp": "2020-12-08T23:43:47.004Z"
+            },
+            "active": true
+          }
+        ]
       },
       {
         "id": "5cccc6a1-6f3a-4be5-917f-5d5bb07fca2a",
@@ -13360,65 +13414,6 @@
           }
         ],
         "instances": []
-      },
-      {
-        "id": "502349f0-5ef4-4f09-b019-e8173c3cf08a",
-        "type": "entity",
-        "name": "Payment Type",
-        "definition": "Business definition of Payment Type.",
-        "tags": ["DOMAIN: Policy", "TRANSACTION: true"],
-        "config": "",
-        "active": true,
-        "entity": "502349f0-5ef4-4f09-b019-e8173c3cf08a",
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-04T20:24:37.257Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-04T20:24:37.257Z"
-        },
-        "attributes": [],
-        "instances": [],
-        "tagProperties": {"domain": "Policy", "transaction": "true"}
-      },
-      {
-        "id": "7b6378b9-26ec-48a2-832c-f249db9fcc39",
-        "type": "entity",
-        "name": "Current Transaction X123",
-        "definition": "Business definition of Current Transaction.",
-        "tags": ["bitemporal"],
-        "config": "{ \"asdf\": 123, \"eeee\": 1233 }",
-        "active": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2021-12-30T20:11:00.324Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2021-12-30T20:11:00.324Z"
-        },
-        "attributes": [],
-        "instances": []
-      },
-      {
-        "id": "c33da1da-492b-4ffd-aac4-b5cdb0c02137",
-        "type": "entity",
-        "name": "Count",
-        "definition": "Business definition of Count.",
-        "tags": [],
-        "config": null,
-        "active": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2021-12-30T18:56:09.346Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2021-12-30T18:56:09.346Z"
-        },
-        "attributes": [],
-        "instances": []
       }
     ],
     "metrics": [
@@ -13427,62 +13422,66 @@
         "type": "metric",
         "name": "Reserve Amount",
         "definition": "Definition of Reserve Amount.",
-        "multiplicityId": "ZERO_OR_ONE",
-        "input": {
-          "metrics": [
-            "0d12cf09-71b0-466f-8c22-d9091fc879a9",
-            "d37a8bb4-696c-4923-ac74-67e48a993e09",
-            "42b80f5e-1270-4451-82b9-460716d1e2ac"
-          ],
-          "attributes": ["ec0e6a04-6458-4e51-877f-298d8b886e2f", "46557858-9125-4f5c-bcb7-f8c961fc45e6"]
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
         },
-        "return": {
-          "reference": true,
-          "scalar": "decimal",
-          "entityId": "15e877ea-f599-4601-a9fb-0f8ebd72e357"
-        },
-        "tags": [],
-        "config": "{ \"CONNECTION_STRING\": \"asdfasfafasdfasd\" }",
-        "active": true,
+        "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-03T03:24:59.616Z",
+        "createTimestamp": "2021-10-01T16:52:41.087Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-03T03:24:59.616Z"
-        }
+          "userId": "bill.decker@centricconsulting.com",
+          "userName": "Bill Decker",
+          "timestamp": "2021-10-28T16:08:18.535Z"
+        },
+        "derivation": null,
+        "multiplicityId": "EXACTLY_ONE",
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "693ccfd5-8f15-4ca3-bfa3-3cb98e0eee88",
         "type": "metric",
         "name": "Term Premium",
         "definition": "Definition of Term Premium.",
-        "multiplicityId": "ZERO_TO_MANY",
-        "input": {"metrics": [], "attributes": []},
-        "return": {
-          "reference": true,
-          "scalar": "decimal",
-          "entityId": "a4480fdb-9368-4321-b27a-772169aa4b25"
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
         },
-        "tags": [],
-        "config": {},
-        "active": true,
+        "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-03T01:34:52.456Z",
+        "createTimestamp": "2020-11-20T03:32:05.057Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-03T01:34:52.456Z"
-        }
+          "userId": "art.smith@centricconsulting.com",
+          "userName": "Art Smith",
+          "timestamp": "2020-11-26T22:26:04.323Z"
+        },
+        "derivation": null,
+        "multiplicityId": "EXACTLY_ONE",
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "019f998b-9d43-4e08-bbf8-d621e253383d",
         "type": "metric",
         "name": "Subrogation Expense",
         "definition": "Definition of Subrogation Expense.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-25T11:51:19.750Z",
@@ -13493,7 +13492,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13504,7 +13506,10 @@
         "type": "metric",
         "name": "Total Term Premium",
         "definition": "Definition of Total Term Premium.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-09-13T10:45:01.619Z",
@@ -13515,7 +13520,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13526,7 +13534,10 @@
         "type": "metric",
         "name": "Total Transaction Premium",
         "definition": "Definition of Total Transaction Premium.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-01-02T22:28:29.581Z",
@@ -13537,7 +13548,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13548,7 +13562,10 @@
         "type": "metric",
         "name": "Submitted Indicator",
         "definition": "Definition of Submitted Indicator.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-07-30T19:50:31.038Z",
@@ -13559,7 +13576,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13570,7 +13590,10 @@
         "type": "metric",
         "name": "Quote Written Premium",
         "definition": "Definition of Quote Written Premium.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-12T08:33:23.754Z",
@@ -13581,7 +13604,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13592,7 +13618,10 @@
         "type": "metric",
         "name": "Total Claim Cost",
         "definition": "Definition of Total Claim Cost.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-02-02T02:50:53.611Z",
@@ -13603,7 +13632,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13614,7 +13646,10 @@
         "type": "metric",
         "name": "Underwriter Declined Indicator",
         "definition": "Definition of Underwriter Declined Indicator.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-11-25T21:24:54.354Z",
@@ -13625,7 +13660,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13636,7 +13674,10 @@
         "type": "metric",
         "name": "Rating Declined Indicator",
         "definition": "Definition of Rating Declined Indicator.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-12-12T21:31:16.665Z",
@@ -13647,7 +13688,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13658,7 +13702,10 @@
         "type": "metric",
         "name": "Term Days",
         "definition": "Definition of Term Days.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-01-29T03:11:17.073Z",
@@ -13669,7 +13716,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13680,7 +13730,10 @@
         "type": "metric",
         "name": "Forecast Claim Loss",
         "definition": "Definition of Forecast Claim Loss.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-17T19:44:20.015Z",
@@ -13691,7 +13744,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13702,7 +13758,10 @@
         "type": "metric",
         "name": "Daily Premium",
         "definition": "Definition of Daily Premium.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-04-11T04:49:09.352Z",
@@ -13713,7 +13772,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13724,7 +13786,10 @@
         "type": "metric",
         "name": "Claim Features",
         "definition": "Definition of Claim Features.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-05-20T11:56:17.106Z",
@@ -13735,7 +13800,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13746,7 +13814,10 @@
         "type": "metric",
         "name": "Bindable Quote Indicator",
         "definition": "Definition of Bindable Quote Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-09-09T12:53:10.791Z",
@@ -13757,7 +13828,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13768,7 +13842,10 @@
         "type": "metric",
         "name": "Claim Expense",
         "definition": "Definition of Claim Expense.",
-        "attributeClass": {"id": "5510797b-14f8-41d2-8e5d-907cb38a0889", "entityId": null},
+        "attributeClass": {
+          "id": "5510797b-14f8-41d2-8e5d-907cb38a0889",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-05-07T23:19:35.713Z",
@@ -13779,7 +13856,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13790,7 +13870,10 @@
         "type": "metric",
         "name": "Claim Denied Indicator",
         "definition": "Definition of Claim Denied Indicator.",
-        "attributeClass": {"id": "0f730f88-6d49-4729-be0a-1e0831a3ad5f", "entityId": null},
+        "attributeClass": {
+          "id": "0f730f88-6d49-4729-be0a-1e0831a3ad5f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-01-27T14:55:42.714Z",
@@ -13815,7 +13898,10 @@
         "type": "metric",
         "name": "Invoice Amount",
         "definition": "Definition of Invoice Amount.",
-        "attributeClass": {"id": "ad7e0c39-7c63-4ee3-9ebf-1b4a27952c4d", "entityId": null},
+        "attributeClass": {
+          "id": "ad7e0c39-7c63-4ee3-9ebf-1b4a27952c4d",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-01-11T11:40:36.469Z",
@@ -13826,7 +13912,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13837,7 +13926,10 @@
         "type": "metric",
         "name": "Quote Count",
         "definition": "Definition of Quote Count.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-16T10:43:11.000Z",
@@ -13848,7 +13940,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13859,7 +13954,10 @@
         "type": "metric",
         "name": "Current In Underwriting Indicator",
         "definition": "Definition of Current In Underwriting Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-01-31T01:43:19.597Z",
@@ -13870,7 +13968,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13881,7 +13982,10 @@
         "type": "metric",
         "name": "Claim Reported Indicator",
         "definition": "Definition of Claim Reported Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-03-02T11:38:55.370Z",
@@ -13892,7 +13996,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13903,7 +14010,10 @@
         "type": "metric",
         "name": "Current Not Taken Indicator",
         "definition": "Definition of Current Not Taken Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-03-27T01:37:18.444Z",
@@ -13914,7 +14024,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13925,43 +14038,38 @@
         "type": "metric",
         "name": "Policy Deductible",
         "definition": "Definition of Policy Deductible.",
-        "multiplicityId": "ZERO_TO_MANY",
-        "input": {
-          "metrics": [
-            "33fbe916-8dab-4c58-a090-f2dd05fa56ad",
-            "d37a8bb4-696c-4923-ac74-67e48a993e09",
-            "42b80f5e-1270-4451-82b9-460716d1e2ac",
-            "0d12cf09-71b0-466f-8c22-d9091fc879a9"
-          ],
-          "attributes": [
-            "34bfecda-eb2c-4afe-a1d4-160b171d946f",
-            "12c69b6f-3229-4492-a343-98db300a093a",
-            "019a5d41-72c5-412e-a866-64186f79539a"
-          ]
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
         },
-        "return": {
-          "reference": true,
-          "scalar": "time",
-          "entityId": "225d123c-70da-4e7e-8fcf-0f0501866c12"
-        },
-        "tags": [],
-        "config": {},
-        "active": true,
+        "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T16:33:52.467Z",
+        "createTimestamp": "2021-09-29T09:53:43.997Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T16:33:52.467Z"
-        }
+          "userId": "pete.dunn@centricconsulting.com",
+          "userName": "Pete Dunn",
+          "timestamp": "2021-10-09T20:13:12.911Z"
+        },
+        "derivation": null,
+        "multiplicityId": "EXACTLY_ONE",
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "cb81f47f-3648-4dbe-839f-c43b29cc31de",
         "type": "metric",
         "name": "Policy Limit",
         "definition": "Definition of Policy Limit.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-03-15T16:45:07.516Z",
@@ -13972,7 +14080,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -13983,7 +14094,10 @@
         "type": "metric",
         "name": "Net Loss Reserve",
         "definition": "Definition of Net Loss Reserve.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-01-31T10:55:43.756Z",
@@ -13994,7 +14108,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14005,7 +14122,10 @@
         "type": "metric",
         "name": "Current Abandoned Indicator",
         "definition": "Definition of Current Abandoned Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-02-13T12:55:57.860Z",
@@ -14016,7 +14136,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14027,7 +14150,10 @@
         "type": "metric",
         "name": "In Underwriting Indicator",
         "definition": "Definition of In Underwriting Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-12-05T19:57:47.912Z",
@@ -14038,7 +14164,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14049,7 +14178,10 @@
         "type": "metric",
         "name": "Not Taken Indicator",
         "definition": "Definition of Not Taken Indicator.",
-        "attributeClass": {"id": "5510797b-14f8-41d2-8e5d-907cb38a0889", "entityId": null},
+        "attributeClass": {
+          "id": "5510797b-14f8-41d2-8e5d-907cb38a0889",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-07-22T14:36:44.976Z",
@@ -14060,7 +14192,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14071,7 +14206,10 @@
         "type": "metric",
         "name": "Current Claim Reported Indicator",
         "definition": "Definition of Current Claim Reported Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-01-14T14:52:03.030Z",
@@ -14082,7 +14220,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14093,7 +14234,10 @@
         "type": "metric",
         "name": "Rated Indicator",
         "definition": "Definition of Rated Indicator.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-04-28T06:25:17.258Z",
@@ -14104,7 +14248,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14115,7 +14262,10 @@
         "type": "metric",
         "name": "Current Issued Indicator",
         "definition": "Definition of Current Issued Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-02-17T06:25:51.914Z",
@@ -14126,7 +14276,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14137,7 +14290,10 @@
         "type": "metric",
         "name": "Gross Loss Reserve Adjustment",
         "definition": "Definition of Gross Loss Reserve Adjustment.",
-        "attributeClass": {"id": "5cc00577-e836-4689-9bc0-99ea5e976fe2", "entityId": null},
+        "attributeClass": {
+          "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+          "entityId": null
+        },
         "referenceEntity": {
           "id": "X8CZbbDQNBL8Rnlr7fJZY9T03I",
           "name": "Policy Status",
@@ -14153,7 +14309,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14164,7 +14323,10 @@
         "type": "metric",
         "name": "Gross Incident Cost",
         "definition": "Definition of Gross Incident Cost.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-06-12T14:54:34.409Z",
@@ -14175,7 +14337,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14186,7 +14351,10 @@
         "type": "metric",
         "name": "Invoice Taxes",
         "definition": "Definition of Invoice Taxes.",
-        "attributeClass": {"id": "5510797b-14f8-41d2-8e5d-907cb38a0889", "entityId": null},
+        "attributeClass": {
+          "id": "5510797b-14f8-41d2-8e5d-907cb38a0889",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-02-13T22:04:26.991Z",
@@ -14197,7 +14365,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14208,7 +14379,10 @@
         "type": "metric",
         "name": "Current Policy Status",
         "definition": "Definition of Current Policy Status.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-02-18T01:42:28.297Z",
@@ -14219,7 +14393,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14230,7 +14407,10 @@
         "type": "metric",
         "name": "Current Submitted Indicator",
         "definition": "Definition of Current Submitted Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-03-04T22:17:57.564Z",
@@ -14241,7 +14421,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14252,38 +14435,38 @@
         "type": "metric",
         "name": "Current Rated Indicator",
         "definition": "Definition of Current Rated Indicator.",
-        "multiplicityId": "ZERO_OR_ONE",
-        "input": {
-          "metrics": [
-            "fea4f548-c045-472d-83e3-c6f7c118d0a7",
-            "7ccbb707-7332-4172-ab7f-9571d12fc4aa",
-            "8ac953a8-ad6c-4907-bad9-cefe5d212f69"
-          ],
-          "attributes": ["88dd7f22-04ad-402b-b931-64739a8f7ab2"]
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
         },
-        "return": {
-          "reference": false,
-          "scalar": "decimal",
-          "entityId": "a4480fdb-9368-4321-b27a-772169aa4b25"
-        },
-        "tags": ["test1", "test3", "test2"],
-        "config": {},
-        "active": true,
+        "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-04T02:54:31.526Z",
+        "createTimestamp": "2020-02-01T10:28:10.403Z",
         "modify": {
-          "userName": "Jeff Kanel",
           "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-04T02:54:31.526Z"
-        }
+          "userName": "Jeff Kanel",
+          "timestamp": "2020-02-26T14:30:58.976Z"
+        },
+        "derivation": null,
+        "multiplicityId": "EXACTLY_ONE",
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "e89c95fd-d5bc-4849-9583-d9580d6da458",
         "type": "metric",
         "name": "Claim ReOpen Indicator",
         "definition": "Definition of Claim ReOpen Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-08-17T03:30:06.920Z",
@@ -14294,7 +14477,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14305,7 +14491,10 @@
         "type": "metric",
         "name": "Current Claim Closed Indicator",
         "definition": "Definition of Current Claim Closed Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-12-31T11:38:40.575Z",
@@ -14316,7 +14505,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14327,7 +14519,10 @@
         "type": "metric",
         "name": "Issued Indicator",
         "definition": "Definition of Issued Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-30T21:54:52.362Z",
@@ -14338,7 +14533,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14349,7 +14547,10 @@
         "type": "metric",
         "name": "Claim Feature Processing Days",
         "definition": "Definition of Claim Feature Processing Days.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-02-23T14:20:59.906Z",
@@ -14360,7 +14561,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14371,7 +14575,10 @@
         "type": "metric",
         "name": "Gross Loss Payment",
         "definition": "Definition of Gross Loss Payment.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-02-16T15:21:56.574Z",
@@ -14382,7 +14589,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14393,7 +14603,10 @@
         "type": "metric",
         "name": "Claim Open Indicator",
         "definition": "Definition of Claim Open Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-08-27T18:59:17.149Z",
@@ -14404,7 +14617,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14415,7 +14631,10 @@
         "type": "metric",
         "name": "Current Rating Declined Indicator",
         "definition": "Definition of Current Rating Declined Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-21T21:54:18.375Z",
@@ -14426,7 +14645,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14437,7 +14659,10 @@
         "type": "metric",
         "name": "Cancellation Type",
         "definition": "Definition of Cancellation Type.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-02-04T01:27:48.730Z",
@@ -14448,7 +14673,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14459,7 +14687,10 @@
         "type": "metric",
         "name": "Current Claim Reopen Indicator",
         "definition": "Definition of Current Claim Reopen Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-11-18T16:23:25.371Z",
@@ -14470,7 +14701,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14481,7 +14715,10 @@
         "type": "metric",
         "name": "Current Underwriter Declined Indicator",
         "definition": "Definition of Current Underwriter Declined Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-07-01T20:21:50.559Z",
@@ -14492,7 +14729,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14503,7 +14743,10 @@
         "type": "metric",
         "name": "Current Claim Denied Indicator",
         "definition": "Definition of Current Claim Denied Indicator.",
-        "attributeClass": {"id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f", "entityId": null},
+        "attributeClass": {
+          "id": "f597ca39-251a-43d7-8ce8-09e466ff2d9f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-02-10T03:07:31.892Z",
@@ -14514,7 +14757,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14525,7 +14771,10 @@
         "type": "metric",
         "name": "Abandoned Indicator",
         "definition": "Definition of Abandoned Indicator.",
-        "attributeClass": {"id": "0f730f88-6d49-4729-be0a-1e0831a3ad5f", "entityId": null},
+        "attributeClass": {
+          "id": "0f730f88-6d49-4729-be0a-1e0831a3ad5f",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-02-24T20:22:36.620Z",
@@ -14536,7 +14785,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14547,7 +14799,10 @@
         "type": "metric",
         "name": "Claim Closed Indicator",
         "definition": "Definition of Claim Closed Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-10-26T02:06:23.129Z",
@@ -14558,7 +14813,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14569,7 +14827,10 @@
         "type": "metric",
         "name": "Current Bindable Quote Indicator",
         "definition": "Definition of Current Bindable Quote Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-05-16T17:54:18.301Z",
@@ -14580,7 +14841,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14591,7 +14855,10 @@
         "type": "metric",
         "name": "Term Earned Premium",
         "definition": "Definition of Term Earned Premium.",
-        "attributeClass": {"id": "2304233c-6f0b-4930-944b-386d41379148", "entityId": null},
+        "attributeClass": {
+          "id": "2304233c-6f0b-4930-944b-386d41379148",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-10-16T03:40:47.756Z",
@@ -14602,7 +14869,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14613,7 +14883,10 @@
         "type": "metric",
         "name": "Current Claim Open Indicator",
         "definition": "Definition of Current Claim Open Indicator.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-04-23T22:18:47.000Z",
@@ -14624,7 +14897,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14635,7 +14911,10 @@
         "type": "metric",
         "name": "Daily Premium Rate",
         "definition": "Definition of Daily Premium Rate.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-10-14T05:15:26.964Z",
@@ -14646,7 +14925,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14657,7 +14939,10 @@
         "type": "metric",
         "name": "Avg Processing Days",
         "definition": "Definition of Avg Processing Days.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-04-03T20:52:06.262Z",
@@ -14668,7 +14953,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14679,7 +14967,10 @@
         "type": "metric",
         "name": "In Force Flag",
         "definition": "Definition of In Force Flag.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-10-31T11:43:40.686Z",
@@ -14690,7 +14981,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14701,7 +14995,10 @@
         "type": "metric",
         "name": "Claim Severity",
         "definition": "Definition of Claim Severity.",
-        "attributeClass": {"id": "db6d7fed-4a73-4927-bac7-60bf382b7bef", "entityId": null},
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
         "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-04-20T13:36:42.790Z",
@@ -14712,7 +15009,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14723,31 +15023,38 @@
         "type": "metric",
         "name": "Exposure Days",
         "definition": "Definition of Exposure Days.",
-        "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
-        "return": {
-          "reference": false,
-          "scalar": "integer",
-          "entityId": "6b74a214-dd45-4512-b444-9a80d72fcd23"
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
         },
-        "tags": [],
-        "config": {},
-        "active": true,
+        "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-03T15:14:02.960Z",
+        "createTimestamp": "2021-08-21T03:40:07.156Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-03T15:14:02.960Z"
-        }
+          "userId": "rahul.bansal@centricconsulting.com",
+          "userName": "Rahul Bansal",
+          "timestamp": "2021-09-14T06:20:42.830Z"
+        },
+        "derivation": null,
+        "multiplicityId": "EXACTLY_ONE",
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "0146e398-61b7-4ac0-9138-374aff65c52d",
         "type": "metric",
         "name": "Loss Adequacy",
         "definition": "Definition of Loss Adequacy.",
-        "attributeClass": {"id": "5cc00577-e836-4689-9bc0-99ea5e976fe2", "entityId": null},
+        "attributeClass": {
+          "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+          "entityId": null
+        },
         "referenceEntity": {
           "id": "xOroIDGLBpAnkj3fntKfAAPyxT4",
           "name": "Cancellation Type",
@@ -14763,7 +15070,10 @@
         },
         "derivation": null,
         "multiplicityId": "EXACTLY_ONE",
-        "input": {"metrics": [], "attributes": []},
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
         "alive": true,
         "active": true,
         "tags": [],
@@ -14774,20 +15084,28 @@
         "type": "metric",
         "name": "Incurred Loss",
         "definition": "Definition of Incurred Loss.",
-        "multiplicityId": "ZERO_TO_MANY",
-        "input": {"metrics": [], "attributes": []},
-        "return": {"reference": false, "scalar": "timestamp"},
-        "tags": [],
-        "config": {},
-        "active": true,
+        "attributeClass": {
+          "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
+          "entityId": null
+        },
+        "formula": null,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-03T01:38:23.765Z",
+        "createTimestamp": "2020-08-13T16:56:38.815Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-03T01:38:23.765Z"
-        }
+          "userId": "bill.decker@centricconsulting.com",
+          "userName": "Bill Decker",
+          "timestamp": "2020-09-11T11:35:52.036Z"
+        },
+        "derivation": null,
+        "multiplicityId": "EXACTLY_ONE",
+        "input": {
+          "metrics": [],
+          "attributes": []
+        },
+        "alive": true,
+        "active": true,
+        "tags": [],
+        "config": {}
       }
     ],
     "terminologies": [
@@ -14811,25 +15129,48 @@
     ],
     "attributeClasses": [
       {
+        "id": "5cc00577-e836-4689-9bc0-99ea5e976fe2",
+        "type": "attributeClass",
+        "name": "Reference",
+        "definition": "Definition of Entity",
+        "reference": true,
+        "descriptor": null,
+        "active": true,
+        "scalar": null,
+        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+        "createTimestamp": "2020-02-22T13:30:29.874Z",
+        "modify": {
+          "userId": "monica.lopez@centricconsulting.com",
+          "userName": "Monica Lopez",
+          "timestamp": "2020-03-21T10:59:26.254Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
+      },
+      {
         "id": "ad7e0c39-7c63-4ee3-9ebf-1b4a27952c4d",
         "type": "attributeClass",
         "name": "Flag",
-        "definition": "Indicates the selection of a discrete list of static options.",
+        "definition": "Definition of Flag",
+        "reference": false,
         "descriptor": "Flag",
-        "scalar": "text",
-        "precision": 30,
-        "scale": 12,
-        "tags": [],
-        "config": {},
+        "scalar": {
+          "type": "text",
+          "scale": 20,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-10T21:36:27.610Z",
+        "createTimestamp": "2020-08-08T16:35:53.070Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-10T21:36:27.610Z"
-        }
+          "userId": "nick.sophinos@centricconsulting.com",
+          "userName": "Nick Sophinos",
+          "timestamp": "2020-09-01T12:43:31.984Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "0f730f88-6d49-4729-be0a-1e0831a3ad5f",
@@ -14838,6 +15179,11 @@
         "definition": "Definition of Quantity",
         "reference": false,
         "descriptor": "Quantity",
+        "scalar": {
+          "type": "decimal",
+          "scale": 20,
+          "precision": 8
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-07-04T01:57:46.384Z",
@@ -14857,6 +15203,11 @@
         "definition": "Definition of Postal Code",
         "reference": false,
         "descriptor": "Postal Code",
+        "scalar": {
+          "type": "text",
+          "scale": 20,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-09-01T03:42:31.873Z",
@@ -14876,6 +15227,11 @@
         "definition": "Definition of Amount",
         "reference": false,
         "descriptor": "Amount",
+        "scalar": {
+          "type": "decimal",
+          "scale": null,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-08-22T20:25:01.244Z",
@@ -14895,6 +15251,11 @@
         "definition": "Definition of Code",
         "reference": false,
         "descriptor": "Code",
+        "scalar": {
+          "type": "text",
+          "scale": 20,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-07-08T11:14:22.287Z",
@@ -14912,21 +15273,24 @@
         "type": "attributeClass",
         "name": "Classification",
         "definition": "Definition of Classification",
-        "descriptor": "Class",
-        "scalar": "text",
-        "precision": null,
-        "scale": null,
-        "tags": [],
-        "config": "",
+        "reference": false,
+        "descriptor": "Classification",
+        "scalar": {
+          "type": "text",
+          "scale": 50,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:05:35.753Z",
+        "createTimestamp": "2021-09-14T14:31:09.368Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:05:35.753Z"
-        }
+          "userId": "nick.sophinos@centricconsulting.com",
+          "userName": "Nick Sophinos",
+          "timestamp": "2021-09-22T02:06:14.558Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "e9e292ec-fb80-43c4-8edd-e465dec3cf18",
@@ -14935,6 +15299,11 @@
         "definition": "Definition of Name",
         "reference": false,
         "descriptor": "Name",
+        "scalar": {
+          "type": "text",
+          "scale": 200,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-03-31T20:25:46.071Z",
@@ -14954,6 +15323,11 @@
         "definition": "Definition of Date",
         "reference": false,
         "descriptor": "Date",
+        "scalar": {
+          "type": "date",
+          "scale": null,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2021-08-26T22:35:10.483Z",
@@ -14970,89 +15344,97 @@
         "id": "4ede8dbb-1f01-42b7-8aa9-2a5c6eb2109b",
         "type": "attributeClass",
         "name": "Description",
-        "definition": "Detailed explanation of the object.",
-        "descriptor": "Desc",
-        "variations": ["Description"],
-        "scalar": "text",
-        "precision": null,
-        "scale": null,
-        "tags": [],
-        "config": "",
+        "definition": "Definition of Description",
+        "reference": false,
+        "descriptor": "Description",
+        "scalar": {
+          "type": "text",
+          "scale": 1000,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:17:09.348Z",
+        "createTimestamp": "2020-12-18T07:07:56.582Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:17:09.348Z"
-        }
+          "userId": "kris.moniz@centricconsulting.com",
+          "userName": "Kris Moniz",
+          "timestamp": "2020-12-28T18:28:14.987Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "7cbf93da-a1c4-4ed2-9e1a-d791ffc656ba",
         "type": "attributeClass",
         "name": "Rate",
-        "definition": "Fractional representation. Can apply to growth rate, percentage, variance, etc.",
+        "definition": "Definition of Rate",
+        "reference": false,
         "descriptor": "Rate",
-        "variations": ["Percent", "Ration", "Pct"],
-        "scalar": "decimal",
-        "precision": 12,
-        "scale": 6,
-        "tags": [],
-        "config": "",
+        "scalar": {
+          "type": "decimal",
+          "scale": 20,
+          "precision": 12
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:19:59.306Z",
+        "createTimestamp": "2021-01-12T12:47:39.170Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:19:59.306Z"
-        }
+          "userId": "rahul.bansal@centricconsulting.com",
+          "userName": "Rahul Bansal",
+          "timestamp": "2021-01-27T07:11:39.704Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "db6d7fed-4a73-4927-bac7-60bf382b7bef",
         "type": "attributeClass",
         "name": "Currency",
         "definition": "Definition of Currency",
-        "descriptor": "Amount",
-        "variations": ["Currency", "Curr", "Dollars", "Amt"],
-        "scalar": "decimal",
-        "precision": 20,
-        "scale": null,
-        "tags": [],
-        "config": "",
+        "reference": false,
+        "descriptor": "Currency",
+        "scalar": {
+          "type": "decimal",
+          "scale": 20,
+          "precision": 8
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:01:49.168Z",
+        "createTimestamp": "2020-02-28T04:47:51.006Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:01:49.168Z"
-        }
+          "userId": "colin.mcgee@centricconsulting.com",
+          "userName": "Colin McGee",
+          "timestamp": "2020-03-26T10:26:25.634Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "fb1e55ad-8842-4f5d-9ba6-dd3e2096ff3b",
         "type": "attributeClass",
         "name": "Location",
         "definition": "Definition of Location",
+        "reference": false,
         "descriptor": "Location",
-        "variations": ["adsf", "qwer", "yuioyuioyu"],
-        "scalar": "text",
-        "precision": 33,
-        "scale": null,
-        "tags": [],
-        "config": "",
+        "scalar": {
+          "type": "text",
+          "scale": 500,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:08:41.989Z",
+        "createTimestamp": "2021-09-14T08:54:21.719Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:08:41.989Z"
-        }
+          "userId": "pete.dunn@centricconsulting.com",
+          "userName": "Pete Dunn",
+          "timestamp": "2021-10-10T06:41:52.410Z"
+        },
+        "alive": true,
+        "tags": [],
+        "config": {}
       },
       {
         "id": "5510797b-14f8-41d2-8e5d-907cb38a0889",
@@ -15061,6 +15443,11 @@
         "definition": "Definition of Count",
         "reference": false,
         "descriptor": "Count",
+        "scalar": {
+          "type": "integer",
+          "scale": null,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
         "createTimestamp": "2020-08-21T17:23:33.107Z",
@@ -15077,210 +15464,134 @@
         "id": "5467be16-8442-431d-b574-24fb694cd875",
         "type": "attributeClass",
         "name": "Identifier",
-        "definition": "Operationally referenced business identifier of an object. Not equivalent to a database identifier.",
+        "definition": "Definition of Identifier",
+        "reference": false,
         "descriptor": "Identifier",
-        "variations": ["ID", "Number", "Num", "No"],
-        "scalar": "text",
-        "precision": 50,
-        "scale": null,
-        "tags": [],
-        "config": "",
+        "scalar": {
+          "type": "text",
+          "scale": 200,
+          "precision": null
+        },
         "active": true,
         "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:18:47.543Z",
+        "createTimestamp": "2021-09-07T04:25:51.332Z",
         "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:18:47.543Z"
-        }
-      },
-      {
-        "id": "7e563a62-9e03-4dc0-b98f-c01e2a8fb86b",
-        "type": "attributeClass",
-        "name": "Indicator",
-        "definition": "Indicates true or false value.",
-        "descriptor": "Ind",
-        "scalar": "boolean",
-        "precision": null,
-        "scale": null,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:15:34.574Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:15:34.574Z"
-        }
-      }
-    ],
-    "sources": [
-      {
-        "id": "93b82d1c-5294-4dff-8b57-c1d15363a410",
-        "type": "source",
-        "name": "Dynamics CRM",
-        "definition": "Microsoft Dynamics CRM",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Customer Service",
-        "scope": "Contains data since 2007 related to the financial services products.",
-        "platform": "Dynamics 365",
-        "vendor": "Microsoft",
-        "createTimestamp": "2020-09-29T23:42:31.132Z",
-        "modify": {
-          "userId": "rahul.bansal@centricconsulting.com",
-          "userName": "Rahul Bansal",
-          "timestamp": "2020-10-27T05:07:37.736Z"
+          "userId": "bill.decker@centricconsulting.com",
+          "userName": "Bill Decker",
+          "timestamp": "2021-10-02T19:12:31.970Z"
         },
         "alive": true,
-        "active": true,
-        "tags": [],
-        "config": {}
-      },
-      {
-        "id": "2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e",
-        "type": "source",
-        "name": "Oracle Finance",
-        "platform": "Oracle EBS 12.1",
-        "vendor": "Oracle",
-        "operational": true,
-        "domains": ["aaaa", "ccccc", "eeee", "ggggg", "zzzz"],
-        "scope": "Oracle Finance",
-        "definition": "Oracle e-Business Suite for Finance",
-        "tags": [],
-        "config": {},
-        "active": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-06T16:01:29.335Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-06T16:01:29.335Z"
-        }
-      },
-      {
-        "id": "208138d8-d1c2-419c-90ed-c690b99d5059",
-        "type": "source",
-        "name": "Google Analytics",
-        "definition": "Marketing analytics platform.",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Marketing",
-        "platform": "Google Analytics",
-        "vendor": "Google",
-        "createTimestamp": "2020-10-03T18:31:15.017Z",
-        "modify": {
-          "userId": "monica.lopez@centricconsulting.com",
-          "userName": "Monica Lopez",
-          "timestamp": "2020-10-06T14:37:52.361Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": [],
-        "config": {}
-      },
-      {
-        "id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018",
-        "type": "source",
-        "name": "Data Warehouse",
-        "definition": "Data Warehouse",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Analytics",
-        "platform": "Azure",
-        "vendor": "Microsoft",
-        "createTimestamp": "2020-03-29T06:36:03.443Z",
-        "modify": {
-          "userId": "chris.levine@centricconsulting.com",
-          "userName": "Chris Levine",
-          "timestamp": "2020-04-12T00:48:43.056Z"
-        },
-        "alive": true,
-        "active": true,
-        "tags": [],
-        "config": {}
-      },
-      {
-        "id": "572d1227-560e-475c-97dc-83b116155bbb",
-        "type": "source",
-        "name": "Marketing CRM",
-        "definition": "Definition of Marketing CRM.",
-        "operational": true,
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "domain": "Customer Service",
-        "platform": "Salesforce CRM",
-        "vendor": "Salesforce",
-        "createTimestamp": "2020-09-12T05:02:22.708Z",
-        "modify": {
-          "userId": "pranay.shyam@centricconsulting.com",
-          "userName": "Pranay Shyam",
-          "timestamp": "2020-10-11T21:46:06.320Z"
-        },
-        "alive": true,
-        "active": true,
         "tags": [],
         "config": {}
       }
-    ],
-    "components": [
-      {
-        "id": "819c0c93-3e6a-4c03-ac73-59fa8a021645",
-        "type": "component",
-        "name": "Data Warehouse Database",
-        "definition": "Data Warehouse Database DDL",
-        "mappings": [
-          {
-            "originSource": {"id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018"},
-            "targetSource": {"id": "2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e"}
-          },
-          {
-            "originSource": {"id": "2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e"},
-            "targetSource": {"id": "572d1227-560e-475c-97dc-83b116155bbb"}
-          },
-          {
-            "originSource": {"id": "572d1227-560e-475c-97dc-83b116155bbb"},
-            "targetSource": {"id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018"}
-          }
-        ],
-        "active": true,
-        "componentId": "819c0c93-3e6a-4c03-ac73-59fa8a021645",
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-07T18:39:28.554Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-07T18:39:28.554Z"
-        }
+    ]
+  },
+  "sources": [
+    {
+      "id": "93b82d1c-5294-4dff-8b57-c1d15363a410",
+      "type": "source",
+      "name": "Dynamics CRM",
+      "definition": "Microsoft Dynamics CRM",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Customer Service",
+      "scope": "Contains data since 2007 related to the financial services products.",
+      "platform": "Dynamics 365",
+      "vendor": "Microsoft",
+      "createTimestamp": "2020-09-29T23:42:31.132Z",
+      "modify": {
+        "userId": "rahul.bansal@centricconsulting.com",
+        "userName": "Rahul Bansal",
+        "timestamp": "2020-10-27T05:07:37.736Z"
       },
-      {
-        "id": "6c8182b4-861a-409d-a40b-2a689a30646d",
-        "type": "component",
-        "name": "Test Component 1",
-        "locked": false,
-        "mappings": [
-          {
-            "originSource": {"id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018"},
-            "targetSource": {"id": null}
-          },
-          {
-            "originSource": {"id": "572d1227-560e-475c-97dc-83b116155bbb"},
-            "targetSource": {"id": "93b82d1c-5294-4dff-8b57-c1d15363a410"}
-          }
-        ],
-        "active": false,
-        "componentId": "6c8182b4-861a-409d-a40b-2a689a30646d",
-        "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
-        "alive": true,
-        "createTimestamp": "2022-01-08T17:26:10.297Z",
-        "modify": {
-          "userName": "Jeff Kanel",
-          "userId": "jeff.kanel@centricconsulting.com",
-          "timestamp": "2022-01-08T17:26:10.297Z"
-        }
-      }
-    ],
-    "tagProperties": {"mart": "FactTransaction"}
-  }
+      "alive": true,
+      "active": true,
+      "tags": [],
+      "config": {}
+    },
+    {
+      "id": "2a4cb7c6-c8dd-47a0-983e-6b7bd0dd192e",
+      "type": "source",
+      "name": "Oracle Finance",
+      "definition": "Oracle e-Business Suite for Finance",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Finance",
+      "platform": "Oracle EBS 12.1",
+      "vendor": "Oracle",
+      "createTimestamp": "2020-11-07T14:02:04.090Z",
+      "modify": {
+        "userId": "chris.levine@centricconsulting.com",
+        "userName": "Chris Levine",
+        "timestamp": "2020-11-20T22:08:57.591Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": [],
+      "config": {}
+    },
+    {
+      "id": "208138d8-d1c2-419c-90ed-c690b99d5059",
+      "type": "source",
+      "name": "Google Analytics",
+      "definition": "Marketing analytics platform.",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Marketing",
+      "platform": "Google Analytics",
+      "vendor": "Google",
+      "createTimestamp": "2020-10-03T18:31:15.017Z",
+      "modify": {
+        "userId": "monica.lopez@centricconsulting.com",
+        "userName": "Monica Lopez",
+        "timestamp": "2020-10-06T14:37:52.361Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": [],
+      "config": {}
+    },
+    {
+      "id": "7a4ff8db-924c-41e3-94b3-2ef9682b5018",
+      "type": "source",
+      "name": "Data Warehouse",
+      "definition": "Data Warehouse",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Analytics",
+      "platform": "Azure",
+      "vendor": "Microsoft",
+      "createTimestamp": "2020-03-29T06:36:03.443Z",
+      "modify": {
+        "userId": "chris.levine@centricconsulting.com",
+        "userName": "Chris Levine",
+        "timestamp": "2020-04-12T00:48:43.056Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": [],
+      "config": {}
+    },
+    {
+      "id": "572d1227-560e-475c-97dc-83b116155bbb",
+      "type": "source",
+      "name": "Marketing CRM",
+      "definition": "Definition of Marketing CRM.",
+      "operational": true,
+      "projectId": "1b6f6825-cd5c-4ca5-86e9-94dc41df6945",
+      "domain": "Customer Service",
+      "platform": "Salesforce CRM",
+      "vendor": "Salesforce",
+      "createTimestamp": "2020-09-12T05:02:22.708Z",
+      "modify": {
+        "userId": "pranay.shyam@centricconsulting.com",
+        "userName": "Pranay Shyam",
+        "timestamp": "2020-10-11T21:46:06.320Z"
+      },
+      "alive": true,
+      "active": true,
+      "tags": [],
+      "config": {}
+    }
+  ]
 }

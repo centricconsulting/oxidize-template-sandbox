@@ -1,4 +1,3 @@
-import jsonHelper from './json.helper.js'
 /**
  * Cases used to specify Codify Options.
  */
@@ -15,12 +14,9 @@ const CaseOptionEnum = {
 const DatabaseCodifyOptions = {
   case: CaseOptionEnum.Upper,
   substitutions: [
-    {find: /\s+/g, replace: ' '}, // replace whitespace with single space
     {find: /(\s+|\W)+/gim, replace: '_'}, // replace whitespace with underscore
   ],
-  escapeFn: (text) => {
-    return text.replace("'", "''")
-  },
+  wrapper: {left: '[', right: ']'},
 }
 
 /**
@@ -31,11 +27,8 @@ const JavascriptCodifyOptions = {
   preserveCaps: true,
   substitutions: [
     {find: /\s+/gim, replace: ''}, // remove all whitespace
-    {find: /\W+/gim, replace: ''}, // replace non-words with hyphen
+    {find: /\W+/gim, replace: '-'}, // replace non-words with hyphen
   ],
-  escapeFn: (text) => {
-    return jsonHelper.escape(text)
-  },
 }
 
 /**
@@ -44,9 +37,12 @@ const JavascriptCodifyOptions = {
  * @param {JSON} codifyOptions Complete set of Codify Options.
  * @returns Codified version of the original text value.
  */
-const codifyText = (text, codifyOptions) => {
+const codifyText = (text, codifyOptions, excludeWrapper = false) => {
   if (!codifyOptions) return text
   if (!text) return undefined
+
+  // trim and replace whitespace with single character
+  text = text.trim().replace(/\s+/g, ' ')
 
   // handle simple case options first
   if (codifyOptions.case === CaseOptionEnum.Upper) {
@@ -93,11 +89,18 @@ const codifyText = (text, codifyOptions) => {
     })
   }
 
-  if (typeof codifyOptions.escape === 'function') {
-    return codifyOptions.escape(text)
-  } else {
-    return text
+  // wrappers
+  if (!excludeWrapper) {
+    if (codifyOptions.wrapper?.left?.length > 0) {
+      text = codifyOptions.wrapper.left.concat(text)
+    }
+
+    if (codifyOptions.wrapper?.right?.length > 0) {
+      text = text.concat(codifyOptions.wrapper.right)
+    }
   }
+
+  return text
 }
 
 /**

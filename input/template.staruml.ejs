@@ -1,12 +1,11 @@
 @@@FILE:[test/<%- project.name %>.mdj]@@@
 <% // javascript
  const UmlModelEntitiesId = "Entities-".concat(project.id)
- const escape = jsonHelper.escape
 %> 
 {
   "_type": "Project",
   "_id": "<%- project.id %>",
-  "name": "<%- escape(project.name) %>",
+  "name": "<%- project.name %>",
   "ownedElements": [
       {
           "_type": "UMLModel",
@@ -15,7 +14,6 @@
               "$ref": "<%- project.id %>"
           },
           "name": "Entities",
-          "documentation": "<%- escape(project.definition) %>",
           "ownedElements": [
             {
                 "_type": "UMLClassDiagram",
@@ -38,15 +36,14 @@
         "_parent": {
             "$ref": "<%- project.id %>"
         },
-        "name": "<%- escape(entity.name) %>",
-        "documentation":  "<%- escape(entity.definition) %>",
+        "name": "<%- entity.name %>",
         "attributes": [
         
 <% // javascript
 
     applyAttributeSort(entity.attributes) // see function at end of script
     entity.attributes.forEach((attribute, attributeIndex) => {
-        const ac = project.attributeClasses.find(x => x.id === attribute?.return?.attributeClassId)
+        const ac = project.attributeClasses.find(x => x.id === attribute.attributeClass?.id)
         
 %>
 <%# Render the Attribute as UMLAttribute  %>
@@ -57,22 +54,21 @@
                 "_parent": {
                     "$ref": "<%- entity.id %>"
                 },
-                "name": "<%- escape(attribute.name) %>",
-                "documentation": "<%- escape(attribute.definition) %>"
+                "name": "<%- attribute.name %>"
 <% // javascript
 
-    if(attribute?.return?.reference === true && !!attribute?.return?.entityId) { 
+    if(ac.reference === true && !!attribute.attributeClass?.entityId) { 
 
 %><%# Render the Attribute Class Reference as Stereotype  %>
                 , "stereotype": {
-                  "$ref": "<%- attribute.return.entityId %>"
+                  "$ref": "<%- attribute.attributeClass.entityId %>"
                 }
 <% // javascript
 
-    } else if(ac?.scalar) {
+    } else if(ac.scalar?.length > 0) {
 
 %><%# Render the Attribute Class Type as Type  %>
-              , "type": "<%- escape(ac.scalar) %>"
+              , "type": "<%- ac.scalar?.type %>"
 <% // javascript
     }
 %><%# Close the UMLAttribute  %>
@@ -97,8 +93,7 @@
             "_parent": {
                 "$ref": "<%- UmlModelEntitiesId %>"
             },
-            "name": "<%- escape(entity.pluralName ?? entity.name.concat(" Instances")) %>",
-            "documentation": "Instances of <%- escape(entity.name) %>.",
+            "name": "<%- entity.pluralName ?? entity.name.concat(" Instances") %>",
             "stereotype": {
                 "$ref": "<%- entity.id %>"
             },
@@ -113,8 +108,7 @@
                     "_parent": {
                         "$ref": "<%- entity.id %>"
                     },
-                    "name": "<%- escape(instance.name) %>",
-                    "documentation": "<%- escape(instance.definition) %>"
+                    "name": "<%- instance.name %>"
                 }
 <% // javascript
         }) // END entity.instance.forEach

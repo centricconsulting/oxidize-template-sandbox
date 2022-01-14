@@ -1,9 +1,4 @@
 import {JSONPath} from 'jsonpath-plus'
-import jsStringEscape from 'js-string-escape'
-
-const escape = (text) => {
-  return jsStringEscape(text)
-}
 
 /**
  * Return a reference from an array of references based on an `id` value.
@@ -121,7 +116,6 @@ const buildFilterPhrase = (filters) => {
 }
 
 export default {
-  escape,
   getReferenceById,
   getObjects,
   getObjectsByFilter,
