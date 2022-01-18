@@ -5,6 +5,7 @@ const SqlServerDatabaseOptions = {
   primaryKeyDescriptor: 'PK',
   naturalKeyDescriptor: 'NK',
   foreignKeyDescriptor: 'FK',
+  keyDataType: 'BIGINT',
   defaultDataType: 'VARCHAR(200)',
   dataTypeMap: [
     {nominal: 'text', target: (precision) => `VARCHAR(${precision ?? 200})`},
@@ -24,7 +25,6 @@ const SqlServerDatabaseOptions = {
       },
     },
     {nominal: 'decimal', target: (precision, scale) => `DECIMAL(${precision ?? 20},${scale ?? 8})`},
-    {nominal: 'identifier', target: () => 'VARCHAR(200)'},
     {nominal: 'float', target: (precision, scale) => `FLOAT(${precision ?? 20},${scale ?? 8})`},
     {nominal: 'date', target: () => `DATE`},
     {nominal: 'time', target: () => `DATETIME2(7)`},
@@ -37,6 +37,7 @@ const AdfOptions = {
   primaryKeyDescriptor: 'PK',
   naturalKeyDescriptor: 'NK',
   foreignKeyDescriptor: 'FK',
+  keyDataType: 'INT',
   defaultDataType: 'VARCHAR(200)',
   dataTypeMap: [
     {nominal: 'text', target: () => `String`},
@@ -50,7 +51,6 @@ const AdfOptions = {
       },
     },
     {nominal: 'decimal', target: () => `DECIMAL`},
-    {nominal: 'identifier', target: () => 'String'},
     {nominal: 'float', target: () => `DECIMAL`},
     {nominal: 'date', target: () => `DateTime`},
     {nominal: 'time', target: () => `DateTime`},
@@ -107,7 +107,7 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
     // iterate through attributes (these will be columns)
     entity.attributes.forEach((attribute, attributeIndex) => {
       // find the attribute class
-      let attributeName, columnName
+      let attributeName, columnName, dataType
       const ac = json.attributeClasses.find((x) => x.id === attribute.return?.attributeClassId)
 
       // determine if a foreign key is warranted
@@ -131,6 +131,8 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
           codifyOptions
         )
 
+        dataType = databaseOptions.keyDataType ?? databaseOptions.defaultDataType
+
         foreignKeys.push({
           foreignColumnName: codifier.codifyText(
             attributeName.concat(' ', databaseOptions.foreignKeyDescriptor),
@@ -145,6 +147,9 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
       } else {
         attributeName = attribute.name
         columnName = codifier.codifyText(attributeName, codifyOptions)
+        dataType =
+          getDataType({type: ac?.scalar, precision: ac?.precision, scale: ac?.scale}, databaseOptions) ??
+          databaseOptions.defaultDataType
       }
 
       const column = {
@@ -156,13 +161,7 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
         name: columnName,
         originalName: attributeName,
         grain: attribute.grain,
-        dataType:
-          attribute.return?.reference === true
-            ? getDataType({type: 'identifier'}, databaseOptions)
-            : getDataType(
-                {type: ac?.scalar, precision: ac?.precision, scale: ac?.scale},
-                databaseOptions
-              ) ?? databaseOptions.defaultDataType,
+        dataType: dataType,
 
         required: multiplicityRequired(attribute.multiplicityId),
         tagProperties: attribute.tagProperties,
