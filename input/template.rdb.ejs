@@ -18,13 +18,12 @@ dbJson.tables.forEach(table => {
   const grainColumns = table.columns
     .filter(c => c.grain === true)
     .map(c => c.name) ?? []
-
 %>
 /* ###################################################### */
 
 CREATE TABLE dbo.[<%- tableName %>] (
-  [<%- pkColumName %>] BIGINT IDENTITY(1,1) NOT NULL
-, [<%- nkColumName %>] VARCHAR(200) NOT NULL
+  [<%- pkColumName %>] <%-databaseOptions.keyDataType%> IDENTITY(1,1) NOT NULL
+, [<%- nkColumName %>] <%-databaseOptions.keyDataType%> NOT NULL
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script

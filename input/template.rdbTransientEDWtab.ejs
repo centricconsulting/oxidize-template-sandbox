@@ -29,7 +29,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Transient_<%- tableName %>]( 
-  [<%- nkColumName %>] [varchar](200) NULL,
+  [<%- nkColumName %>] <%-databaseOptions.keyDataType%> NULL,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
