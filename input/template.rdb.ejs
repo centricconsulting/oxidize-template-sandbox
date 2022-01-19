@@ -50,15 +50,25 @@ CREATE TABLE dbo.[<%- tableName %>] (
 , [CHANGE_HASH] BINARY(32) NULL
 , [SOURCE_SYSTEM_CODE] VARCHAR(100) NULL
 , CONSTRAINT [PK_<%- tableName %>] PRIMARY KEY CLUSTERED ([<%- pkColumName %>] ASC)
-) WITH (
+ WITH (
   PAD_INDEX = OFF
 , STATISTICS_NORECOMPUTE = OFF
 , IGNORE_DUP_KEY = OFF
 , ALLOW_ROW_LOCKS = ON
 , ALLOW_PAGE_LOCKS = ON
 ) ON [PRIMARY]
+);
+<% }) 
 
-<% // javascript
+  dbJson.tables.forEach(table => {
+  const tableName = codifier.codifyText(
+        table.domain ? table.domain.concat("_", table.name) : table.name,
+        codifyOptions
+  )
+  const grainColumns = table.columns
+    .filter(c => c.grain === true)
+    .map(c => c.name) ?? []
+
   if(grainColumns.length > 0) {
 %>
 CREATE UNIQUE INDEX [UX_<%- tableName %>_GRAIN] ON [<%- tableName %>] (
@@ -66,8 +76,13 @@ CREATE UNIQUE INDEX [UX_<%- tableName %>_GRAIN] ON [<%- tableName %>] (
 );
 <% // javascript
   }
+  
+  table.foreignKeys.forEach((column, columnIndex) => { %>
+ALTER TABLE <%- tableName %> ADD CONSTRAINT FK_<%- tableName %>_<%- `${column.foreignColumnName}`%>
+FOREIGN KEY (<%- `${column.foreignColumnName}`%>) REFERENCES <%-  `${column.referenceTableName}`%>(<%-  `${column.referenceColumnName}`%>);
+<% // javascript
+  })
 })
-
 function applyColumnSort(columns) {
   columns.sort((a, b) => {
     let sortValue

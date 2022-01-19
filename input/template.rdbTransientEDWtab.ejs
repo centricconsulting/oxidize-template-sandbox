@@ -14,6 +14,10 @@ dbJson.tables.forEach(table => {
   const bitemporal = (table.bitemporal === "true")
   const transition = (table.transition === "true")
 
+  const pkColumName = tableName.concat("_", databaseOptions.primaryKeyDescriptor)
+  const nkColumName = tableName.concat("_", databaseOptions.naturalKeyDescriptor)
+
+
 %>
 /* ###################################################### */
 --Transient EDW table
@@ -25,8 +29,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Transient_<%- tableName %>]( 
-  [<%- tableName %>_NK] [varchar](200) NULL,
-  [<%- tableName %>_FK] [varchar](200) NULL,
+  [<%- nkColumName %>] [varchar](200) NULL,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
