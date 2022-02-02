@@ -14,6 +14,9 @@ dbJson.tables.forEach(table => {
   const bitemporal = (table.bitemporal === "true")
   const transition = (table.transition === "true")
 
+  const pkColumName = tableName.concat("_", databaseOptions.primaryKeyDescriptor)
+  const nkColumName = tableName.concat("_", databaseOptions.naturalKeyDescriptor)
+
 %>
 /* ################### Strting New Code for Stored Procedure ################## */
 
@@ -26,8 +29,7 @@ DECLARE @AlLChars VARCHAR(100) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 --BEGIN Cast Block
 
 SELECT 
- CAST(<%- tableName %>_NK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_NK
-,CAST(<%- tableName %>_FK +'#Instec' AS VARCHAR(200)) AS <%- tableName %>_FK,
+ CAST(<%- nkColumName %> +'#Instec' AS VARCHAR(200)) AS <%- nkColumName %>,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -64,8 +66,7 @@ FROM(
 
 --BEGIN Custom Block
 SELECT
-(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_NK
-,(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- tableName %>_FK,
+(CAST(CAST(RAND() * 1000 AS INT) AS VARCHAR(200))) AS <%- nkColumName %>,
 <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script

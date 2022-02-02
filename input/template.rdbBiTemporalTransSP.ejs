@@ -15,6 +15,9 @@ dbJson.tables.forEach(table => {
   const bitemporal = (table.bitemporal === "true")
   const transition = (table.transition === "true")
 
+  const pkColumName = tableName.concat("_", databaseOptions.primaryKeyDescriptor)
+  const nkColumName = tableName.concat("_", databaseOptions.naturalKeyDescriptor)
+
 %>
 /****** Object:  StoredProcedure [dbo].[LOAD_<%- tableName %>]    Script Date: 12/31/2021 8:58:41 PM ******/
 SET ANSI_NULLS ON
@@ -81,7 +84,7 @@ DECLARE
             ,@Updates_Row_count            BIGINT = 0
             ,@Updates_Has_Index            BIT    = 0
             ,@UpdatesDedupCnt              INT    = 0
-            ,@Current_<%- tableName %>_PK BIGINT
+            ,@Current_<%- pkColumName %> BIGINT
             ,@IndexesCreated               BIT    = 0
             ,@RowNum                       INT    = 0 ;
  
@@ -102,9 +105,9 @@ FROM [dbo].[TRANSIENT_<%- tableName %>]
 OPTION( RECOMPILE ) ;
  
 SELECT
-            @Current_<%- tableName %>_PK = MAX([<%- tableName %>_PK])
+            @Current_<%- pkColumName %> = MAX([<%- pkColumName %>])
             ,@TargetStartRecordCount = COUNT(1)
-            ,@TargetExistingUpdatedObjectCount = COUNT(DISTINCT [<%- tableName %>_NK])
+            ,@TargetExistingUpdatedObjectCount = COUNT(DISTINCT [<%- nkColumName %>])
 FROM [dbo].[<%- tableName %>]
 OPTION( RECOMPILE ) ;
  
@@ -120,17 +123,17 @@ DROP TABLE IF EXISTS [#UpdatesDeduped] ;
  
 CREATE TABLE [#UpdatesDeduped]
 (
-            [<%- tableName %>_PK]      BIGINT       NOT NULL
+            [<%- pkColumName %>]      BIGINT       NOT NULL
             ,[Invalidated_Batch_ID]      VARCHAR(100)
-            ,[<%- tableName %>_NK]      VARCHAR(100) NOT NULL
+            ,[<%- nkColumName %>]      VARCHAR(100) NOT NULL
             ,[Record_Valid_End_Datetime] DATETIME2(3)
 ) ;
  
 CREATE TABLE [#Updates]
 (
             [UpdatesRowId]              BIGINT       NOT NULL
-            ,[<%- tableName %>_PK]      BIGINT       NOT NULL
-            ,[<%- tableName %>_NK]      VARCHAR(100) NULL
+            ,[<%- pkColumName %>]      BIGINT       NOT NULL
+            ,[<%- nkColumName %>]      VARCHAR(100) NULL
             ,[Invalidated_Batch_ID]      VARCHAR(200) NULL
             ,[Record_Valid_End_Datetime] DATETIME2(3) NULL
 ) ;
@@ -148,7 +151,7 @@ FROM [dbo].[<%- tableName %>] AS [e]
 WHERE EXISTS ( 
             SELECT 1 
             FROM [dbo].[TRANSIENT_<%- tableName %>] AS [t] 
-            WHERE [e].[<%- tableName %>_NK] = [t].[<%- tableName %>_NK] 
+            WHERE [e].[<%- nkColumName %>] = [t].[<%- nkColumName %>] 
             ) 
             AND [e].[Record_Valid_End_Datetime] = @EOT
 OPTION( RECOMPILE ) ;
@@ -210,7 +213,7 @@ Indexes slow inserts while quickening extracts.  This is a previously proven bal
                 IF @Cnt < 10000 AND @IndexesCreated = 0 AND @IntraLoop_cursor_Cnt > ( @RowNum + 20 )
                     BEGIN
                         SET @IndexesCreated = 1 ;
-                        CREATE CLUSTERED INDEX [<%- tableName %>_NK_CLS] ON [#<%- tableName %>]( [<%- tableName %>_NK] ) ;
+                        CREATE CLUSTERED INDEX [<%- nkColumName %>_CLS] ON [#<%- tableName %>]( [<%- nkColumName %>] ) ;
                     END ;
  
 /***************************************************************************************************
@@ -222,19 +225,19 @@ Dedupe the Rows-to-Update table.  This table is empty on teh first pas, but will
  
                 INSERT [#UpdatesDeduped] WITH( TABLOCK )
                 SELECT
-                                                            [a].[<%- tableName %>_PK]
+                                                            [a].[<%- pkColumName %>]
                                                             ,[a].[Invalidated_Batch_ID]
-                                                            ,[a].[<%- tableName %>_NK]
+                                                            ,[a].[<%- nkColumName %>]
                                                             ,[a].[Record_Valid_End_Datetime]
                 FROM [#Updates] AS [a]
                 INNER JOIN( 
                                                             SELECT
-                                                                        [<%- tableName %>_PK]
+                                                                        [<%- pkColumName %>]
                                                                         ,MIN([UpdatesRowId]) AS [UpdatesRowId] 
                                                             FROM [#Updates] 
-                                                            GROUP BY [<%- tableName %>_PK]
+                                                            GROUP BY [<%- pkColumName %>]
                                                             ) AS [b] 
-                                                                        ON [a].[<%- tableName %>_PK] = [b].[<%- tableName %>_PK] 
+                                                                        ON [a].[<%- pkColumName %>] = [b].[<%- pkColumName %>] 
                                                                         AND [a].[UpdatesRowId] = [b].[UpdatesRowId]
                 WHERE @Updates_Row_count > 0
                 OPTION( RECOMPILE ) ;
@@ -250,8 +253,8 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
 ***************************************************************************************************/
 --select * from [#<%- tableName %>]
                 INSERT [#<%- tableName %>] WITH( TABLOCK )( 
-                                                             [<%- tableName %>_PK]
-                                                            ,[<%- tableName %>_NK], 
+                                                             [<%- pkColumName %>]
+                                                            ,[<%- nkColumName %>], 
                                                             <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -277,8 +280,8 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                             )
                 SELECT
                     /* Calculated Identity */
-                    ROW_NUMBER() OVER ( ORDER BY( SELECT 0 )) + ISNULL(@Current_<%- tableName %>_PK, 0) AS [<%- tableName %>_PK]
-                                                            ,[d].[<%- tableName %>_NK],
+                    ROW_NUMBER() OVER ( ORDER BY( SELECT 0 )) + ISNULL(@Current_<%- pkColumName %>, 0) AS [<%- pkColumName %>]
+                                                            ,[d].[<%- nkColumName %>],
                                                             <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -308,8 +311,8 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                             ) AS [t]
                 LEFT JOIN( 
                                                             SELECT
-                                                                        [e].[<%- tableName %>_PK]
-                                                                        ,[e].[<%- tableName %>_NK],
+                                                                        [e].[<%- pkColumName %>]
+                                                                        ,[e].[<%- nkColumName %>],
                                                                         <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -324,11 +327,11 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
 %>
                                                                         ,[e].[Business_Transaction_Datetime] 
                                                                         ,[e].[Record_Valid_Begin_Datetime]
-                                                                        ,CASE WHEN [u].[<%- tableName %>_PK] IS NOT NULL THEN [u].[Record_Valid_End_Datetime] ELSE [e].[Record_Valid_End_Datetime] END AS [Record_Valid_End_Datetime]
+                                                                        ,CASE WHEN [u].[<%- pkColumName %>] IS NOT NULL THEN [u].[Record_Valid_End_Datetime] ELSE [e].[Record_Valid_End_Datetime] END AS [Record_Valid_End_Datetime]
                                                                         ,[e].[Entered_Datetime]
                                                                         ,[e].[Updated_Datetime]
                                                                         ,[e].[Batch_ID]
-                                                                        ,CASE WHEN [u].[<%- tableName %>_PK] IS NOT NULL THEN [u].[Invalidated_Batch_ID] ELSE [e].[Invalidated_Batch_ID] END AS [Invalidated_Batch_ID]
+                                                                        ,CASE WHEN [u].[<%- pkColumName %>] IS NOT NULL THEN [u].[Invalidated_Batch_ID] ELSE [e].[Invalidated_Batch_ID] END AS [Invalidated_Batch_ID]
                                                                         ,[e].[Intra_Batch_Loop_Sequence]
                                                                         ,[e].[Generated_Record_Ind]
                                                                         ,[e].[Change_HASH]
@@ -339,10 +342,10 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                                         FROM [#UpdatesDeduped] 
                                                                         WHERE @UpdatesDedupCnt > 0 
                                                                         ) AS [u] 
-                                                                        ON [u].[<%- tableName %>_PK] = [e].[<%- tableName %>_PK] 
+                                                                        ON [u].[<%- pkColumName %>] = [e].[<%- pkColumName %>] 
                                                             ) AS [e] 
                                                             ON @MatchingExistingCnt = 1 
-                                                            AND [t].[<%- tableName %>_NK] = [e].[<%- tableName %>_NK] 
+                                                            AND [t].[<%- nkColumName %>] = [e].[<%- nkColumName %>] 
                                                             AND [t].[Business_Transaction_Datetime] >= [e].[Business_Transaction_Datetime]         
                                                             AND [e].[Record_Valid_End_Datetime] = @EOT
  
@@ -354,9 +357,9 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
 1st Insert - New-New Record ruleset for inclusion in move to Destination Table 
             If there is no existing record OR the existing record's HASH doesn't match, add the record.
 ***************************************************************************************************/
-                                                                        CASE WHEN [e].[<%- tableName %>_NK] IS NULL 
+                                                                        CASE WHEN [e].[<%- nkColumName %>] IS NULL 
                                                                                     THEN 1 
-                                                                         WHEN [t].[<%- tableName %>_NK] = [e].[<%- tableName %>_NK]  
+                                                                         WHEN [t].[<%- nkColumName %>] = [e].[<%- nkColumName %>]  
                                                                                     AND  [t].[Change_HASH] <> [e].[Change_HASH]   
                                                                                     THEN 1
                          ELSE 0
@@ -366,7 +369,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                                         ,[t].[Record_Valid_Begin_Datetime] 
                                                                         ,ISNULL([t].[Record_Valid_End_Datetime],@EOT)
                                                                         ,[t].[Intra_Batch_Loop_Sequence]
-                                                                        ,[t].[<%- tableName %>_NK],
+                                                                        ,[t].[<%- nkColumName %>],
                                                                         <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -391,7 +394,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
             UNLESS the new record would have a business effective end before its business effective begin (a DEAD record).
 ***************************************************************************************************/
                                                                         CASE                                                                           
-                                                                                    WHEN [t].[<%- tableName %>_NK] = [e].[<%- tableName %>_NK]  
+                                                                                    WHEN [t].[<%- nkColumName %>] = [e].[<%- nkColumName %>]  
                                                                                     AND  [t].[Change_HASH] <> [e].[Change_HASH]                                                                
                                                                                     AND [e].[Business_Transaction_Datetime] < DATEADD(MILLISECOND,-1,[t].[Business_Transaction_Datetime])       
                                                                                     THEN 1
@@ -401,7 +404,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                                         ,[t].[Record_Valid_Begin_Datetime]
                                                                         ,ISNULL([t].[Record_Valid_End_Datetime],@EOT)
                                                                         ,[t].[Intra_Batch_Loop_Sequence]
-                                                                        ,[e].[<%- tableName %>_NK],
+                                                                        ,[e].[<%- nkColumName %>],
                                                                         <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -427,7 +430,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                                         ,[Record_Valid_Begin_Datetime]
                                                                         ,[Record_Valid_End_Datetime]
                                                                         ,[Intra_Batch_Loop_Sequence]
-                                                                        ,[<%- tableName %>_NK],
+                                                                        ,[<%- nkColumName %>],
                                                                         <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -450,7 +453,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
  
                 SELECT
                     @ROWCOUNT = @@ROWCOUNT
-                  , @Current_<%- tableName %>_PK = ISNULL(@Current_<%- tableName %>_PK, 0) + @@ROWCOUNT
+                  , @Current_<%- pkColumName %> = ISNULL(@Current_<%- pkColumName %>, 0) + @@ROWCOUNT
                   , @MatchingExistingCnt = CASE WHEN @@ROWCOUNT > 0 THEN 1 ELSE @MatchingExistingCnt END ;
  
 /***************************************************************************************************
@@ -458,17 +461,17 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
             Instead of Updates in the loop, we create a temporary Rows-to-Update Table.  
             It holds records to update in Destination Table in single update
 ***************************************************************************************************/
-                INSERT [#Updates] WITH( TABLOCK )( [UpdatesRowId], [<%- tableName %>_PK], [<%- tableName %>_NK], [Invalidated_Batch_ID], [Record_Valid_End_Datetime] )
+                INSERT [#Updates] WITH( TABLOCK )( [UpdatesRowId], [<%- pkColumName %>], [<%- nkColumName %>], [Invalidated_Batch_ID], [Record_Valid_End_Datetime] )
                 SELECT
                                                             ROW_NUMBER() OVER ( ORDER BY( SELECT 0 )) + ISNULL(@Updates_Row_count, 0) AS [UpdatesRowId]
-                                                            ,[e].[<%- tableName %>_PK]
-                                                            ,[e].[<%- tableName %>_NK]
+                                                            ,[e].[<%- pkColumName %>]
+                                                            ,[e].[<%- nkColumName %>]
                                                             ,CAST(@Batch_ID AS VARCHAR) + '#' + CAST(@Intra_Batch_Loop_Sequence AS VARCHAR) AS [Invalidated_Batch_ID]
                                                             ,DATEADD(MILLISECOND, -1, [t].[Record_Valid_Begin_Datetime]) AS [Record_Valid_End_Datetime]
                 FROM [#<%- tableName %>] AS [e]
                 LEFT JOIN [#UpdatesDeduped] AS [u] 
                                                             ON @UpdatesDedupCnt > 0 
-                                                            AND [u].[<%- tableName %>_PK] = [e].[<%- tableName %>_PK]
+                                                            AND [u].[<%- pkColumName %>] = [e].[<%- pkColumName %>]
                 INNER JOIN( 
                                                             SELECT * 
                                                             FROM [#<%- tableName %>] AS [n] 
@@ -476,7 +479,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
                                                             AND ISNULL ([n].Batch_ID,@Batch_ID) = @Batch_ID
                                                             ) AS [t] 
                                                             ON                                               
-                                                            [t].[<%- tableName %>_NK] = [e].[<%- tableName %>_NK]  AND
+                                                            [t].[<%- nkColumName %>] = [e].[<%- nkColumName %>]  AND
                                                     [t].[Business_Transaction_Datetime] <= [e].[Business_Transaction_Datetime]         
                                                             OPTION( RECOMPILE ) ;
  
@@ -492,7 +495,7 @@ We calculate the IDENTITY to allow the optimizer to parallelize the insert
 Creates an index when the Rows-to-Update Table gets over 20K
 Indexes slow inserts while quickening extracts.  This is a previously proven balance.
 ***************************************************************************************************/
-                CREATE UNIQUE CLUSTERED INDEX [UpdatesRowId_CLS] ON [#Updates]( [<%- tableName %>_PK], [UpdatesRowId] DESC ) ;
+                CREATE UNIQUE CLUSTERED INDEX [UpdatesRowId_CLS] ON [#Updates]( [<%- pkColumName %>], [UpdatesRowId] DESC ) ;
                     END ;
  
                 FETCH NEXT FROM [Loop_cursor]
@@ -514,19 +517,19 @@ Dedupe the Rows-to-Update table.  This table is empty on the first pass, but wil
  
         INSERT [#UpdatesDeduped] WITH( TABLOCK )
         SELECT
-                                    [a].[<%- tableName %>_PK]
+                                    [a].[<%- pkColumName %>]
                                     ,[a].[Invalidated_Batch_ID]
-                                    ,[a].[<%- tableName %>_NK]
+                                    ,[a].[<%- nkColumName %>]
                                     ,[a].[Record_Valid_End_Datetime]
         FROM [#Updates] AS [a]
         INNER JOIN( 
                                     SELECT 
-                                                 [<%- tableName %>_PK]
+                                                 [<%- pkColumName %>]
                                                 ,MIN([UpdatesRowId]) AS [UpdatesRowId] 
                                     FROM [#Updates] 
-                                    GROUP BY [<%- tableName %>_PK] 
+                                    GROUP BY [<%- pkColumName %>] 
                                     ) AS [b] 
-                                    ON [a].[<%- tableName %>_PK] = [b].[<%- tableName %>_PK] AND [a].[UpdatesRowId] = [b].[UpdatesRowId]
+                                    ON [a].[<%- pkColumName %>] = [b].[<%- pkColumName %>] AND [a].[UpdatesRowId] = [b].[UpdatesRowId]
         WHERE @Updates_Row_count > 0
         OPTION( RECOMPILE ) ;
  
@@ -538,8 +541,8 @@ Dedupe the Rows-to-Update table.  This table is empty on the first pass, but wil
 INSERT both 1st and 2nd Insert records into Destination Table ALL records where To_Load = 1
 ***************************************************************************************************/
         INSERT [AMIG_DW].[<%- tableName %>] WITH( TABLOCK )( 
-                                     [<%- tableName %>_PK]
-                                    ,[<%- tableName %>_NK],
+                                     [<%- pkColumName %>]
+                                    ,[<%- nkColumName %>],
                                     <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -565,8 +568,8 @@ INSERT both 1st and 2nd Insert records into Destination Table ALL records where 
                                     ,[Source_System_Code] 
                                     )
         SELECT
-                                    MIN( [e].[<%- tableName %>_PK]) 
-                                    ,[e].[<%- tableName %>_NK],
+                                    MIN( [e].[<%- pkColumName %>]) 
+                                    ,[e].[<%- nkColumName %>],
                                     <% // javascript
 
   applyColumnSort(table.columns) // see function at end of script
@@ -592,9 +595,9 @@ INSERT both 1st and 2nd Insert records into Destination Table ALL records where 
                                     ,[e].[Source_System_Code]
         FROM [#<%- tableName %>] AS [e]
         LEFT JOIN [#UpdatesDeduped] AS [u] 
-                                    ON [u].[<%- tableName %>_PK] = [e].[<%- tableName %>_PK]
+                                    ON [u].[<%- pkColumName %>] = [e].[<%- pkColumName %>]
         WHERE [e].[To_Load] = 1
-                        GROUP BY [e].[<%- tableName %>_NK],
+                        GROUP BY [e].[<%- nkColumName %>],
                         <% // javascript
 
                         applyColumnSort(table.columns) // see function at end of script
@@ -609,7 +612,7 @@ INSERT both 1st and 2nd Insert records into Destination Table ALL records where 
                       %>
                                     ,[e].[Business_Transaction_Datetime]
                                     ,[e].[Record_Valid_Begin_Datetime]
-                                    ,[u].[<%- tableName %>_NK] 
+                                    ,[u].[<%- nkColumName %>] 
                                     ,[u].[Record_Valid_End_Datetime] 
                                     ,[e].[Record_Valid_End_Datetime] 
                                     ,[u].[Invalidated_Batch_ID] 
@@ -622,7 +625,7 @@ INSERT both 1st and 2nd Insert records into Destination Table ALL records where 
  
         SET @TargetEndRecordCount = ISNULL(@TargetStartRecordCount, 0) + @@ROWCOUNT ;
  
-        SELECT @TargetNewObjectCount = COUNT(DISTINCT [e].[<%- tableName %>_NK])
+        SELECT @TargetNewObjectCount = COUNT(DISTINCT [e].[<%- nkColumName %>])
         FROM [#<%- tableName %>] AS [e]
         WHERE [e].[To_Load] = 1
         OPTION (RECOMPILE) ;
@@ -638,17 +641,17 @@ UPDATE the 1 Update records in the Destination Table
                                     ,[a].Updated_Datetime = Getdate()
         FROM [AMIG_DW].[<%- tableName %>] AS [a]
         INNER JOIN [#UpdatesDeduped] AS [u] 
-                                    ON [a].[<%- tableName %>_PK] = [u].[<%- tableName %>_PK]
+                                    ON [a].[<%- pkColumName %>] = [u].[<%- pkColumName %>]
         WHERE NOT EXISTS ( 
                                     SELECT 1 
                                     FROM [#<%- tableName %>] AS [e] 
-                                    WHERE E.[<%- tableName %>_PK] = A.[<%- tableName %>_PK] 
+                                    WHERE E.[<%- pkColumName %>] = A.[<%- pkColumName %>] 
                                     AND [e].[To_Load] = 1 
                                     )
         OPTION( RECOMPILE ) ;
  
         SELECT 
-                                     @TargetTotalUpdatedObjectCount = COUNT(DISTINCT [<%- tableName %>_NK])
+                                     @TargetTotalUpdatedObjectCount = COUNT(DISTINCT [<%- nkColumName %>])
         FROM [#UpdatesDeduped] ;
  
         SET @Success = 1 ;
