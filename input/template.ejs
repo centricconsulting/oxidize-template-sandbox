@@ -1,24 +1,124 @@
-<%
-const codifyOptions = codifier.DatabaseCodifyOptions
-codifier.codifyJson(project, codifyOptions, "name", "__code")
-const entities = jsonHelper.getObjectsByFilter(project, [{key: "type", value: "entity"}])
+@@@FILE:[test/databasify.sql]@@@
+<% // javascript
 
-project.sources.forEach((source, sourceIndex) => {
-  entities.forEach((entity, entityIndex) => {
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+const databaseOptions = databasifier.SqlServerDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+  const tableName = codifier.codifyText(
+        table.domain ? table.domain.concat("_", table.name) : table.name,
+        codifyOptions
+  )
+
+  const pkColumName = tableName.concat("_", databaseOptions.primaryKeyDescriptor)
+  const nkColumName = tableName.concat("_", databaseOptions.naturalKeyDescriptor)
+  const grainColumns = table.columns
+    .filter(c => c.grain === true)
+    .map(c => c.name) ?? []
 
 %>
-@@@FILE:[test/<%- source.name %>/<%- entity.__code %>.sql]@@@
-[ENTITY]
-"<%- entity.name %>" | <%- entity.__code %>,
+/* ###################################################### */
 
-[ATTRIBUTES]
+CREATE TABLE dbo.[<%- tableName %>] (
+  [<%- pkColumName %>] BIGINT IDENTITY(1,1) NOT NULL
+, [<%- nkColumName %>] VARCHAR(200) NOT NULL
+<% // javascript
+
+  applyColumnSort(table.columns) // see function at end of script
+  table.columns.forEach((column, columnIndex) => {
+
+%>,<%- ` [${column.name}]`
+%><%-  ` ${column.dataType}`
+%><%- column.required ? " NOT NULL" : null %>
+<% // javascript
+
+  })
+
+%>, [BUSINESS_EFFECTIVE_BEGIN_DATETIME] DATETIME2(7) NULL
+, [BUSINESS_EFFECTIVE_END_DATETIME] DATETIME2(7) NULL
+, [RECORD_VALID_BEGIN_DATETIME] DATETIME2(7) NULL
+, [RECORD_VALID_END_DATETIME] DATETIME2(7) NULL
+, [ENTERED_DATETIME] DATETIME2(7) NULL
+, [UPDATED_DATETIME] DATETIME2(7) NULL
+, [BATCH_ID] VARCHAR(200) NULL
+, [INVALIDATED_BATCH_ID] VARCHAR(200) NULL
+, [INTRA_BATCH_LOOP_SEQUENCE] INT NULL
+, [GENERATED_RECORD_IND] INT NULL
+, [CHANGE_HASH] BINARY(32) NULL
+, [SOURCE_SYSTEM_CODE] VARCHAR(100) NULL
+, CONSTRAINT [PK_<%- tableName %>] PRIMARY KEY CLUSTERED ([<%- pkColumName %>] ASC)
+) WITH (
+  PAD_INDEX = OFF
+, STATISTICS_NORECOMPUTE = OFF
+, IGNORE_DUP_KEY = OFF
+, ALLOW_ROW_LOCKS = ON
+, ALLOW_PAGE_LOCKS = ON
+) ON [PRIMARY]
+
+<% // javascript
+  if(grainColumns.length > 0) {
+%>
+CREATE UNIQUE INDEX [UX_<%- tableName %>_GRAIN] ON [<%- tableName %>] (
+  <%- `[${grainColumns.join("], [")}]` %>
+);
+<% // javascript
+  }
+})
+
+function applyColumnSort(columns) {
+  columns.sort((a, b) => {
+    let sortValue
+    // 1. primary
+    sortValue = (b.primary === true ? 1 : 0)- (a.primary === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 2. grain
+    sortValue = (b.grain === true ? 1 : 0) - (a.grain === true ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 3. fks
+    sortValue = (!!b.attributeClass?.entityId ? 1 : 0) - (!!a.attributeClass?.entityId ? 1 : 0)
+    if(sortValue !== 0) return sortValue
+
+    // 4. alpha
+    return a.name.localeCompare(b.name)
+  })
+
+}
+%>
+
+/* FOREIGN KEYS */
+
 <%
+dbJson.tables.forEach(table => {
 
-    entity.attributes.forEach((attribute, attributeIndex) => {
+  const tableName = codifier.codifyText(
+        table.domain ? table.domain.concat("_", table.name) : table.name,
+        codifyOptions
+  )
 
-%>#<%- attributeIndex + 1%> "<%- attribute.name %>" | <%- attribute.__code %>,
+  if(table.foreignKeys?.length > 0) {
+%>
+/* @@@@@@@ FOREIGN KEYS FOR tableName @@@@@@@ */
 <%
-    })
+  }
+
+  table.foreignKeys.forEach(fk => {
+
+    const referenceTable = dbJson.tables.find(t => t.id === fk.referenceTableId)
+    const referenceTableName = codifier.codifyText(
+      referenceTable.domain ? referenceTable.domain.concat("_", referenceTable.name) : referenceTable.name,
+        codifyOptions
+    )
+    
+%>
+  ALTER TABLE <%- tableName %> ADD CONSTRAINT <%- `${tableName}_${fk.foreignColumnName}` %>
+  FOREIGN KEY (<%- fk.foreignColumnName %>) ON <%- referenceTableName %> (<%- fk.referenceColumnName %>);
+
+<%
   })
 })
 %>
