@@ -1,9 +1,10 @@
-import {JSONPath} from 'jsonpath-plus'
-import jsStringEscape from 'js-string-escape'
+import { JSONPath } from "jsonpath-plus";
+import jsesc from "jsesc";
 
-const escape = (text) => {
-  return jsStringEscape(text)
-}
+const escape = (text, quoteOption) => {
+  if (!quoteOption) quoteOption = "double";
+  return jsesc(text, { quotes: quoteOption });
+};
 
 /**
  * Return a reference from an array of references based on an `id` value.
@@ -12,8 +13,8 @@ const escape = (text) => {
  * @returns Returns the first matching reference.
  */
 const getReferenceById = (references, id) => {
-  return references.find((r) => r.id === id)
-}
+  return references.find((r) => r.id === id);
+};
 
 /**
  * Returns objects corresponding the the Json Path.
@@ -22,8 +23,8 @@ const getReferenceById = (references, id) => {
  * @returns {Array<JSON>} Array of Json objects returned from the Json Path query.
  */
 const getObjects = (json, jsonPath) => {
-  return JSONPath({json, path: jsonPath, wrap: true})
-}
+  return JSONPath({ json, path: jsonPath, wrap: true });
+};
 
 /**
  * Returns objects where the "tag" values match the regex pattern.
@@ -32,9 +33,9 @@ const getObjects = (json, jsonPath) => {
  * @returns {Array<JSON>} Array of Json objects matching the filter criteria.
  */
 const getObjectsByFilter = (json, filters) => {
-  const jsonPath = `$..*${buildFilterPhrase(filters)}`
-  return getObjects(json, jsonPath)
-}
+  const jsonPath = `$..*${buildFilterPhrase(filters)}`;
+  return getObjects(json, jsonPath);
+};
 
 /**
  * Returns objects where the "tag" values match the regex pattern.
@@ -43,10 +44,10 @@ const getObjectsByFilter = (json, filters) => {
  * @returns {Array<JSON>} Array of Json objects matching the filter criteria.
  */
 const getObjectsByTag = (json, tagValues) => {
-  const filters = [{key: 'tags', values: tagValues, target: 'array'}]
-  const jsonPath = `$..*${buildFilterPhrase(filters)}`
-  return getObjects(json, jsonPath)
-}
+  const filters = [{ key: "tags", values: tagValues, target: "array" }];
+  const jsonPath = `$..*${buildFilterPhrase(filters)}`;
+  return getObjects(json, jsonPath);
+};
 
 /**
  * Returns objects where the "id" key matches the specified parameter.
@@ -56,11 +57,11 @@ const getObjectsByTag = (json, tagValues) => {
  * @returns {JSON | Array<JSON>} Single Json or array of Json objects matching the filter criteria.
  */
 const getObjectsById = (json, id, single = true) => {
-  const filters = [{key: 'id', value: id}]
-  const jsonPath = `$..*${buildFilterPhrase(filters)}`
-  const results = getObjects(json, jsonPath)
-  return single ? results[0] : results
-}
+  const filters = [{ key: "id", value: id }];
+  const jsonPath = `$..*${buildFilterPhrase(filters)}`;
+  const results = getObjects(json, jsonPath);
+  return single ? results[0] : results;
+};
 
 /**
  * Returns a Json Path filtering phrase that can be appended to a global path.
@@ -68,20 +69,20 @@ const getObjectsById = (json, id, single = true) => {
  * @returns {String} Single phrase text in Json Path format.
  */
 const buildFilterPhrase = (filters) => {
-  if (!filters) return null
-  if (!Array.isArray(filters)) filters = [filters]
+  if (!filters) return null;
+  if (!Array.isArray(filters)) filters = [filters];
 
-  const phrases = []
+  const phrases = [];
   filters.forEach((filter) => {
-    const {key, value, values, target} = filter
-    const word = getFilterWord(key, values ?? value, target)
-    if (word) phrases.push(word)
-  })
+    const { key, value, values, target } = filter;
+    const word = getFilterWord(key, values ?? value, target);
+    if (word) phrases.push(word);
+  });
 
   if (phrases.length == 0) {
-    return null
+    return null;
   } else {
-    return `[?(@ && ${phrases.join(' && ')})]`
+    return `[?(@ && ${phrases.join(" && ")})]`;
   }
 
   /**
@@ -92,33 +93,33 @@ const buildFilterPhrase = (filters) => {
    * @returns {String} Single comparison text in Json Path format.
    */
   function getFilterWord(key, values, target) {
-    if (!Array.isArray(values)) values = [values] // put value into array
+    if (!Array.isArray(values)) values = [values]; // put value into array
     // setup the evaluation key
-    let evalKey = target === 'array' ? 'x' : `@.${key}`
+    let evalKey = target === "array" ? "x" : `@.${key}`;
 
     // build the comparisons
-    const comparisons = []
+    const comparisons = [];
     values.forEach((value) => {
       if (value instanceof RegExp) {
-        comparisons.push(`/${value.source}/${value.flags}.test(${evalKey})`)
-      } else if (typeof value === 'string') {
-        comparisons.push(`${evalKey}=='${value}'`)
-      } else if (typeof value === 'boolean') {
-        comparisons.push(`${evalKey}==${value ? 'true' : 'false'}`)
-      } else if (typeof value === 'number') {
-        comparisons.push(`${evalKey}==${value.toString()}`)
+        comparisons.push(`/${value.source}/${value.flags}.test(${evalKey})`);
+      } else if (typeof value === "string") {
+        comparisons.push(`${evalKey}=='${value}'`);
+      } else if (typeof value === "boolean") {
+        comparisons.push(`${evalKey}==${value ? "true" : "false"}`);
+      } else if (typeof value === "number") {
+        comparisons.push(`${evalKey}==${value.toString()}`);
       }
-    })
+    });
 
     // build the phrase
-    if (comparisons.length === 0) return undefined
-    if (target === 'array') {
-      return `@ && @.${key}?.find(x => (${comparisons.join(' || ')}))`
+    if (comparisons.length === 0) return undefined;
+    if (target === "array") {
+      return `@ && @.${key}?.find(x => (${comparisons.join(" || ")}))`;
     } else {
-      return `${comparisons.join(' || ')}`
+      return `${comparisons.join(" || ")}`;
     }
   }
-}
+};
 
 export default {
   escape,
@@ -128,4 +129,4 @@ export default {
   getObjectsByTag,
   getObjectsById,
   buildFilterPhrase,
-}
+};

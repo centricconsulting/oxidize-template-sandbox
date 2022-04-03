@@ -1,12 +1,9 @@
-#!/usr/bin/env node
-/** @format */
-
-import Asset from './src/core/asset.js'
-import CodeGenerator from './src/code.generator.js'
 import fs from 'fs'
-import jsonHelper from './src/core/json.helper.js'
-import codifier from './src/core/codifier.js'
-import databasifier from './src/core/databasifier.js'
+import CodeGenerator from './src/codegen/code.generator.js'
+import Asset from './src/codegen/asset.js'
+import jsonHelper from './src/codegen/json.helper.js'
+import codifier from './src/codegen/codifier.js'
+import databasifier from './src/codegen/databasifier.js'
 import beautify from 'json-beautify'
 
 main()
