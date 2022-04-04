@@ -1,6 +1,5 @@
-@@@FILE:[test/databasify.sql]@@@
+@@@FILE:[test/databasify2.sql]@@@
 <% // javascript
-
 
 const codifyOptions = codifier.DatabaseCodifyOptions
 const databaseOptions = databasifier.SqlServerDatabaseOptions
@@ -66,7 +65,7 @@ CREATE UNIQUE INDEX [UX_<%- tableName %>_GRAIN] ON [<%- tableName %>] (
 );
 <% // javascript
   }
-})
+}) // END dbJson.tables.forEach
 
 function applyColumnSort(columns) {
   columns.sort((a, b) => {
@@ -93,18 +92,19 @@ function applyColumnSort(columns) {
 /* FOREIGN KEYS */
 
 <%
-dbJson.tables.forEach(table => {
 
-  const tableName = codifier.codifyText(
-        table.domain ? table.domain.concat("_", table.name) : table.name,
-        codifyOptions
+const fkTables = dbJson.tables.filter(table => table.foreignKeys?.length > 0)
+
+fkTables?.forEach(table => {
+
+ const tableName = codifier.codifyText(
+    table.domain ? table.domain.concat("_", table.name) : table.name,
+    codifyOptions
   )
 
-  if(table.foreignKeys?.length > 0) {
 %>
 /* @@@@@@@ FOREIGN KEYS FOR tableName @@@@@@@ */
 <%
-  }
 
   table.foreignKeys.forEach(fk => {
 
@@ -120,5 +120,5 @@ dbJson.tables.forEach(table => {
 
 <%
   })
-})
+})  // END dbJson.tables.forEach (foreign keys)
 %>
