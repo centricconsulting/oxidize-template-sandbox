@@ -29,24 +29,24 @@ const SqlServerDatabaseOptions = {
     {
       nominal: 'decimal',
       target: (attributeClass) => {
-        if (attributeClass.name.lowerCase() === 'currency') {
+        if (attributeClass.name.toLowerCase() === 'currency') {
           return 'MONEY'
         } else {
-          return `DECIMAL(${attributeClass.precision ?? 20},${attributeClass.scale ?? 8})`
+          return `DECIMAL(${attributeClass?.precision ?? 20},${attributeClass?.scale ?? 8})`
         }
       },
     },
     {nominal: 'identifier', target: () => 'VARCHAR(200)'},
     {
       nominal: 'float',
-      target: (attributeClass) => `FLOAT(${attributeClass.precision ?? 20},${attributeClass.scale ?? 8})`,
+      target: (attributeClass) => `FLOAT(${attributeClass?.precision ?? 20},${attributeClass?.scale ?? 8})`,
     },
     {nominal: 'date', target: () => `DATE`},
     {nominal: 'time', target: () => `DATETIME2(7)`},
     {nominal: 'timestamp', target: () => `DATETIME2(7)`},
     {
       default: true,
-      target: (attributeClass) => `VARCHAR(${attributeClass.precision})`,
+      target: (attributeClass) => `VARCHAR(${attributeClass?.precision ?? 200})`,
     },
   ],
 }
@@ -82,7 +82,7 @@ const AdfOptions = {
 
 function getDataType(attributeClass, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
-  let dtItem = dtm.find((m) => m.nominal === attributeClass.scalar)
+  let dtItem = dtm.find((m) => m.nominal === attributeClass?.scalar)
   if (dtItem) return dtItem.target(attributeClass)
   return dtm.defaultDataType ?? 'Unknown'
 }
