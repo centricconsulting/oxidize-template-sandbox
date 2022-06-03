@@ -2,6 +2,9 @@
 <% // javascript
  const UmlModelEntitiesId = "Entities-".concat(project.id)
  const escape = jsonHelper.escape
+ var counter=101
+ var object_of_relationship = [] // Code Changes for relationship
+ create_list_of_relationships(project) // Code changes for relationship
 %> 
 {
   "_type": "Project",
@@ -66,7 +69,10 @@
 %><%# Render the Attribute Class Reference as Stereotype  %>
                 , "stereotype": {
                   "$ref": "<%- attribute.return.entityId %>"
-                }
+                }<%
+                if( attribute.return.reference === true ){%>,"multiplicity": "<%- getMultiplicityValue(attribute.multiplicityId) %>"<%}%>
+                
+
 <% // javascript
 
     } else if(ac?.scalar) {
@@ -83,8 +89,45 @@
 
 %>
 <%# Close the UMLClass Attributes %>
-        ]
-
+        ]<%
+        if (check_relationship_present(entity.id))
+        {
+            %>,"ownedElements": [<% 
+                var list_of_index_relationship = get_all_index_of_relationship(entity.id)
+                for(ind=0;ind<list_of_index_relationship.length;ind++,counter++){
+            %>{
+                "_id": "<%- "ID".concat(counter) %>",
+                "_parent": {
+                                "$ref": "<%- entity.id %>"
+                            },
+                "_type": "UMLAssociation",
+                "end1": {
+                        "_id":  "<%- "END1_".concat("ID",counter) %>",
+                        "_parent": {
+                                    "$ref": "<%- "ID".concat(counter) %>"
+                                },
+                                "_type": "UMLAssociationEnd",
+                                "reference": {
+                                    "$ref": "<%- entity.id %>"
+                                }
+                            },
+                "end2": {
+                        "_id": "<%- "END2_".concat("ID",counter) %>",
+                        "_parent": {
+                                    "$ref": "<%- "ID".concat(counter) %>"
+                            },
+                                "_type": "UMLAssociationEnd",
+                                "aggregation": "composite",
+                                "reference": {
+                                    "$ref": "<%- object_of_relationship[list_of_index_relationship[ind]].child_entity_id %>"
+                                }
+                        },
+                        "name": "<%- object_of_relationship[list_of_index_relationship[ind]].context %> <%- entity.name %> [<%- object_of_relationship[list_of_index_relationship[ind]].multi %>]"
+            
+        }<% if (ind<list_of_index_relationship.length-1) { %>,<% } %>
+        <%} %> ] <%
+    }
+%>
 <% // javascript
 
     if(entity.instances?.length > 0) {
@@ -133,8 +176,68 @@
     }
   ]
 }
-<% // javascript
-
+<%
+function check_relationship_present(entity_id)
+{
+    for (i=0;i<object_of_relationship.length;i++)
+    {
+        if (object_of_relationship[i].parent_entity_id  === entity_id)
+        {
+            return true
+        }
+    }
+    return false
+}
+function get_all_index_of_relationship(entity_id)
+{
+    var all_index_list = []
+    for (i=0;i<object_of_relationship.length;i++)
+    {
+        if (object_of_relationship[i].parent_entity_id === entity_id)
+        {
+            all_index_list.push(i)
+        }
+    }
+    return all_index_list
+}
+function create_list_of_relationships(project)
+{
+project.entities.forEach((entity, entityIndex) => {
+    var i = 0
+    entity.attributes.forEach((attribute,attributeIndex) => {
+        if(typeof attribute.return !== "undefined"){
+        if( attribute.return.reference === true ){
+            var a = attribute.return.entityId 
+            var b = attribute.entityId
+            var c = ""
+            if (!attribute.return.context === "")
+            {
+             c = attribute.return.context
+            }
+            var d = getMultiplicityValue(attribute.multiplicityId)
+            object_of_relationship.push({"parent_entity_id":a, "child_entity_id":b, "context":c, "multi":d})
+        }}})
+})
+}
+function getMultiplicityValue(multiplicityId)
+{
+    if ( multiplicityId === "ONE_TO_MANY")
+    {
+        return "1..*"
+    }
+    if ( multiplicityId === "ZERO_TO_ONE")
+    {
+        return "0..1"
+    }
+    if ( multiplicityId === "EXACTLY_ONE")
+    {
+        return "1"
+    }
+    if ( multiplicityId === "ZERO_TO_MANY")
+    {
+        return "0..*"
+    }
+}
 function applyAttributeSort(columns) {
   columns.sort((a, b) => {
     let sortValue
@@ -157,5 +260,4 @@ function applyEntitySort(entities) {
     return a.name.localeCompare(b.name)
   })
 }
-
 %>
