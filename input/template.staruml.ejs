@@ -1,4 +1,4 @@
-@@@FILE:[<%- project.name %>.mdj]@@@
+@@@FILE:[StarUML/<%- project.name %>.mdj]@@@
 <% // javascript
  const UmlModelEntitiesId = "Entities-".concat(project.id)
  const escape = jsonHelper.escape
@@ -118,11 +118,15 @@
                             },
                                 "_type": "UMLAssociationEnd",
                                 "aggregation": "composite",
+                                "multiplicity": "[<%- object_of_relationship[list_of_index_relationship[ind]].multi %>]",
                                 "reference": {
                                     "$ref": "<%- object_of_relationship[list_of_index_relationship[ind]].child_entity_id %>"
                                 }
-                        },
-                        "name": "<%- object_of_relationship[list_of_index_relationship[ind]].context %> <%- entity.name %> [<%- object_of_relationship[list_of_index_relationship[ind]].multi %>]"
+                },<% multi_value = object_of_relationship[list_of_index_relationship[ind]].multi
+                    var en_name = multi_value.includes("*") ? entity.pluralName : entity.name
+                    en_name = (typeof en_name === "undefined") ? entity.name : en_name
+                 %>
+                        "name": "<%- object_of_relationship[list_of_index_relationship[ind]].context %> <%- en_name %>"
             
         }<% if (ind<list_of_index_relationship.length-1) { %>,<% } %>
         <%} %> ] <%
@@ -210,7 +214,7 @@ project.entities.forEach((entity, entityIndex) => {
             var a = attribute.return.entityId 
             var b = attribute.entityId
             var c = ""
-            if (!attribute.return.context === "")
+            if (attribute.return.context !== "")
             {
              c = attribute.return.context
             }
