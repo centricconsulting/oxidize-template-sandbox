@@ -2,10 +2,32 @@ import codifier from './codifier.js'
 import jsonHelper from './json.helper.js'
 
 const SqlServerDatabaseOptions = {
-  primaryKeyDescriptor: 'PK',
-  naturalKeyDescriptor: 'NK',
-  foreignKeyDescriptor: 'FK',
+  enforceDescriptors: true, // enforces attribute class descriptors
+  enforceReturnContext: true,
+  enforceReturnEntity: true,
+  attributeName: {
+    prepare: (defaultName, attribute, attributeClass) => {
+      return defaultName
+    },
+  },
+  entityName: {
+    prepare: (defaultName, entity) => {
+      let entityName = defaultName
+      if (entity.tagProperties?.domain) {
+        return entity.tagProperties?.domain.concat(' ', entityName)
+      } else {
+        return entityName
+      }
+    },
+  },
+  foreignAttributeName: {
+    prepare: (defaultName, attribute, foreignEntity) => {
+      let attributeName = defaultName
+      return attributeName.concat(' FK')
+    },
+  },
   defaultDataType: 'VARCHAR(200)',
+  keyDataType: 'VARCHAR(200)',
   dataTypeMap: [
     {
       nominal: 'text',
@@ -83,7 +105,7 @@ const AdfOptions = {
 function getDataType(attributeClass, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
   let dtItem = dtm.find((m) => m.nominal === attributeClass?.scalar)
-  if (dtItem) return dtItem.target(attributeClass)
+  if (dtItem && dtItem.target) return dtItem.target(attributeClass)
   return dtm.defaultDataType ?? 'Unknown'
 }
 
@@ -100,6 +122,63 @@ function multiplicitySingleValue(multiplicityId) {
 }
 
 /**
+ * Returns a text value modified to confirm to descriptor rules in an attribute class.
+ * @param {string} text Text value to which to apply the descriptor logic in the attribute class.
+ * @param {*} attributeClass Attribute class object containing descriptor rules.
+ */
+const enforceDescriptors = (text, attributeClass) => {
+  // simple case: text already ends with descriptor
+  if (!attributeClass) return text
+  if (text.toUpperCase().endsWith(attributeClass.descriptor.toUpperCase())) {
+    return text
+  }
+
+  // create a working set of variations
+  let variations = [attributeClass.name]
+  if (attributeClass.variations && attributeClass.variations.length > 0) {
+    variations = variations.concat(attributeClass.variations)
+  }
+
+  // iterate through all variations
+  for (let v = 0; v < variations.length; v++) {
+    const variation = variations[v]
+    // if the text ends in the variation replace with the descriptor
+    if (text.toUpperCase().endsWith(variation.toUpperCase())) {
+      return text.slice(0, text.length - variation.length).concat(attributeClass.descriptor)
+    }
+  }
+
+  // append the descriptor and return
+  return text.concat(' ', attributeClass.descriptor)
+}
+
+/**
+ * Returns the text prefixed with the context.
+ * @param {string} text Text value to be enforced.
+ * @param {string} context Context related the text value.
+ */
+const enforceReturnContext = (text, context) => {
+  if (context && !text.toUpperCase().startsWith(context.toUpperCase())) {
+    return context.concat(' ', text)
+  } else {
+    return text
+  }
+}
+
+/**
+ * Returns the text prefixed with the context.
+ * @param {string} text Text value to be enforced.
+ * @param {string} context Context related the text value.
+ */
+const enforceReturnEntity = (text, entity) => {
+  if (entity && !text.toUpperCase().endsWith(entity.name.toUpperCase())) {
+    return text.concat(' ', entity.name)
+  } else {
+    return text
+  }
+}
+
+/**
  *
  * @param {JSON} json JSON containing nested project metadata.
  * @param {JSON} codifyOptions JSON containing codify options
@@ -108,64 +187,106 @@ function multiplicitySingleValue(multiplicityId) {
  * @returns
  */
 const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
+  // SUPPORT FUNCTION
+  const prepareAttributeName = (attribute, attributeClass, flags) => {
+    let attributeName = attribute.name
+    // enforce descriptors if valid
+    if (databaseOptions.enforceDescriptors) {
+      attributeName = enforceDescriptors(attributeName, attributeClass)
+    }
+    // apply database prepare options
+    if (databaseOptions?.attributeName?.prepare) {
+      attributeName =
+        databaseOptions?.attributeName?.prepare(attributeName, attribute, attributeClass) ?? attributeName
+    }
+    return attributeName
+  }
+
+  // SUPPORT FUNCTION
+  const prepareForeignAttributeName = (attribute, foreignEntity) => {
+    let foreignAttributeName = attribute.name
+    // enforce context if valid
+    if (databaseOptions.enforceReturnContext && attribute?.return?.context?.length > 0) {
+      foreignAttributeName = enforceReturnContext(foreignAttributeName, attribute.return.context)
+    }
+    // enforce context if valid
+    if (databaseOptions.enforceReturnEntity && foreignEntity) {
+      foreignAttributeName = enforceReturnEntity(foreignAttributeName, foreignEntity)
+    }
+    // apply other prepare logic
+    if (databaseOptions?.foreignAttributeName?.prepare) {
+      foreignAttributeName = databaseOptions.foreignAttributeName.prepare(
+        foreignAttributeName,
+        attribute,
+        foreignEntity
+      )
+    }
+
+    return foreignAttributeName
+  }
+
+  // SUPPORT FUNCTION
+  const prepareEntityName = (entity) => {
+    let entityName = entity.name
+    // apply other prepare logic
+    if (databaseOptions?.entityName?.prepare) {
+      entityName = databaseOptions?.entityName?.prepare(entityName, entity) ?? entityName
+    }
+    return entityName
+  }
+
   // codify everything first
-  codifier.codifyJson(json, codifyOptions)
+  // codifier.codifyJson(json, codifyOptions)
 
   // iterate through entities (these will be tables)
   const dbJson = {tables: []}
   json.entities.forEach((entity) => {
     const foreignKeys = []
-    // populate entity info
+
+    // determine the entity name
+    const entityName = prepareEntityName(entity)
+
     const table = {
       ...entity.tagProperties,
       type: 'table',
       id: entity.id,
-      name: codifier.codifyText(entity.name, codifyOptions),
-      originalName: entity.name,
+      name: codifier.codifyText(entityName, codifyOptions),
+      entityName: entity.name,
       columns: [],
     }
 
     // iterate through attributes (these will be columns)
     entity.attributes.forEach((attribute, attributeIndex) => {
       // find the attribute class
-      let attributeName, columnName
-      const ac = json.attributeClasses.find((x) => x.id === attribute.return?.attributeClassId)
+      let attributeName,
+        columnName,
+        flags = {}
+
+      const attributeClass = json.attributeClasses.find((x) => x.id === attribute.return?.attributeClassId)
 
       // determine if a foreign key is warranted
       // AC specifies a reference and the entityId has a value
-      const generatesFK =
+      flags.isForeignKey =
         attribute?.return?.reference === true && multiplicitySingleValue(attribute?.multiplicityId)
 
       // generate a foreign key if FK
-      if (generatesFK) {
+      if (flags.isForeignKey) {
         // find the target entity
-        const targetEntity = json.entities.find((x) => x.id === attribute?.return?.entityId)
-        const targetEntityName = targetEntity?.name ?? 'Unknown'
+        const foreignEntity = json.entities.find((x) => x.id === attribute?.return?.entityId)
+        const foreignEntityName = prepareEntityName(foreignEntity) ?? 'Unknown'
 
         // construct the target entity name with context
-        attributeName = attribute.return?.context
-          ? attribute.return.context.concat(' ', targetEntityName)
-          : targetEntityName
-
-        columnName = codifier.codifyText(
-          attributeName.concat(' ', databaseOptions.foreignKeyDescriptor),
-          codifyOptions
-        )
+        attributeName = prepareForeignAttributeName(attribute, foreignEntity)
+        columnName = codifier.codifyText(attributeName, codifyOptions)
 
         foreignKeys.push({
-          foreignColumnName: codifier.codifyText(
-            attributeName.concat(' ', databaseOptions.foreignKeyDescriptor),
-            codifyOptions
-          ),
-          referenceTableName: codifier.codifyText(targetEntityName, codifyOptions),
-          referenceColumnName: codifier.codifyText(
-            targetEntityName.concat(' ', databaseOptions.primaryKeyDescriptor),
-            codifyOptions
-          ),
-          referenceTableId: targetEntity?.tableId,
+          referenceColumnId: attribute.id,
+          referenceColumnName: columnName,
+          foreignTableId: foreignEntity.id,
+          foreignTableName: codifier.codifyText(foreignEntityName, codifyOptions),
         })
       } else {
-        attributeName = attribute.name
+        attributeName = prepareAttributeName(attribute, attributeClass)
         columnName = codifier.codifyText(attributeName, codifyOptions)
       }
 
@@ -176,15 +297,14 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
         tableId: entity.id,
         index: attributeIndex + 1,
         name: columnName,
-        originalName: attributeName,
+        attributeName: attribute.name,
         grain: attribute.grain,
         dataType:
           attribute.return?.reference === true
-            ? getDataType({scalar: 'identifier'}, databaseOptions)
-            : getDataType(ac, databaseOptions) ?? databaseOptions.defaultDataType,
+            ? databaseOptions.keyDataType
+            : getDataType(attributeClass, databaseOptions) ?? databaseOptions.defaultDataType,
 
         required: multiplicityRequired(attribute.multiplicityId),
-        tagProperties: attribute.tagProperties,
       }
 
       table.columns.push(column)
@@ -200,4 +320,14 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
   return dbJson
 }
 
-export default {getDatabaseJson, SqlServerDatabaseOptions, AdfOptions}
+export default {
+  getDatabaseJson,
+  SqlServerDatabaseOptions,
+  AdfOptions,
+  enforceReturnContext,
+  enforceDescriptors,
+  getDataType,
+  multiplicityRequired,
+  multiplicitySingleValue,
+  multiplicityInferTable,
+}
