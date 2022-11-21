@@ -125,7 +125,7 @@ CREATE TABLE [#UpdatesDeduped]
 (
             [<%- pkColumName %>]      BIGINT       NOT NULL
             ,[Invalidated_Batch_ID]      VARCHAR(100)
-            ,[<%- nkColumName %>]      VARCHAR(100) NOT NULL
+            ,[<%- nkColumName %>]      VARCHAR(200) NOT NULL
             ,[Record_Valid_End_Datetime] DATETIME2(3)
 ) ;
  
@@ -133,7 +133,7 @@ CREATE TABLE [#Updates]
 (
             [UpdatesRowId]              BIGINT       NOT NULL
             ,[<%- pkColumName %>]      BIGINT       NOT NULL
-            ,[<%- nkColumName %>]      VARCHAR(100) NULL
+            ,[<%- nkColumName %>]      VARCHAR(200) NULL
             ,[Invalidated_Batch_ID]      VARCHAR(200) NULL
             ,[Record_Valid_End_Datetime] DATETIME2(3) NULL
 ) ;
