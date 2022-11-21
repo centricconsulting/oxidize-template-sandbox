@@ -1,0 +1,199 @@
+@@@FILE:[edw_scripts/edw_table_create.sql]@@@
+<% // javascript
+
+const attClass = project.attributeClasses
+const codifyOptions = codifier.DatabaseCodifyOptionsCamel
+const databaseOptions = {
+  primaryKeyDescriptor: 'PK',
+  naturalKeyDescriptor: 'NK',
+  foreignKeyDescriptor: 'FK',
+  defaultDataType: 'VARCHAR(200)',
+  dataTypeMap: [
+    {
+      nominal: 'text',
+      target: (attributeClass) => `VARCHAR(${attributeClass.precision ?? 200})`,
+    },
+    {nominal: 'character', target: () => `CHAR`},
+    {nominal: 'boolean', target: () => `BIT`},
+    {nominal: 'bit', target: () => `BIT`},
+    {
+      nominal: 'integer',
+      target: (attributeClass) => {
+        // precision corresponds to number of Integer bytes.
+        if (!attributeClass.precision) return 'INT'
+        if (attributeClass.precision <= 0) return 'BIT'
+        if (attributeClass.precision <= 1) return 'TINYINT'
+        if (attributeClass.precision <= 2) return 'SMALLINT'
+        if (attributeClass.precision <= 4) return 'INT'
+        return 'BIGINT'
+      },
+    },
+    {
+      nominal: 'decimal',
+      target: (attributeClass) => {
+        if (attributeClass.name.toLowerCase() === 'currency') {
+          return 'MONEY'
+        } else {
+          return `DECIMAL(${attributeClass?.precision ?? 20},${attributeClass?.scale ?? 8})`
+        }
+      },
+    },
+    {nominal: 'identifier', target: () => 'VARCHAR(200)'},
+    {
+      nominal: 'float',
+      target: (attributeClass) => `FLOAT(${attributeClass?.precision ?? 20},${attributeClass?.scale ?? 8})`,
+    },
+    {nominal: 'date', target: () => `DATE`},
+    {nominal: 'time', target: () => `DATETIME2(7)`},
+    {nominal: 'timestamp', target: () => `DATETIME2(7)`},
+    {
+      default: true,
+      target: (attributeClass) => `VARCHAR(${attributeClass?.precision ?? 200})`,
+    },
+  ],
+}
+
+project.entities.forEach(table => {
+   const tgs = {
+       ...table.tagProperties,
+       type: 'table',
+       id: table.id,
+       name: codifier.codifyText(table.name, codifyOptions),
+       originalName: table.name,
+       columns: [],
+     }
+  const pkColumNamemod = table.name
+  const tbl_orig = table.name;
+  const tbl_domain = table.tagProperties.domain;
+  const tbl_domain_len = tbl_domain ? tbl_domain.length : 0;
+  const tbl_rplc = tbl_orig.replace(" ", "_");
+  let tbl_name;
+  if (!tbl_domain) {
+    tbl_name = "ADD_DOMAIN_" + codifier.codifyText(tbl_rplc, codifyOptions)
+  } else if (tbl_domain_len > 0 && tbl_domain.toUpperCase() == tbl_orig.substring(0,tbl_domain_len).toUpperCase()) {
+    tbl_name = codifier.codifyText(tbl_rplc, codifyOptions)
+  } else {
+    tbl_name = codifier.codifyText(tbl_domain.concat("_", tbl_rplc), codifyOptions)
+  }
+
+  const pkColumName = tbl_rplc.concat("_PK")
+  const nkColumName = tbl_rplc.concat("_NK")
+  const transaction = tgs.transaction
+  const indextag = tgs.index
+  const distributiontag = tgs.distribution
+
+%>GO
+
+IF  EXISTS (SELECT 1 FROM sys.objects WHERE object_id = OBJECT_ID(N'[IAP_EDW].[<%- tbl_name %>]') AND type in (N'U'))
+DROP TABLE [IAP_EDW].[<%- tbl_name %>]
+GO
+
+CREATE TABLE [IAP_EDW].[<%- tbl_name %>]( 
+  [<%- tbl_name %>_ID] [bigint] IDENTITY(1000,1) NOT NULL
+, [<%- nkColumName.replace(/ /g, "_") %>] VARCHAR(200) NOT NULL
+<% // javascript
+applyColumnSort(table.attributes) // see function at end of script
+table.attributes.forEach((attribute, sortIndex) => {
+    let aci
+    let attClassObj
+    let sfx
+    let dtyp
+    let dscrptr
+    let cmpr
+    let nlbl
+    aci = attribute.return.attributeClassId;
+    attClassObj = attClass.find(obj => { return obj.id === aci })
+    dtyp = getDataType(attClassObj, databaseOptions)
+    if (attribute.return.reference === false) {
+      dscrptr = attClassObj.descriptor
+      if (dscrptr.toUpperCase() === attribute.name.substring(attribute.name.length - dscrptr.length).toUpperCase()) {
+        sfx = ""
+      } else {
+        sfx = "_".concat(dscrptr)
+      }
+    } else if (attribute.return.reference === true) {
+      sfx = "_FNK"
+    } else {
+      sfx = "_FIXME"
+    }
+
+    if (attribute.multiplicityId === "EXACTLY_ONE") {
+    nlbl = " NOT NULL"
+    } else if (attribute.multiplicityId === "ONE_TO_MANY") {
+    nlbl = " NOT NULL"
+    } else {
+    nlbl = " NULL"
+    }
+%>,<%- " [".concat(attribute.name.replace(/ /g, "_"),sfx)%>]<%- " ".concat(dtyp)%><%- "".concat(nlbl)%>
+<% // javascript  
+  })
+%><%
+if(transaction == 'true'){%>, [Accounting_Date_Key] int NULL
+, [Accounting_Transaction_Date] date NULL
+, [Business_Effective_Transaction_Datetime] datetime2(7) NULL
+, [Record_Valid_Begin_Datetime] datetime2(7) NULL
+, [Record_Valid_End_Datetime] datetime2(7) NULL
+, [Entered_Datetime] datetime2(7) NULL
+, [Updated_Datetime] datetime2(7) NULL
+, [Process_Batch_ID] varchar(200) NULL
+, [Invalidated_Batch_Loop_Sequence] varchar(100) NULL
+, [Intra_Batch_Loop_Sequence] varchar(100) NULL
+, [Generated_Record_Flag] bit NULL
+, [Change_Hash] binary(32) NULL
+, [Source_System_Code] varchar(100) NULL
+<%  } else  
+{%>, [Business_Effective_Begin_Datetime] datetime2(7) NULL
+, [Business_Effective_End_Datetime] datetime2(7) NULL
+, [Record_Valid_Begin_Datetime] datetime2(7) NULL
+, [Record_Valid_End_Datetime] datetime2(7) NULL
+, [Entered_Datetime] datetime2(7) NULL
+, [Updated_Datetime] datetime2(7) NULL
+, [Process_Batch_ID] varchar(200) NULL
+, [Invalidated_Batch_Loop_Sequence] varchar(100) NULL
+, [Intra_Batch_Loop_Sequence] varchar(100) NULL
+, [Generated_Record_Flag] bit NULL
+, [Change_HASH] binary(32) NULL
+, [Source_System_Code] varchar(100) NULL
+<%
+}%>)<% if(indextag =='CLUSTERED' && distributiontag=='HASH')
+{%>
+WITH
+(DISTRIBUTION = HASH ( [<%- nkColumName %>] )
+,CLUSTERED INDEX
+(
+[<%- nkColumName %>] ASC)
+)<%}%><% if(indextag =='CLUSTEREDCOLUMNSTORE' && distributiontag=='REPLICATE')  {%>
+WITH
+(
+DISTRIBUTION = REPLICATE,
+CLUSTERED COLUMNSTORE INDEX
+)<%}%><% if(indextag =='CLUSTERED' && distributiontag=='ROUND_ROBIN'){%>
+WITH
+(
+DISTRIBUTION = ROUND_ROBIN,
+CLUSTERED COLUMNSTORE INDEX
+)
+<%}%>
+<% // javascript
+})
+function applyColumnSort(columns) {
+  columns.sort((a, b) => {
+    let sortValue
+    sortValue = a.sortIndex - b.sortIndex
+    if(sortValue !== 0) return sortValue
+  })
+}
+function getDataType(attributeClass, databaseOptions) {
+  const dtm = databaseOptions.dataTypeMap
+  let datatypertrn
+  let dtItem = dtm.find((m) => m.nominal === attributeClass?.scalar)
+  if (dtItem) {
+    datatypertrn = dtItem.target(attributeClass)
+  } else if (dtm.defaultDataType) {
+    datatypertrn = dtm.defaultDataType
+  } else {
+    datatypertrn = 'Unknown'
+  }
+  return datatypertrn
+}
+%>
