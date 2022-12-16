@@ -1,0 +1,240 @@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+codifyOptions.case = codifier.CaseOptionEnum.Lower
+const databaseOptions = databasifier.DeltaLakeDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+%>
+@@@FILE:[gold_<%- table.name %>.json]@@@
+{
+	"name": "SilverToGold_<%-table.name%>",
+	"properties": {
+		"folder": {
+			"name": "MedallionArchitectureImplementation"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "74fc89d8-f44b-41a8-9857-48883de0df09"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/4cc4444c-ad82-4f77-a7de-4e1177a07a92/resourceGroups/DnATraining-DeltaLake/providers/Microsoft.Synapse/workspaces/delta-lake-poc/bigDataPools/SparkPool",
+				"name": "SparkPool",
+				"type": "Spark",
+				"endpoint": "https://delta-lake-poc.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"public_holidays_table_path = '/silver/public_holidays'\r\n",
+					"calendar_table_path = '/silver/<%-table.name%>'"
+				],
+				"execution_count": 109
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"public_holidays_table = spark.read.format(\"delta\").load(public_holidays_table_path)\r\n",
+					"#public_holidays_table.schema"
+				],
+				"execution_count": 110
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"calendar_table = spark.read.format(\"delta\").load(<%-table.name%>_table_path)\r\n",
+					"#calendar_table.schema"
+				],
+				"execution_count": 111
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.functions import when,col\r\n",
+					"\r\n",
+					"filtered_df = public_holidays_table.filter(public_holidays_table.country.isin('India','United States'))\r\n",
+					"display(filtered_df)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.functions import when,col\r\n",
+					"\r\n",
+					"df = calendar_table.join(filtered_df, calendar_table.date == filtered_df.holiday_date, \"inner\")\\\r\n",
+					"        .select(calendar_table.date,\r\n",
+					"        filtered_df.holiday_name, filtered_df.country_code)\r\n",
+					"display(df)\r\n",
+					"\r\n",
+					"df.write.format('delta').mode('overwrite').save('/gold/calendar_test')\r\n",
+					"spark.sql(\"CREATE TABLE IF NOT EXISTS gold.calendar_test USING DELTA LOCATION '/gold/calendar_test'\")\r\n",
+					"mssparkutils.notebook.exit('Completed') \r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"SELECT * FROM gold.calendar_test"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+				  "%%sql\r\n",
+					"\r\n",
+					"SELECT \r\n",
+<% // RESUME CODE
+
+		table.columns.forEach((column, columnIndex) => {
+
+			const columnRender = `\t\t\t\t\t"${columnIndex === 0 ? "  " : ", "}`
+			  + `${generateSampleData(column.dataType)} AS x.${column.name}`
+				+ `"${columnIndex < table.columns.length - 1 ? "," : ""}\r\n`
+
+%><%- columnRender %><%
+		}) // end column for each
+%>
+				],
+				"execution_count": 1
+			}
+		]
+	}
+}
+<% // RESUME CODE
+}) // end table for each
+
+function generateSampleData(dataType) {
+	switch(dataType) {
+		case "string": return "'abcdefg'";
+		case "int": return "1234";
+		case "smallint": return "8";
+		case "tinyint": return "1";
+		case "bigint": return "12345678";
+		case "date": return "'2022-01-01'";
+		case "timestamp": return "'2022-01-01 12:00:00'";
+		case "decimal": case "float": return "1234.5678";
+		default: return "NULL"
+	}
+}
+%>

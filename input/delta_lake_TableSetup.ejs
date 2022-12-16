@@ -1,0 +1,459 @@
+@@@FILE:[test/databasify2.sql]@@@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+const databaseOptions = databasifier.SqlServerDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+  const tableName = codifier.codifyText(
+        table.domain ? table.domain.concat("_", table.name) : table.name,
+        codifyOptions
+  )
+
+  const pkColumName = tableName.concat("_", databaseOptions.primaryKeyDescriptor)
+  const nkColumName = tableName.concat("_", databaseOptions.naturalKeyDescriptor)
+  const grainColumns = table.columns
+    .filter(c => c.grain === true)
+    .map(c => c.name) ?? []
+
+%>
+{
+	"name": "DataCreationScripts",
+	"properties": {
+		"folder": {
+			"name": "MedallionArchitectureImplementation"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "5ad4b61c-8cfa-4ec4-a34e-eca82170e736"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/4cc4444c-ad82-4f77-a7de-4e1177a07a92/resourceGroups/DnATraining-DeltaLake/providers/Microsoft.Synapse/workspaces/delta-lake-poc/bigDataPools/SparkPool",
+				"name": "SparkPool",
+				"type": "Spark",
+				"endpoint": "https://delta-lake-poc.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from azureml.opendatasets import PublicHolidays\r\n",
+					"\r\n",
+					"from datetime import datetime\r\n",
+					"from dateutil import parser\r\n",
+					"from dateutil.relativedelta import relativedelta\r\n",
+					"\r\n",
+					"\r\n",
+					"end_date = datetime.today()\r\n",
+					"start_date = datetime.today() - relativedelta(months=6)\r\n",
+					"hol = PublicHolidays(start_date=start_date, end_date=end_date)\r\n",
+					"hol_df = hol.to_spark_dataframe()"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"blob_account_name = \"synapsedeltalakepoc\" \r\n",
+					"blob_container_name = \"synapsedeltalakepoc\"\r\n",
+					"blob_relative_path = \"landingzone\" \r\n",
+					"abfss_path = 'abfss://%s@%s.dfs.core.windows.net/%s/' % (blob_container_name, blob_account_name, blob_relative_path)\r\n",
+					"print('Remote blob path: ' + abfss_path)"
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"parquet_path = abfss_path + 'holiday.parquet'\r\n",
+					"json_path = abfss_path + 'holiday.json'\r\n",
+					"csv_path = abfss_path + 'holiday.csv'\r\n",
+					"print('parquet file path: ' + parquet_path)\r\n",
+					"print('json file path： ' + json_path)\r\n",
+					"print('csv file path: ' + csv_path)"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"hol_df.write.parquet(parquet_path, mode = 'overwrite')\r\n",
+					"hol_df.write.json(json_path, mode = 'overwrite')\r\n",
+					"hol_df.write.csv(csv_path, mode = 'overwrite', header = 'true')"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_parquet = spark.read.parquet(parquet_path)\r\n",
+					"display(df_parquet)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(hol_df.limit(5))"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql('''\r\n",
+					"        CREATE TABLE IF NOT EXISTS silver.public_holidays\r\n",
+					"        (\r\n",
+					"        country string NOT NULL COMMENT 'Country or region name',\r\n",
+					"        holiday_name string NOT NULL COMMENT 'Name of the holiday',\r\n",
+					"        normalize_holiday_name string COMMENT 'Normalized Holiday Name',\r\n",
+					"        is_company_holiday boolean COMMENT 'Paid time off if company holiday',\r\n",
+					"        country_code string COMMENT 'Unique country code',\r\n",
+					"        holiday_date date COMMENT 'Date of the holiday',\r\n",
+					"        audit_add_stamp timestamp,\r\n",
+					"        audit_add_user string,\r\n",
+					"        audit_add_process string,\r\n",
+					"        audit_change_stamp timestamp,\r\n",
+					"        audit_change_user string,\r\n",
+					"        audit_change_process string     \r\n",
+					"\t) USING DELTA\r\n",
+					"\tLOCATION '/silver/public_holidays'\r\n",
+					"\tCOMMENT \"Public Holiday data for various countries from Microsoft's open data set\"\r\n",
+					"''')"
+				],
+				"execution_count": 72
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql('''CREATE TABLE IF NOT EXISTS silver.calendar (\r\n",
+					"  date date \r\n",
+					", day_of_week int \r\n",
+					", day_of_month int \r\n",
+					", day_of_quarter int \r\n",
+					", day_of_year int \r\n",
+					", day_desc_01 string \r\n",
+					", day_desc_02 string \r\n",
+					", day_desc_03 string \r\n",
+					", day_desc_04 string \r\n",
+					", weekday_desc_01 string \r\n",
+					", weekday_desc_02 string \r\n",
+					", day_weekday_ct string \r\n",
+					"\r\n",
+					", week_start_dt date \r\n",
+					", week_end_dt date \r\n",
+					", week_day_ct int \r\n",
+					", week_weekday_ct int \r\n",
+					"\r\n",
+					", month_start_dt date \r\n",
+					", month_end_dt date \r\n",
+					", month_of_quarter int \r\n",
+					", month_of_year int \r\n",
+					", month_desc_01 string \r\n",
+					", month_desc_02 string \r\n",
+					", month_desc_03 string \r\n",
+					", month_desc_04 string \r\n",
+					", month_day_ct int \r\n",
+					", month_weekday_ct int \r\n",
+					"\r\n",
+					", quarter_start_dt date \r\n",
+					", quarter_end_dt date \r\n",
+					", quarter_of_year int \r\n",
+					", quarter_desc_01 string \r\n",
+					", quarter_desc_02 string \r\n",
+					", quarter_desc_03 string \r\n",
+					", quarter_desc_04 string \r\n",
+					", quarter_month_ct int \r\n",
+					", quarter_day_ct int \r\n",
+					", quarter_weekday_ct int \r\n",
+					"\r\n",
+					", year int \r\n",
+					", year_start_dt date \r\n",
+					", year_end_dt date \r\n",
+					", year_desc_01 string \r\n",
+					", year_month_ct int \r\n",
+					", year_quarter_ct int \r\n",
+					", year_day_ct int \r\n",
+					", year_weekday_ct int \r\n",
+					",audit_add_stamp timestamp\r\n",
+					",audit_add_user string\r\n",
+					",audit_add_process string\r\n",
+					",audit_change_stamp timestamp\r\n",
+					",audit_change_user string\r\n",
+					",audit_change_process string     \r\n",
+					") USING DELTA\r\n",
+					"LOCATION '/silver/calendar'\r\n",
+					"COMMENT \"Calendar Table\"\r\n",
+					"''')\r\n",
+					""
+				],
+				"execution_count": 43
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.sql('''\r\n",
+					"    INSERT INTO logging.column_mappings (table_name, bronze_column_name, silver_column_name)\r\n",
+					"\tVALUES \r\n",
+					"\t('public_holidays','countryOrRegion','country'),\r\n",
+					"\t('public_holidays','holidayName','holiday_name'),\r\n",
+					"\t('public_holidays','normalizeHolidayName','normalize_holiday_name'),\r\n",
+					"\t('public_holidays','isPaidTimeOff','is_company_holiday'),\r\n",
+					"\t('public_holidays','countryRegionCode','country_code'),\r\n",
+					"\t('public_holidays','date','holiday_date')\r\n",
+					"\t''')"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql('''\r\n",
+					"    INSERT INTO logging.column_mappings (table_name, bronze_column_name, silver_column_name)\r\n",
+					"\tVALUES \r\n",
+					"\t('calendar', 'date', 'date'),\r\n",
+					"    ('calendar', 'day_of_week', 'day_of_week'),\r\n",
+					"    ('calendar', 'day_of_month', 'day_of_month'),\r\n",
+					"    ('calendar', 'day_of_quarter', 'day_of_quarter'),\r\n",
+					"    ('calendar', 'day_of_year', 'day_of_year'),\r\n",
+					"    ('calendar', 'day_desc_01', 'day_desc_01'),\r\n",
+					"    ('calendar', 'day_desc_02', 'day_desc_02'),\r\n",
+					"    ('calendar', 'day_desc_03', 'day_desc_03'),\r\n",
+					"    ('calendar', 'day_desc_04', 'day_desc_04'),\r\n",
+					"    ('calendar', 'weekday_desc_01', 'weekday_desc_01'),\r\n",
+					"    ('calendar', 'weekday_desc_02', 'weekday_desc_02'),\r\n",
+					"    ('calendar', 'day_weekday_count', 'day_weekday_ct'),\r\n",
+					"    ('calendar', 'week_start_date', 'week_start_dt'),\r\n",
+					"    ('calendar', 'week_end_date', 'week_end_dt'),\r\n",
+					"    ('calendar', 'week_day_count', 'week_day_ct'),\r\n",
+					"    ('calendar', 'week_weekday_count', 'week_weekday_ct'),\r\n",
+					"    ('calendar', 'month_start_date', 'month_start_dt'),\r\n",
+					"    ('calendar', 'month_end_date', 'month_end_dt'),\r\n",
+					"    ('calendar', 'month_of_quarter', 'month_of_quarter'),\r\n",
+					"    ('calendar', 'month_of_year', 'month_of_year'),\r\n",
+					"    ('calendar', 'month_desc_01', 'month_desc_01'),\r\n",
+					"    ('calendar', 'month_desc_02', 'month_desc_02'),\r\n",
+					"    ('calendar', 'month_desc_03', 'month_desc_03'),\r\n",
+					"    ('calendar', 'month_desc_04', 'month_desc_04'),\r\n",
+					"    ('calendar', 'month_day_count', 'month_day_ct'),\r\n",
+					"    ('calendar', 'month_weekday_count', 'month_weekday_ct'),\r\n",
+					"    ('calendar', 'quarter_start_date', 'quarter_start_dt'),\r\n",
+					"    ('calendar', 'quarter_end_date', 'quarter_end_dt'),\r\n",
+					"    ('calendar', 'quarter_of_year', 'quarter_of_year'),\r\n",
+					"    ('calendar', 'quarter_desc_01', 'quarter_desc_01'),\r\n",
+					"    ('calendar', 'quarter_desc_02', 'quarter_desc_02'),\r\n",
+					"    ('calendar', 'quarter_desc_03', 'quarter_desc_03'),\r\n",
+					"    ('calendar', 'quarter_desc_04', 'quarter_desc_04'),\r\n",
+					"    ('calendar', 'quarter_month_count', 'quarter_month_ct'),\r\n",
+					"    ('calendar', 'quarter_day_count', 'quarter_day_ct'),\r\n",
+					"    ('calendar', 'quarter_weekday_count', 'quarter_weekday_ct'),\r\n",
+					"    ('calendar', 'year', 'year'),\r\n",
+					"    ('calendar', 'year_start_date', 'year_start_dt'),\r\n",
+					"    ('calendar', 'year_end_date', 'year_end_dt'),\r\n",
+					"    ('calendar', 'year_desc_01', 'year_desc_01'),\r\n",
+					"    ('calendar', 'year_month_count', 'year_month_ct'),\r\n",
+					"    ('calendar', 'year_quarter_count', 'year_quarter_ct'),\r\n",
+					"    ('calendar', 'year_day_count', 'year_day_ct'),\r\n",
+					"    ('calendar', 'year_weekday_count', 'year_weekday_ct')\r\n",
+					"''')"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"silver_df = spark.read.format('delta').load('/silver/calendar')\r\n",
+					"bronze_df = spark.read.format('delta').load('/bronze/calendar')\r\n",
+					"\r\n",
+					"bronze_df = bronze_df.limit(1).toPandas()\r\n",
+					"silver_df = silver_df.limit(1).toPandas()\r\n",
+					"silverColumnList=[]\r\n",
+					"\r\n",
+					"i=0\r\n",
+					"for (columnName, columnData) in silver_df.iteritems():\r\n",
+					"    silverColumnList.append(columnName)\r\n",
+					"    #print(silverColumnList[i])\r\n",
+					"    i+=1\r\n",
+					"    \r\n",
+					"i=0\r\n",
+					"for (columnName, columnData) in bronze_df.iteritems():\r\n",
+					"    print(('calendar',columnName,silverColumnList[i]),\",\",sep='')\r\n",
+					"    i+=1  "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql('''\r\n",
+					"\t\tINSERT INTO logging.merge_column_mappings (table_name, merge_condition)\r\n",
+					"        VALUES\r\n",
+					"\t\t('public_holidays', 'MergeTarget.holiday_date = MergeSource.holiday_date')\r\n",
+					"\t\t,('calendar', 'MergeTarget.date = MergeSource.date')\r\n",
+					"\t\t''')"
+				],
+				"execution_count": 9
+			}
+		]
+	}
+}

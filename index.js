@@ -13,9 +13,9 @@ main()
 function main() {
   // ######  load files ######
   // specificy the folder path
-  const targetFolderPath = './output'
+  const targetFolderPath = './output/files'
   // load the script text
-  const templateScript = fs.readFileSync('./input/template.edw_table_create.ejs', 'utf8')
+  const templateScript = fs.readFileSync('./input/delta_lake_s2g.ejs', 'utf8')
   // convert the payload to parsed json
   const payload = fs.readFileSync('./input/metadata.json', 'utf8')
   // load the json text
@@ -34,7 +34,7 @@ function main() {
   const codeGenerator = new CodeGenerator(payloadJson, templateScript, targetFolderPath)
   codeGenerator.generate()
   codeGenerator.writeFiles()
-  codeGenerator.writeZip('template_EDW_TransientTables.zip')
+  codeGenerator.writeZip('delta_lake_test.zip')
 }
 
 /**
@@ -43,7 +43,8 @@ function main() {
  */
 function demoDatabasifier(json) {
   const codifyOptions = codifier.DatabaseCodifyOptions
-  const databaseOptions = databasifier.SqlServerDatabaseOptions
+  codifyOptions.case = codifier.CaseOptionEnum.Lower
+  const databaseOptions = databasifier.DeltaLakeDatabaseOptions
   const dbJson = databasifier.getDatabaseJson(json.project, codifyOptions, databaseOptions)
   fs.writeFileSync('output/databasify.json', beautify(dbJson))
 }

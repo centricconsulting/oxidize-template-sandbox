@@ -1,9 +1,9 @@
 @@@FILE:[test/databasify.sql]@@@
 <% // javascript
 
-
 const codifyOptions = codifier.DatabaseCodifyOptions
-const databaseOptions = databasifier.SqlServerDatabaseOptions
+codifyOptions.case = codifier.CaseOptionEnum.Lower
+const databaseOptions = databasifier.DeltaLakeDatabaseOptions
 const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
 
 dbJson.tables.forEach(table => {

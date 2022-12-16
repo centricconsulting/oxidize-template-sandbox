@@ -1,0 +1,584 @@
+@@@FILE:[test/databasify2.sql]@@@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+const databaseOptions = databasifier.SqlServerDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+  const tableName = codifier.codifyText(
+        table.domain ? table.domain.concat("_", table.name) : table.name,
+        codifyOptions
+  )
+
+  const pkColumName = tableName.concat("_", databaseOptions.primaryKeyDescriptor)
+  const nkColumName = tableName.concat("_", databaseOptions.naturalKeyDescriptor)
+  const grainColumns = table.columns
+    .filter(c => c.grain === true)
+    .map(c => c.name) ?? []
+
+%>
+{
+	"name": "BronzeToSilverMetadataAutomation",
+	"properties": {
+		"folder": {
+			"name": "MedallionArchitectureImplementation"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "1",
+				"spark.autotune.trackingId": "b6170224-15c0-4c06-81b6-5f384f266607"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/4cc4444c-ad82-4f77-a7de-4e1177a07a92/resourceGroups/DnATraining-DeltaLake/providers/Microsoft.Synapse/workspaces/delta-lake-poc/bigDataPools/SparkPool",
+				"name": "SparkPool",
+				"type": "Spark",
+				"endpoint": "https://delta-lake-poc.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.1",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Preamble\r\n",
+					"- Notebook moves data from bronze layer to silver layer. \r\n",
+					"- Data is picked from file available in BronzeCompleted status and is_active=True and merged with silver layer."
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Parameters"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"tags": [
+						"parameters"
+					]
+				},
+				"source": [
+					"add_process = 'Manual'\r\n",
+					"add_user = 'SkNovTest'\r\n",
+					"silver_delta_lake_path='/silver/'\r\n",
+					"bronze_delta_lake_path='/bronze/'\r\n",
+					"entity_type = 'public_holidays'"
+				],
+				"execution_count": 99
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## Imports"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.functions import lit\r\n",
+					"from datetime import datetime\r\n",
+					"from delta.tables import *"
+				],
+				"execution_count": 100
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%run FileLogging"
+				],
+				"execution_count": 101
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Functions"
+				]
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## create_update_mappings\r\n",
+					"```\r\n",
+					"Create Date:        2022-04-28\r\n",
+					"Author:             Sipi Krishna (Centric Consulting)\r\n",
+					"Description:        Create update column mappings for the merge statement in delta lake. \r\n",
+					"Call by:            BronzeToSilverLocations Notebook\r\n",
+					"Affected table(s):  None\r\n",
+					"Used By:            Bronze to Silver Process\r\n",
+					"Parameter(s):       @locations_df - Locations Data Frame\r\n",
+					"                    @add_user - User who is running the notebook\r\n",
+					"                    @add_process - Process that is running the notebook\r\n",
+					"SUMMARY OF CHANGES\r\n",
+					"Date(yyyy-mm-dd)    Author              Comments\r\n",
+					"------------------- ------------------- ------------------------------------------------------------\r\n",
+					"2022-04-28          Logan Carlson        Initial setup"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def create_update_mappings(schema):\r\n",
+					"\r\n",
+					"    update_cols = {}\r\n",
+					"    for column in schema:\r\n",
+					"        #SYS_CHANGE_OPERATION Column is skipped as this column is not moved to silver layer\r\n",
+					"        if 'change_operation' in column.name:\r\n",
+					"            pass\r\n",
+					"        #All add columns are changed to change columns, during update process only audit change columns are updated\r\n",
+					"        elif 'audit_add' in column.name:\r\n",
+					"            chngcol = column.name.replace('add', 'change')\r\n",
+					"            update_cols[chngcol] = 'MergeSource.{}'.format(column.name)\r\n",
+					"        #Audit_file columns are skipped\r\n",
+					"        elif 'audit_file' not in column.name:\r\n",
+					"            update_cols[column.name] = 'MergeSource.{}'.format(column.name)\r\n",
+					"        \r\n",
+					"    return update_cols"
+				],
+				"execution_count": 102
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## rename_and_convert_columns\r\n",
+					"```\r\n",
+					"Create Date:        2022-04-28\r\n",
+					"Author:             Sipi Krishna (Centric Consulting)\r\n",
+					"Description:        Converts data types of columns and renames them for locations table in wisp_bronze database \r\n",
+					"                    to make the dataframe ready to be loaded to wisp_silver database.\r\n",
+					"Call by:            WISPBronzeToSilverLocations Notebook\r\n",
+					"Affected table(s):  wisp_silver (All tables)\r\n",
+					"Used By:            WISP Bronze to Silver Process\r\n",
+					"Parameter(s):       @locations_df - Locations Data Frame\r\n",
+					"                    @add_user - User who is running the notebook\r\n",
+					"                    @add_process - Process that is running the notebook\r\n",
+					"SUMMARY OF CHANGES\r\n",
+					"Date(yyyy-mm-dd)    Author              Comments\r\n",
+					"------------------- ------------------- ------------------------------------------------------------\r\n",
+					"2022-04-28          Sipi Krishna        Initial setup\r\n",
+					"```"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def rename_and_convert_columns(bronze_table, silver_path, file_info, add_user, add_process):\r\n",
+					"    silver_table_path = ''.join([silver_path, file_info['entity_type']])\r\n",
+					"    silver_schema = spark.read.format('delta').load(silver_table_path).schema\r\n",
+					"\r\n",
+					"    #Reading the column mapping that gives us the column names and data types needed for Silver layer for each table\r\n",
+					"    mapping = spark.sql('''\r\n",
+					"                        SELECT\r\n",
+					"                             bronze_column_name\r\n",
+					"                            ,silver_column_name\r\n",
+					"                        FROM logging.column_mappings\r\n",
+					"                        WHERE table_name = \"{}\"\r\n",
+					"                        '''.format(file_info['entity_type'])\r\n",
+					"\r\n",
+					"                        ).collect()\r\n",
+					"    \r\n",
+					"    #This for loop is only to rename the Bronze Table column names to their respective Silver Table column name.\r\n",
+					"    #Data Type conversion is handled following this code block\r\n",
+					"    for row in mapping:\r\n",
+					"        try:\r\n",
+					"            bronze_table = bronze_table.withColumnRenamed(row['bronze_column_name'], row['silver_column_name'])\r\n",
+					"        except (RunTimeError) as re:\r\n",
+					"            #logger.error('LocationsBronzeToSilver: column_rename_error TypeError {}'.format(re))\r\n",
+					"            log_file_status(file_info['file_uuid'], 'SilverLoadFailed', True, add_user, add_process,file_info['entity_type'],True,'Failed at renaming Bronze columns names')\r\n",
+					"       \r\n",
+					"    #Data Type conversion is happening within this loop. The Silver table schema is being read and the column data type\r\n",
+					"    #Is being passed to the Bronze DataFrame since all Bronze columns are stored as Strings\r\n",
+					"    for col in silver_schema:\r\n",
+					"        if col.name in bronze_table.columns:\r\n",
+					"            try:                \r\n",
+					"                data_type = str(col.dataType).replace('Type','')\r\n",
+					"                bronze_table = bronze_table.withColumn(col.name, bronze_table[col.name].astype(data_type))\r\n",
+					"            except (RuntimeError, TypeError) as re:\r\n",
+					"                #logger.error('LocationsBronzeToSilver: convert_data_types TypeError {}'.format(re))\r\n",
+					"                log_file_status(file_info['file_uuid'], 'SilverLoadFailed', True, add_user, add_process,file_info['entity_type'],True,'Failed at Silver data type conversion')\r\n",
+					"    \r\n",
+					"\r\n",
+					"    #Adding additional columns for auditing, and replacing the existing Bronze audit columns with the current user, process and timestamp.\r\n",
+					"    try:\r\n",
+					"        add_stamp = datetime.now()\r\n",
+					"        bronze_table = bronze_table.withColumn('audit_add_user', lit(add_user))\r\n",
+					"        bronze_table = bronze_table.withColumn('audit_add_process', lit(add_user))\r\n",
+					"        bronze_table = bronze_table.withColumn('audit_add_stamp', lit(add_stamp))\r\n",
+					"        bronze_table = bronze_table.withColumn('audit_change_user', lit(None))\r\n",
+					"        bronze_table = bronze_table.withColumn('audit_change_process', lit(None))\r\n",
+					"        bronze_table = bronze_table.withColumn('audit_change_stamp', lit(None))\r\n",
+					"    except:\r\n",
+					"        #logger.error('LocationsBronzeToSilver: convert_data_types Unknown exception')\r\n",
+					"        log_file_status(file_info['file_uuid'], 'SilverLoadFailed', True, add_user, add_process,file_info['entity_type'],True,'Failed at creating audit columns')\r\n",
+					"\r\n",
+					"    return bronze_table"
+				],
+				"execution_count": 103
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"## upsert_to_silver\r\n",
+					"```\r\n",
+					"Create Date:        2022-04-29\r\n",
+					"Author:             Sipi Krishna (Centric Consulting)\r\n",
+					"Description:        Merges data from the latest file loaded in bronze layer to silver table.\r\n",
+					"Call by:            Pipeline\r\n",
+					"Affected table(s):  silver (All tables in master file list)\r\n",
+					"Used By:            Bronze to Silver Process\r\n",
+					"Parameter(s):       @delta_lake_path - Path of the delta table in silver layer.\r\n",
+					"                    @merge_condition - Merge condition, using primary key columns in this case.\r\n",
+					"                    @update_columns - Dictionary of all columns that need to be updated.\r\n",
+					"SUMMARY OF CHANGES\r\n",
+					"Date(yyyy-mm-dd)    Author              Comments\r\n",
+					"------------------- ------------------- ------------------------------------------------------------\r\n",
+					"2022-04-29          Sipi Krishna        Initial setup\r\n",
+					"```"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def upsert_to_silver(bronze_table, file_info, silver_path, merge_condition, update_cols, add_user, add_process):\r\n",
+					"    #Log file status as BronzeToSilver, which means that data load from BronzeToSilver has started\r\n",
+					"    log_file_status(file_info['file_uuid'], 'BronzeToSilver', False, add_user, add_process,file_info['entity_type'],False,None)\r\n",
+					"    #Update BronzeCompleted is is_active=False\r\n",
+					"    log_file_status(file_info['file_uuid'], 'BronzeCompleted', False, add_user, add_process,file_info['entity_type'],False,None)\r\n",
+					"\r\n",
+					"    silver_table_path = ''.join([silver_path, file_info['entity_type']])\r\n",
+					"\r\n",
+					"    try:\r\n",
+					"        if not DeltaTable.isDeltaTable(spark, silver_table_path):\r\n",
+					"            bronze_table.write.format('delta').mode('overwrite').save(silver_table_path)\r\n",
+					"        # else:\r\n",
+					"        #     if file_info['entity_type'] == 'reservation_occupants':\r\n",
+					"        #         merge_df = DeltaTable.forPath(spark, silver_table_path)\r\n",
+					"        #         print('Merging data')\r\n",
+					"        #         (merge_df.alias('MergeTarget')\r\n",
+					"        #                 .merge(bronze_table.alias('MergeSource'),\r\n",
+					"        #                 'MergeTarget.reservation_id = MergeSource.reservation_id' and 'MergeTarget.occupant_id = MergeSource.occupant_id')\r\n",
+					"        #                 .whenMatchedUpdate(condition = \"MergeSource.change_operation = 'U'\", set = update_cols)\r\n",
+					"        #                 .whenMatchedDelete(condition = \"MergeSource.change_operation = 'D'\")\r\n",
+					"        #                 .whenNotMatchedInsertAll(condition = \"MergeSource.change_operation = 'I'\")\r\n",
+					"        #                 .execute()\r\n",
+					"        #         )\r\n",
+					"        else:\r\n",
+					"            merge_df = DeltaTable.forPath(spark, silver_table_path)\r\n",
+					"            print('Merging data')\r\n",
+					"            (merge_df.alias('MergeTarget')\r\n",
+					"                    .merge(bronze_table.alias('MergeSource'),merge_condition) \r\n",
+					"                    #.whenMatchedUpdate(condition = \"MergeSource.change_operation = 'U'\", set = update_cols)\r\n",
+					"                    #.whenMatchedDelete(condition = \"MergeSource.change_operation = 'D'\")\r\n",
+					"                    #.whenNotMatchedInsertAll(condition = \"MergeSource.change_operation = 'I'\")\r\n",
+					"                    .whenMatchedUpdate(set = update_cols)\r\n",
+					"                    .whenNotMatchedInsertAll()\r\n",
+					"                    .execute()\r\n",
+					"            )\r\n",
+					"            #bronze_table.write.format('delta').mode('overwrite').save(silver_table_path)\r\n",
+					"            #Log file status as SilverCompleted, which means that data load from BronzeToSilver has completed successfully\r\n",
+					"            log_file_status(file_info['file_uuid'], 'SilverCompleted', True, add_user, add_process,file_info['entity_type'],False,None)\r\n",
+					"    except RuntimeError as re:\r\n",
+					"        #logger.error('LocationsBronzeToSilver: convert_data_types TypeError {}'.format(re))\r\n",
+					"        print('runtime error')\r\n",
+					"        log_file_status(file_info['file_uuid'], 'SilverLoadFailed', False, add_user, add_process,file_info['entity_type'],True,'Failed at Silver upsert')\r\n",
+					"        \r\n",
+					"    except Exception as e:\r\n",
+					"        print(e)\r\n",
+					"        print('unknown exception upsert_to_silver')\r\n",
+					"        #logger.error('LocationsBronzeToSilver: convert_data_types Unknown exception')\r\n",
+					"        log_file_status(file_info['file_uuid'], 'SilverLoadUnknownException', False, add_user, add_process,file_info['entity_type'],True,'Failed at Silver upsert with unknown exception')\r\n",
+					""
+				],
+				"execution_count": 104
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Controller Cell\r\n",
+					"Controller cell calls all the other functions."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"#Get all files in BronzeCompleted status and is_active as True for entity_type to be loaded to silver layer.\r\n",
+					"try:\r\n",
+					"    completed_bronze_files = spark.sql('''SELECT \r\n",
+					"                                         fl.file_uuid\r\n",
+					"                                        ,fl.file_table_name AS entity_type\r\n",
+					"                                        ,fsl.file_status\r\n",
+					"                                        ,fl.file_date\r\n",
+					"                                        FROM logging.file_logs fl \r\n",
+					"                                        INNER JOIN logging.file_status_logs fsl \r\n",
+					"                                            ON fl.file_uuid=fsl.file_uuid \r\n",
+					"                                                AND fsl.is_active=True \r\n",
+					"                                                AND fsl.file_status='BronzeCompleted' \r\n",
+					"                                                AND fl.file_table_name='{}'\r\n",
+					"                                                ORDER BY fl.file_date\r\n",
+					"                                        '''.format(entity_type)\r\n",
+					"                                    ).collect()\r\n",
+					"    if len(completed_bronze_files)==0:\r\n",
+					"        mssparkutils.notebook.exit('No files to load')  \r\n",
+					"except RuntimeError as re:\r\n",
+					"    print(re)\r\n",
+					"    #logger.error('BronzeToSilver: Controller Cell Error reading from file_status_logs and file_logs {}'.format(re))\r\n",
+					"\r\n",
+					"#Get merge condition\r\n",
+					"try:\r\n",
+					"    merge_condition = spark.sql('''SELECT \r\n",
+					"                                        mcm.merge_condition\r\n",
+					"                                        FROM logging.merge_column_mappings mcm  \r\n",
+					"                                        WHERE table_name='{}' LIMIT 1\r\n",
+					"                                        '''.format(entity_type)\r\n",
+					"                                    ).collect()\r\n",
+					"except RuntimeError as re:\r\n",
+					"    print(re)\r\n",
+					"    #logger.error('BronzeToSilver: Controller Cell Error reading from merge_column_mappings {}'.format(re))\r\n",
+					"#print(merge_condition[0].merge_condition)\r\n",
+					"sorted_list = sorted(completed_bronze_files,key=lambda x : x['file_date'])\r\n",
+					"\r\n",
+					"for bronze_file in sorted_list:\r\n",
+					"    print(bronze_file['file_uuid'])\r\n",
+					"    filter_condition = 'audit_file_uuid=\"{}\"'.format(bronze_file['file_uuid'])\r\n",
+					"    full_bronze_path = ''.join([bronze_delta_lake_path, bronze_file['entity_type']])\r\n",
+					"\r\n",
+					"    try:\r\n",
+					"        bronze_table = spark.read.format(\"delta\").load(full_bronze_path).filter(filter_condition)\r\n",
+					"    except RuntimeError as re:\r\n",
+					"        #logger.error('BronzeToSilver: Controller Cell: Exception reading wisp_bronze.locations {}'.format(re))\r\n",
+					"        log_file_status(row['file_uuid'], 'SilverLoadBronzeReadException', True, add_user, add_process,True,'Failed at bronze read')\r\n",
+					"    \r\n",
+					"    bronze_table = rename_and_convert_columns(bronze_table, silver_delta_lake_path, bronze_file, add_user, add_process)  \r\n",
+					"    #bronze_table.printSchema()\r\n",
+					"    update_cols = create_update_mappings(bronze_table.schema)\r\n",
+					"    #print(update_cols)\r\n",
+					"    upsert_to_silver(bronze_table, bronze_file, silver_delta_lake_path, merge_condition[0].merge_condition, update_cols, add_user, add_process)\r\n",
+					"\r\n",
+					"\r\n",
+					"#count = spark.sql('SELECT * FROM wisp_silver.{}'.format(entity_type)).count()\r\n",
+					"mssparkutils.notebook.exit('Completed')  "
+				],
+				"execution_count": 105
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"SELECT * from logging.file_status_logs where file_table_name='public_holidays'\r\n",
+					"--UPDATE logging.file_status_logs \r\n",
+					"--set is_active='true' \r\n",
+					"--where file_table_name='public_holidays' and file_status='BronzeCompleted'"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"\r\n",
+					"SELECT * FROM silver.public_holidays WHERE is_company_holiday is not null"
+				],
+				"execution_count": 107
+			}
+		]
+	}
+}

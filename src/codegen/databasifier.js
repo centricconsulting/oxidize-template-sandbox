@@ -1,106 +1,10 @@
 import codifier from './codifier.js'
 import jsonHelper from './json.helper.js'
-
-const SqlServerDatabaseOptions = {
-  enforceDescriptors: true, // enforces attribute class descriptors
-  enforceReturnContext: true,
-  enforceReturnEntity: true,
-  attributeName: {
-    prepare: (defaultName, attribute, attributeClass) => {
-      return defaultName
-    },
-  },
-  entityName: {
-    prepare: (defaultName, entity) => {
-      let entityName = defaultName
-      if (entity.tagProperties?.domain) {
-        return entity.tagProperties?.domain.concat(' ', entityName)
-      } else {
-        return entityName
-      }
-    },
-  },
-  foreignAttributeName: {
-    prepare: (defaultName, attribute, foreignEntity) => {
-      let attributeName = defaultName
-      return attributeName.concat(' FK')
-    },
-  },
-  defaultDataType: 'VARCHAR(200)',
-  keyDataType: 'VARCHAR(200)',
-  dataTypeMap: [
-    {
-      nominal: 'text',
-      target: (attributeClass) => `VARCHAR(${attributeClass.precision ?? 200})`,
-    },
-    {nominal: 'character', target: () => `CHAR`},
-    {nominal: 'boolean', target: () => `BIT`},
-    {nominal: 'bit', target: () => `BIT`},
-    {
-      nominal: 'integer',
-      target: (attributeClass) => {
-        // precision corresponds to number of Integer bytes.
-        if (!attributeClass.precision) return 'INT'
-        if (attributeClass.precision <= 0) return 'BIT'
-        if (attributeClass.precision <= 1) return 'TINYINT'
-        if (attributeClass.precision <= 2) return 'SMALLINT'
-        if (attributeClass.precision <= 4) return 'INT'
-        return 'BIGINT'
-      },
-    },
-    {
-      nominal: 'decimal',
-      target: (attributeClass) => {
-        if (attributeClass.name.toLowerCase() === 'currency') {
-          return 'MONEY'
-        } else {
-          return `DECIMAL(${attributeClass?.precision ?? 20},${attributeClass?.scale ?? 8})`
-        }
-      },
-    },
-    {nominal: 'identifier', target: () => 'VARCHAR(200)'},
-    {
-      nominal: 'float',
-      target: (attributeClass) => `FLOAT(${attributeClass?.precision ?? 20},${attributeClass?.scale ?? 8})`,
-    },
-    {nominal: 'date', target: () => `DATE`},
-    {nominal: 'time', target: () => `DATETIME2(7)`},
-    {nominal: 'timestamp', target: () => `DATETIME2(7)`},
-    {
-      default: true,
-      target: (attributeClass) => `VARCHAR(${attributeClass?.precision ?? 200})`,
-    },
-  ],
-}
-
-const AdfOptions = {
-  primaryKeyDescriptor: 'PK',
-  naturalKeyDescriptor: 'NK',
-  foreignKeyDescriptor: 'FK',
-  defaultDataType: 'VARCHAR(200)',
-  dataTypeMap: [
-    {nominal: 'text', target: () => `String`},
-    {nominal: 'character', target: () => `String`},
-    {nominal: 'boolean', target: () => `Boolean`},
-    {nominal: 'bit', target: () => `BIT`},
-    {
-      nominal: 'integer',
-      target: () => {
-        return 'INT'
-      },
-    },
-    {
-      nominal: 'decimal',
-      target: () => 'DECIMAL',
-    },
-    {nominal: 'identifier', target: () => 'String'},
-    {nominal: 'float', target: () => `DECIMAL`},
-    {nominal: 'date', target: () => `DateTime`},
-    {nominal: 'time', target: () => `DateTime`},
-    {nominal: 'timestamp', target: () => `DateTime`},
-    {default: true, target: () => 'String'},
-  ],
-}
+import {
+  SqlServerDatabaseOptions,
+  DeltaLakeDatabaseOptions,
+  AzureDataFactoryDatabaseOptions,
+} from './databasifier-presets.js'
 
 function getDataType(attributeClass, databaseOptions) {
   const dtm = databaseOptions.dataTypeMap
@@ -129,6 +33,7 @@ function multiplicitySingleValue(multiplicityId) {
 const enforceDescriptors = (text, attributeClass) => {
   // simple case: text already ends with descriptor
   if (!attributeClass) return text
+
   if (text.toUpperCase().endsWith(attributeClass.descriptor.toUpperCase())) {
     return text
   }
@@ -191,7 +96,7 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
   const prepareAttributeName = (attribute, attributeClass, flags) => {
     let attributeName = attribute.name
     // enforce descriptors if valid
-    if (databaseOptions.enforceDescriptors) {
+    if (databaseOptions?.enforceDescriptors == true) {
       attributeName = enforceDescriptors(attributeName, attributeClass)
     }
     // apply database prepare options
@@ -206,11 +111,11 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
   const prepareForeignAttributeName = (attribute, foreignEntity) => {
     let foreignAttributeName = attribute.name
     // enforce context if valid
-    if (databaseOptions.enforceReturnContext && attribute?.return?.context?.length > 0) {
+    if (databaseOptions?.enforceReturnContext && attribute?.return?.context?.length > 0) {
       foreignAttributeName = enforceReturnContext(foreignAttributeName, attribute.return.context)
     }
     // enforce context if valid
-    if (databaseOptions.enforceReturnEntity && foreignEntity) {
+    if (databaseOptions?.enforceReturnEntity && foreignEntity) {
       foreignAttributeName = enforceReturnEntity(foreignAttributeName, foreignEntity)
     }
     // apply other prepare logic
@@ -301,7 +206,7 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
         grain: attribute.grain,
         dataType:
           attribute.return?.reference === true
-            ? databaseOptions.keyDataType
+            ? databaseOptions?.keyDataType
             : getDataType(attributeClass, databaseOptions) ?? databaseOptions.defaultDataType,
 
         required: multiplicityRequired(attribute.multiplicityId),
@@ -321,9 +226,10 @@ const getDatabaseJson = (json, codifyOptions, databaseOptions) => {
 }
 
 export default {
-  getDatabaseJson,
   SqlServerDatabaseOptions,
-  AdfOptions,
+  DeltaLakeDatabaseOptions,
+  AzureDataFactoryDatabaseOptions,
+  getDatabaseJson,
   enforceReturnContext,
   enforceDescriptors,
   getDataType,

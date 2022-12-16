@@ -1,0 +1,19 @@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+codifyOptions.case = codifier.CaseOptionEnum.Lower
+const databaseOptions = databasifier.DeltaLakeDatabaseOptions
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+%>
+@@@FILE:[tables/<%- table.name %>.json]@@@
+<%
+
+  table.columns.forEach(column => {
+%><%- `[${table.name}].[${column.name}] (${column.dataType})` %>
+<%
+  })
+})
+%>

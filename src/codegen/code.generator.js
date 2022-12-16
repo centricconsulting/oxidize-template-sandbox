@@ -4,7 +4,6 @@ import codifier from "./codifier.js";
 import jsonHelper from "./json.helper.js";
 import databasifier from "./databasifier.js";
 import Asset from "./asset.js";
-
 /**
  * This class must be derived from the GeneratorBase class and the class name must remain "Generator".
  * @param {JSON} payload JSon object containing all nececessary information to create the asset.  The payload follows a specific structure (see core/examples.js).
@@ -41,6 +40,7 @@ export default class CodeGenerator {
       return true;
     } catch (e) {
       this.fileError = e;
+      console.log("generate Error: ", e);
       return false;
     }
   }
