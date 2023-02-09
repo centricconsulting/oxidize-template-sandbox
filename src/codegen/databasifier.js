@@ -32,7 +32,7 @@ function multiplicitySingleValue(multiplicityId) {
  */
 const enforceDescriptors = (text, attributeClass) => {
   // simple case: text already ends with descriptor
-  if (!attributeClass) return text;
+  if (!attributeClass||!attributeClass.descriptor) return text;
 
   if (text.toUpperCase().endsWith(attributeClass.descriptor?.toUpperCase())) {
     return text;
@@ -49,14 +49,15 @@ const enforceDescriptors = (text, attributeClass) => {
     const variation = variations[v];
     // if the text ends in the variation replace with the descriptor
     if (text.toUpperCase().endsWith(variation?.toUpperCase())) {
-      return text
-        .slice(0, text.length - variation.length)
-        .concat(attributeClass.descriptor);
+      return text.
+        slice(0, text.length - variation.length)
+        .concat(attributeClass.descriptor)}
     }
   }
 
   // append the descriptor and return
-  return text.concat(" ", attributeClass.descriptor);
+  
+  return text.concat(' ', attributeClass.descriptor)
 };
 
 /**
