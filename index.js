@@ -15,7 +15,7 @@ function main() {
   // specificy the folder path
   const targetFolderPath = './output/files'
   // load the script text
-  const templateScript = fs.readFileSync('./input/delta_lake_s2g.ejs', 'utf8')
+  const templateScript = fs.readFileSync('./input/template.snowflake.ejs', 'utf8')
   // convert the payload to parsed json
   const payload = fs.readFileSync('./input/metadata.json', 'utf8')
   // load the json text
@@ -43,8 +43,8 @@ function main() {
  */
 function demoDatabasifier(json) {
   const codifyOptions = codifier.DatabaseCodifyOptions
-  codifyOptions.case = codifier.CaseOptionEnum.Lower
-  const databaseOptions = databasifier.DeltaLakeDatabaseOptions
+  codifyOptions.case = codifier.CaseOptionEnum.Upper
+  const databaseOptions = databasifier.SnowflakeDatabaseOptions
   const dbJson = databasifier.getDatabaseJson(json.project, codifyOptions, databaseOptions)
   fs.writeFileSync('output/databasify.json', beautify(dbJson))
 }

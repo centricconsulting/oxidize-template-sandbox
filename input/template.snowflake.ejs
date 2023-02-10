@@ -1,0 +1,54 @@
+@@@FILE:[snowflake_table_ddl.sql]@@@
+<% // javascript
+
+const codifyOptions = codifier.DatabaseCodifyOptions
+codifyOptions.case = codifier.CaseOptionEnum.Upper
+const databaseOptions = databasifier.SnowflakeDatabaseOptions
+
+databaseOptions.foreignAttributeName.prepare = (defaultName, attribute, foreignEntity) => {
+  return defaultName.concat(" UID")
+}
+
+const dbJson = databasifier.getDatabaseJson(project, codifyOptions, databaseOptions)
+
+dbJson.tables.forEach(table => {
+
+  const pkColumName = table.name.concat("_UID")
+  const fkColumnIds = table.foreignKeys?.map(fk => fk.referenceColumnId) ?? []
+  const clusteredColumnNames = table.columns.filter(c => c["Clustered Column"] === "yes").map(c => c.name)
+
+%>
+/* ###################################################### */
+CREATE OR REPLACE TABLE dbo.[<%- table.name %>] (
+  [<%- pkColumName %>] VARCHAR(200)
+<% // javascript
+
+  // FK Columns
+  table.columns.filter((c) => fkColumnIds.includes(c.id))
+    .forEach((column, columnIndex) => {
+
+%>,<%- ` [${column.name}] ${column.dataType}${column.required ? " NOT NULL" : ""}` %>
+<% // javascript
+
+  })  // end column iteration
+
+  // Non-FK Columns
+  table.columns.filter((c) => !fkColumnIds.includes(c.id))
+    .forEach((column, columnIndex) => {
+
+%>,<%- ` [${column.name}] ${column.dataType}${column.required ? " NOT NULL" : ""}` %>
+<% // javascript
+
+  }) // end column iteration
+
+  let clusterByPhrase = ''
+  if(clusteredColumnNames?.length > 0) {
+    clusterByPhrase = `CLUSTER BY (${clusteredColumnNames.join(", ")})`
+  }
+
+%>, CONSTRAINT [PK_<%- table.name %>] PRIMARY KEY CLUSTERED ([<%- pkColumName %>] ASC)
+) <%- clusterByPhrase %>
+
+<% // javascript
+}) // end table iteration
+%>

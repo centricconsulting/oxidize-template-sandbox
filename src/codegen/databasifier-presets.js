@@ -64,6 +64,71 @@ const SqlServerDatabaseOptions = {
   ],
 }
 
+const SnowflakeDatabaseOptions = {
+  enforceDescriptors: true, // enforces attribute class descriptors
+  enforceReturnContext: true,
+  enforceReturnEntity: true,
+  attributeName: {
+    prepare: (defaultName, attribute, attributeClass) => {
+      return defaultName
+    },
+  },
+  entityName: {
+    prepare: (defaultName, entity) => {
+      return defaultName
+    },
+  },
+  foreignAttributeName: {
+    prepare: (defaultName, attribute, foreignEntity) => {
+      return defaultName
+    },
+  },
+  defaultDataType: 'VARCHAR(200)',
+  keyDataType: 'VARCHAR(300)',
+  dataTypeMap: [
+    {
+      nominal: 'text',
+      target: (attributeClass) => `VARCHAR(${attributeClass.precision ?? 200})`,
+    },
+    {nominal: 'character', target: () => `VARCHAR(1)`},
+    {nominal: 'boolean', target: () => `BIT`},
+    {nominal: 'bit', target: () => `BIT`},
+    {
+      nominal: 'integer',
+      target: () => 'NUMBER',
+    },
+    {
+      nominal: 'decimal',
+      target: (attributeClass) => {
+        const precision = attributeClass?.precision ?? 38
+        const scale = attributeClass?.scale ?? 12
+        return `NUMBER(${precision},${scale})`
+      },
+    },
+    {
+      nominal: 'float',
+      target: () => `FLOAT`,
+    },
+    {
+      nominal: 'bytes',
+      target: (attributeClass) => {
+        if (attributeClass?.precision > 0) {
+          return `BINARY(${attributClass.precision})`
+        } else {
+          return `BINARY(8388608)`
+        }
+      },
+    },
+    {nominal: 'date', target: () => `DATE`},
+    {nominal: 'time', target: () => `TIME`},
+    {nominal: 'timestamp', target: () => `DATETIME`},
+    {
+      default: true,
+      target: (attributeClass) => `VARCHAR(${attributeClass?.precision ?? 200})`,
+    },
+  ],
+}
+
 const DeltaLakeDatabaseOptions = {
   enforceDescriptors: true, // enforces attribute class descriptors
   enforceReturnContext: true,
@@ -175,4 +240,9 @@ const AzureDataFactoryDatabaseOptions = {
   ],
 }
 
-export {SqlServerDatabaseOptions, DeltaLakeDatabaseOptions, AzureDataFactoryDatabaseOptions}
+export default {
+  SqlServerDatabaseOptions,
+  DeltaLakeDatabaseOptions,
+  AzureDataFactoryDatabaseOptions,
+  SnowflakeDatabaseOptions,
+}

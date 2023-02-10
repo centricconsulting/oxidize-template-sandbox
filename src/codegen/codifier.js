@@ -1,5 +1,5 @@
 import jsonHelper from './json.helper.js'
-import {CaseOptionEnum, DatabaseCodifyOptions, JavascriptCodifyOptions} from './codifier-presets.js'
+import CodifyOptions from './codifier-presets.js'
 
 /**
  * Codifies a text value based on the Codify Options provided.
@@ -12,9 +12,9 @@ const codifyText = (text, codifyOptions) => {
   if (!text) return undefined
 
   // handle simple case options first
-  if (codifyOptions.case === CaseOptionEnum.Upper) {
+  if (codifyOptions.case === CodifyOptions.CaseOptionEnum.Upper) {
     text = text.toUpperCase()
-  } else if (codifyOptions.case === CaseOptionEnum.Lower) {
+  } else if (codifyOptions.case === CodifyOptions.CaseOptionEnum.Lower) {
     text = text.toLowerCase()
   } else {
     // break text into array
@@ -26,7 +26,7 @@ const codifyText = (text, codifyOptions) => {
       const priorNonCharFlag = t === 0 ? true : /\W/.test(initialText[t - 1])
 
       switch (codifyOptions.case) {
-        case CaseOptionEnum.Proper:
+        case CodifyOptions.CaseOptionEnum.Proper:
           if (priorNonCharFlag || (codifyOptions.perserveCaps && currentCapsFlag)) {
             textArray[t] = textArray[t].toUpperCase()
           } else {
@@ -34,7 +34,7 @@ const codifyText = (text, codifyOptions) => {
           }
           break
 
-        case CaseOptionEnum.Camel:
+        case CodifyOptions.CaseOptionEnum.Camel:
           if (t === 0) {
             textArray[t] = textArray[t].toLowerCase()
           } else if (priorNonCharFlag || (codifyOptions.perserveCaps && currentCapsFlag)) {
@@ -103,9 +103,7 @@ const codifyJson = (json, codifyOptions, sourceKey, targetKey) => {
 }
 
 export default {
-  CaseOptionEnum,
-  DatabaseCodifyOptions,
-  JavascriptCodifyOptions,
+  ...CodifyOptions,
   codifyJson,
   codifyText,
 }

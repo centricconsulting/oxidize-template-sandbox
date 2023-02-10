@@ -34,4 +34,4 @@ const JavascriptCodifyOptions = {
   },
 }
 
-export {CaseOptionEnum, DatabaseCodifyOptions, JavascriptCodifyOptions}
+export default {CaseOptionEnum, DatabaseCodifyOptions, JavascriptCodifyOptions}
